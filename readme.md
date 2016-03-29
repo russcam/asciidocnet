@@ -18,7 +18,7 @@ Since this modification happens within a .NET application, the intention was to 
 
 ### Is it production ready?
 
-**_In short, no!_** There are many _TODO_s in the source and many scenarios that are not yet handled, for example, `Table` elements are not handled at all and neither are list item continuations. Additionally, since the original goal was to be able to output an AsciiDoc file from and AsciiDoc input, generating HTML or docbook outputs are either incomplete or not yet started. Over time, this functionality will be added but if you are itching for a feature now, **We accept Pull Requests :)**
+**_In short, no!_** There are many _TODO_s in the source and many scenarios that are not yet handled, for example, `Table` elements are not handled at all and neither are list item continuations. Additionally, since the original goal was to be able to output an AsciiDoc file from and AsciiDoc input, generating HTML or docbook outputs are either incomplete or not yet started. Over time, this functionality will be added but if you are itching for a feature now, [**We accept Pull Requests :)**](https://github.com/russcam/asciidocnet/pulls)
 
 ## License
 

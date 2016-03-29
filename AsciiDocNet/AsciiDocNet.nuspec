@@ -2,10 +2,12 @@
 <package >
   <metadata>
     <id>$id$</id>
-    <version>$version$-alpha1</version>
+    <version>$version$</version>
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
+	<licenseUrl>https://github.com/russcam/asciidocnet/blob/master/license.md</licenseUrl>
+    <projectUrl>https://github.com/russcam/asciidocnet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>Initial alpha release</releaseNotes>

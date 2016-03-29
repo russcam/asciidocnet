@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("AsciiDocNet")]
 [assembly: AssemblyDescription("AsciiDoc processor for .NET")]
-[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyConfiguration("Release")]
 [assembly: AssemblyCompany("forloop")]
 [assembly: AssemblyProduct("AsciiDocNet")]
 [assembly: AssemblyCopyright(@"Copyright(c) 2016 forloop - Russ Cam http://forloop.co.uk
@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 							   licensed under the APACHE 2.0 license.
 
 								 - http://www.apache.org/licenses/LICENSE-2.0")]
+
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
@@ -19,3 +20,4 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyInformationalVersion("1.0.0-alpha1")]
