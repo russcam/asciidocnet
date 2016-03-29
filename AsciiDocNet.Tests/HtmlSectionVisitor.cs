@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace AsciidocNet.Tests
+namespace AsciiDocNet.Tests
 {
 	public class HtmlSectionVisitor : HtmlVisitor
 	{

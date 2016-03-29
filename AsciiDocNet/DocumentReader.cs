@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	public class DocumentReader : IDocumentReader, IDisposable
 	{

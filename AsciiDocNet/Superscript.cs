@@ -1,4 +1,4 @@
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	public class Superscript : IInlineElement, IText, IAttributable
 	{

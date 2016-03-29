@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	public class AuthorInfoAttributeEntry : AttributeEntry
 	{

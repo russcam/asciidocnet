@@ -1,4 +1,4 @@
-﻿namespace AsciidocNet
+﻿namespace AsciiDocNet
 {
 	/// <summary>
 	/// An <see cref="AttributeEntry"/> that has been unset

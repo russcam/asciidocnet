@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	public class Comment : IElement, IText, IAttributable
 	{

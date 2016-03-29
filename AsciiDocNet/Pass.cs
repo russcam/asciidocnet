@@ -1,4 +1,4 @@
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	public class Pass : IElement, IText, IAttributable
 	{

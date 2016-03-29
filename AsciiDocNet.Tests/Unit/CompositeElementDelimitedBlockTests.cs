@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace AsciidocNet.Tests.Unit
+namespace AsciiDocNet.Tests.Unit
 {
 	[TestFixture]
 	public abstract class CompositeElementDelimitedBlockTests<TElement> where TElement : Container, IElement, IAttributable

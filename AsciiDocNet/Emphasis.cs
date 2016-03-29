@@ -1,4 +1,4 @@
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	public class Emphasis : IInlineElement, IText, IAttributable
 	{

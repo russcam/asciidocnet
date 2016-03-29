@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace AsciidocNet.Tests.Unit
+namespace AsciiDocNet.Tests.Unit
 {
 	[TestFixture]
 	public class ImplicitLinkTests

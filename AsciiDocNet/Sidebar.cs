@@ -1,4 +1,4 @@
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	public class Sidebar : Container, IElement, IAttributable
 	{

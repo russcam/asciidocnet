@@ -1,4 +1,4 @@
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	public class Stem : IElement, IText, IAttributable
 	{

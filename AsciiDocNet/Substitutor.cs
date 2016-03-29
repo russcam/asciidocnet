@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	public static class Substitutor
 	{

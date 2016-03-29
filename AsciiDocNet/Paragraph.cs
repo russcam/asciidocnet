@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	public class Paragraph : IElement, IAttributable, IContainerInlineElement
 	{

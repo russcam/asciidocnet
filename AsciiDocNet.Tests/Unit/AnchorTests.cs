@@ -1,7 +1,7 @@
 using System;
 using NUnit.Framework;
 
-namespace AsciidocNet.Tests.Unit
+namespace AsciiDocNet.Tests.Unit
 {
 	[TestFixture]
 	public abstract class AnchorTests<TElement> where TElement : Anchor, IInlineElement

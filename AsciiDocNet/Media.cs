@@ -1,6 +1,6 @@
 using System;
 
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	public abstract class Media : IElement, IAttributable
 	{

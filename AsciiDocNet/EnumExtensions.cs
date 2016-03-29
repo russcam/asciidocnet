@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	public static class EnumExtensions
 	{

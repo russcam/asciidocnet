@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	/// <summary>
 	///     Visits a <see cref="Document" /> and writes out an AsciiDoc to

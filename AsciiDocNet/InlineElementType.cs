@@ -1,6 +1,6 @@
 using System;
 
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	[Flags]
 	public enum InlineElementType

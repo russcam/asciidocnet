@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	internal class ParsingContext
 	{

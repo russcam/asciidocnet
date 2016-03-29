@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 
-namespace AsciidocNet.Tests
+namespace AsciiDocNet.Tests
 {
 	public class AsciiDocAssert
 	{

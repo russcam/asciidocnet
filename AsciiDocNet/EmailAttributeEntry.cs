@@ -1,4 +1,4 @@
-﻿namespace AsciidocNet
+﻿namespace AsciiDocNet
 {
 	/// <summary>
 	///     An email attribute entry

@@ -1,4 +1,4 @@
-﻿namespace AsciidocNet
+﻿namespace AsciiDocNet
 {
 	public class Table : Container, IElement, IAttributable
 	{

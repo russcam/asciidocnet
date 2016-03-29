@@ -2,7 +2,7 @@ using System.IO;
 using System.Text;
 using NUnit.Framework;
 
-namespace AsciidocNet.Tests.Unit
+namespace AsciiDocNet.Tests.Unit
 {
 	public abstract class VisitorTestsBase
 	{

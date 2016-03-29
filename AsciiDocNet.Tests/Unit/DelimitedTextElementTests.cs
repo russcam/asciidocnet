@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace AsciidocNet.Tests.Unit
+namespace AsciiDocNet.Tests.Unit
 {
 	[TestFixture]
 	public abstract class SingleLineAndDelimitedTextElementTests<TElement> : DelimitedTextElementTests<TElement> where TElement : IElement, IText, IAttributable

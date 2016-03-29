@@ -1,4 +1,4 @@
-﻿namespace AsciidocNet
+﻿namespace AsciiDocNet
 {
 	public abstract class ListItem : Container, IAttributable
 	{

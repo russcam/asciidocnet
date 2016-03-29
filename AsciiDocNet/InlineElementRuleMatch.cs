@@ -1,4 +1,4 @@
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	public class InlineElementRuleMatch<TInlineElement> : InlineElementRuleMatch where TInlineElement : IInlineElement
 	{

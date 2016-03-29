@@ -1,7 +1,7 @@
 using System;
 using NUnit.Framework;
 
-namespace AsciidocNet.Tests.Unit
+namespace AsciiDocNet.Tests.Unit
 {
 	[TestFixture]
 	public abstract class DelimitedPairContainerInlineElementTests<TElement> where TElement : IContainerInlineElement

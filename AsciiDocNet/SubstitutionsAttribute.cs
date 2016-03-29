@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	// TODO: handle this better...
 	public class SubstitutionsAttribute : NamedAttribute

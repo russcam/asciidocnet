@@ -1,4 +1,4 @@
-﻿namespace AsciidocNet
+﻿namespace AsciiDocNet
 {
 	public class Quote : Container, IElement, IAttributable
 	{

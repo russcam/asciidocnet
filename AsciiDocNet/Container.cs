@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	/// <summary>
 	///     An element that contains other elements

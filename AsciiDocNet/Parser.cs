@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	public class Parser : IParser
 	{

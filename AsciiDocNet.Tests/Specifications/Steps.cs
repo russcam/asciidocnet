@@ -3,7 +3,7 @@ using System.Text;
 using NUnit.Framework;
 using TechTalk.SpecFlow;
 
-namespace AsciidocNet.Tests.Specifications
+namespace AsciiDocNet.Tests.Specifications
 {
     [Binding]
     public class Steps

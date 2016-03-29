@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/russcam/asciidocnet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Initial alpha release</releaseNotes>
+    <releaseNotes>Fix namespaces</releaseNotes>
     <copyright>Copyright Forloop 2016</copyright>
     <tags>AsciiDoc</tags>
   </metadata>

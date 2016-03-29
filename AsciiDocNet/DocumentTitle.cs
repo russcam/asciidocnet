@@ -1,4 +1,4 @@
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	// TODO: Should derive from AsciiSectionTitle and take a collection inline elements for title
 	/// <summary>

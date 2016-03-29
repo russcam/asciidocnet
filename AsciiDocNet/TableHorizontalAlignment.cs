@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	public enum TableHorizontalAlignment
 	{

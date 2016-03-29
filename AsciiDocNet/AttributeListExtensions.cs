@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace AsciidocNet
+namespace AsciiDocNet
 {
 	public static class AttributeListExtensions
 	{

@@ -1,4 +1,4 @@
-﻿namespace AsciidocNet
+﻿namespace AsciiDocNet
 {
 	/// <summary>
 	///     An attribute set in the header of the document
