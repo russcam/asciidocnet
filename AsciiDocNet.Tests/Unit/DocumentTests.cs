@@ -12,7 +12,7 @@ namespace AsciiDocNet.Tests.Unit
 		{
 			get
 			{
-				return Directory.GetFiles(@"C:\Users\russ\source\elasticsearch-net\src\Tests", "*.asciidoc", SearchOption.AllDirectories)
+				return Directory.GetFiles(@"C:\Users\russ\source\elasticsearch-net-1.x\docs\asciidoc", "*.asciidoc", SearchOption.AllDirectories)
 					.Select(f => new FileInfo(f));
 			}
 		}

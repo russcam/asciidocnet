@@ -374,27 +374,18 @@ namespace AsciiDocNet
 		public virtual void Visit(LabeledListItem listItem)
 		{
 			Visit(listItem.Attributes);
-			_writer.Write("{0}{1}", listItem.Label, new string(':', listItem.Level + 2));
-
-			if (listItem.Count == 1 && listItem[0] is Paragraph)
+			_writer.WriteLine("{0}{1}", listItem.Label, new string(':', listItem.Level + 2));
+			_writer.WriteLine();
+			for (int index = 0; index < listItem.Count; index++)
 			{
-				_writer.WriteLine(" ");
-				listItem[0].Accept(this);
-			}
-			else
-			{
-				_writer.WriteLine();
-				for (int index = 0; index < listItem.Count; index++)
+				var element = listItem[index];
+				var lastElement = index == listItem.Count - 1;
+				element.Accept(this);
+				if (!lastElement)
 				{
-					var element = listItem[index];
-					var lastElement = index == listItem.Count - 1;
-					element.Accept(this);
-					if (!lastElement)
-					{
-						_writer.WriteLine("+");
-					}
+					_writer.WriteLine("+");
 				}
-			}
+			}		
 		}
 
 		public virtual void Visit(LabeledList list)

@@ -1356,6 +1356,7 @@ namespace AsciiDocNet
 			}
 			else
 			{
+				reader.ReadLine();
 				while (reader.Line != null && 
 					PatternMatcher.BlankCharacters.IsMatch(reader.Line))
 				{
