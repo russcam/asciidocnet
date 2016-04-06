@@ -95,61 +95,64 @@ namespace AsciiDocNet
 					ProcessLabeledListItem(new ParsingContext(document), reader, ref buffer, ref attributes);
 					continue;
 				}
-				else if (PatternMatcher.OpenBlock.IsMatch(reader.Line))
+				else if (PatternMatcher.Block.IsMatch(reader.Line))
 				{
-					ProcessBlock<Open>(document, reader, ref buffer, ref attributes);
-				}
-				else if (attributes.ContainBlockName(Patterns.Admonitions))
-				{
-					// admonitions can masquerade as other blocks so need to be handled before attempting
-					// to match on an open delimiter block
-					throw new NotImplementedException("TODO Admonitions");
-				}
-				else if (PatternMatcher.Fenced.IsMatch(reader.Line))
-				{
-					Process<Fenced>(document, reader, ref buffer, ref attributes);
-				}
-				else if (attributes.ContainBlockName("quote"))
-				{
-					ProcessBlock<Quote>(document, reader, ref buffer, ref attributes);
-				}
-				else if (attributes.ContainBlockName("stem"))
-				{
-					Process<Stem>(document, reader, ref buffer, ref attributes);
-				}
-				else if (attributes.ContainBlockName("pass") || PatternMatcher.Pass.IsMatch(reader.Line))
-				{
-					Process<Pass>(document, reader, ref buffer, ref attributes);
-				}
-				else if (attributes.ContainBlockName("example") || PatternMatcher.Example.IsMatch(reader.Line))
-				{
-					ProcessBlock<Example>(document, reader, ref buffer, ref attributes);
-				}
-				else if (attributes.ContainBlockName("sidebar") || PatternMatcher.Sidebar.IsMatch(reader.Line))
-				{
-					ProcessBlock<Sidebar>(document, reader, ref buffer, ref attributes);
-				}
-				else if (attributes.ContainBlockName("source"))
-				{
-					ProcessListing<Source>(document, reader, ref buffer, ref attributes);
-					continue;
-				}
-				else if (attributes.ContainBlockName("listing") || PatternMatcher.Listing.IsMatch(reader.Line))
-				{
-					ProcessListing<Listing>(document, reader, ref buffer, ref attributes);
-					continue;
-				}
-				else if (attributes.ContainBlockName("literal") || PatternMatcher.Literal.IsMatch(reader.Line))
-				{
-					Process<Literal>(document, reader, ref buffer, ref attributes);
-				}
-				else if (attributes.ContainBlockName("comment") || PatternMatcher.CommentBlock.IsMatch(reader.Line))
-				{
-					Process<Comment>(document, reader, ref buffer, ref attributes);
-				}
-				else if (attributes.ContainBlockName("verse"))
-				{
-					ProcessBlock<Verse>(document, reader, ref buffer, ref attributes);
+					var delimiter = PatternMatcher.Block.Match(reader.Line).Groups["delimiter"].Value;
+
+					// TODO: Handle Admonitions
+					switch (delimiter)
+					{
+						case Patterns.Block.Comment:
+							Process<Comment>(document, reader, ref buffer, ref attributes);
+							break;
+						case Patterns.Block.Example:
+							ProcessBlock<Example>(document, reader, ref buffer, ref attributes);
+							break;
+						case Patterns.Block.Fenced:
+							Process<Fenced>(document, reader, ref buffer, ref attributes);
+							break;
+						case Patterns.Block.Listing:
+							if (attributes.ContainBlockName("source"))
+							{
+								ProcessListing<Source>(document, reader, ref buffer, ref attributes);
+							}
+							else
+							{
+								ProcessListing<Listing>(document, reader, ref buffer, ref attributes);
+							}
+							continue;
+						case Patterns.Block.Literal:
+							Process<Literal>(document, reader, ref buffer, ref attributes);
+							break;
+						case Patterns.Block.Open:
+							ProcessBlock<Open>(document, reader, ref buffer, ref attributes);
+							break;
+						case Patterns.Block.Pass:
+							if (attributes.ContainBlockName("stem"))
+							{
+								Process<Stem>(document, reader, ref buffer, ref attributes);
+							}
+							else
+							{
+								Process<Pass>(document, reader, ref buffer, ref attributes);
+							}
+							break;
+						case Patterns.Block.Quote:
+							if (attributes.ContainBlockName("verse"))
+							{
+								ProcessBlock<Verse>(document, reader, ref buffer, ref attributes);
+							}
+							else
+							{
+								ProcessBlock<Quote>(document, reader, ref buffer, ref attributes);
+							}
+							break;
+						case Patterns.Block.Sidebar:
+							ProcessBlock<Sidebar>(document, reader, ref buffer, ref attributes);
+							break;
+						default:
+							throw new InvalidOperationException($"Unrecognized block delimiter: {delimiter}");
+					}
 				}
 				else if (PatternMatcher.Admonition.IsMatch(reader.Line))
 				{
@@ -157,7 +160,7 @@ namespace AsciiDocNet
 				}
 				else if (PatternMatcher.BlankCharacters.IsMatch(reader.Line))
 				{
-					ProcessParagraph(document, ref buffer, ref attributes);
+					ProcessBuffer(document, ref buffer, ref attributes);
 				}
 				else
 				{
@@ -167,7 +170,7 @@ namespace AsciiDocNet
 				reader.ReadLine();
 			}
 
-			ProcessRemaining(document, buffer, attributes);
+			ProcessBuffer(document, ref buffer, ref attributes);
 			return document;
 		}
 
@@ -1006,56 +1009,64 @@ namespace AsciiDocNet
 					ProcessLabeledListItem(new ParsingContext(parent, delimiterRegex), reader, ref buffer, ref attributes);
 					continue;
 				}
-				else if (attributes.ContainBlockName(Patterns.Admonitions))
+				else if (PatternMatcher.Block.IsMatch(reader.Line))
 				{
-					// also needs to cater for delimited blocks
-					throw new NotImplementedException("TODO Admonitions");
-				}
-				else if (PatternMatcher.Fenced.IsMatch(reader.Line))
-				{
-					Process<Fenced>(parent, reader, ref buffer, ref attributes);
-				}
-				else if (attributes.ContainBlockName("quote"))
-				{
-					ProcessBlock<Quote>(parent, reader, ref buffer, ref attributes);
-				}
-				else if (attributes.ContainBlockName("stem"))
-				{
-					Process<Stem>(parent, reader, ref buffer, ref attributes);
-				}
-				else if (attributes.ContainBlockName("pass") || PatternMatcher.Pass.IsMatch(reader.Line))
-				{
-					Process<Pass>(parent, reader, ref buffer, ref attributes);
-				}
-				else if (attributes.ContainBlockName("example") || PatternMatcher.Example.IsMatch(reader.Line))
-				{
-					ProcessBlock<Example>(parent, reader, ref buffer, ref attributes);
-				}
-				else if (attributes.ContainBlockName("sidebar") || PatternMatcher.Sidebar.IsMatch(reader.Line))
-				{
-					ProcessBlock<Sidebar>(parent, reader, ref buffer, ref attributes);
-				}
-				else if (attributes.ContainBlockName("source"))
-				{
-					ProcessListing<Source>(parent, reader, ref buffer, ref attributes);
-					continue;
-				}
-				else if (attributes.ContainBlockName("listing") || PatternMatcher.Listing.IsMatch(reader.Line))
-				{
-					ProcessListing<Listing>(parent, reader, ref buffer, ref attributes);
-					continue;
-				}
-				else if (attributes.ContainBlockName("literal") || PatternMatcher.Literal.IsMatch(reader.Line))
-				{
-					Process<Literal>(parent, reader, ref buffer, ref attributes);
-				}
-				else if (attributes.ContainBlockName("comment") || PatternMatcher.CommentBlock.IsMatch(reader.Line))
-				{
-					Process<Comment>(parent, reader, ref buffer, ref attributes);
-				}
-				else if (attributes.ContainBlockName("verse"))
-				{
-					ProcessBlock<Verse>(parent, reader, ref buffer, ref attributes);
+					var delimiter = PatternMatcher.Block.Match(reader.Line).Groups["delimiter"].Value;
+
+					// TODO: Handle Admonitions
+					switch (delimiter)
+					{
+						case Patterns.Block.Comment:
+							Process<Comment>(parent, reader, ref buffer, ref attributes);
+							break;
+						case Patterns.Block.Example:
+							ProcessBlock<Example>(parent, reader, ref buffer, ref attributes);
+							break;
+						case Patterns.Block.Fenced:
+							Process<Fenced>(parent, reader, ref buffer, ref attributes);
+							break;
+						case Patterns.Block.Listing:
+							if (attributes.ContainBlockName("source"))
+							{
+								ProcessListing<Source>(parent, reader, ref buffer, ref attributes);
+							}
+							else
+							{
+								ProcessListing<Listing>(parent, reader, ref buffer, ref attributes);
+							}
+							continue;
+						case Patterns.Block.Literal:
+							Process<Literal>(parent, reader, ref buffer, ref attributes);
+							break;
+						case Patterns.Block.Open:
+							ProcessBlock<Open>(parent, reader, ref buffer, ref attributes);
+							break;
+						case Patterns.Block.Pass:
+							if (attributes.ContainBlockName("stem"))
+							{
+								Process<Stem>(parent, reader, ref buffer, ref attributes);
+							}
+							else
+							{
+								Process<Pass>(parent, reader, ref buffer, ref attributes);
+							}
+							break;
+						case Patterns.Block.Quote:
+							if (attributes.ContainBlockName("verse"))
+							{
+								ProcessBlock<Verse>(parent, reader, ref buffer, ref attributes);
+							}
+							else
+							{
+								ProcessBlock<Quote>(parent, reader, ref buffer, ref attributes);
+							}
+							break;
+						case Patterns.Block.Sidebar:
+							ProcessBlock<Sidebar>(parent, reader, ref buffer, ref attributes);
+							break;
+						default:
+							throw new InvalidOperationException($"Unrecognized block delimiter: {delimiter}");
+					}
 				}
 				else
 				{
@@ -1065,7 +1076,7 @@ namespace AsciiDocNet
 				reader.ReadLine();
 			}
 
-			ProcessParagraph(parent, ref buffer);
+			ProcessBuffer(parent, ref buffer, ref attributes);
 		}
 
 		private void Process<TElement>(Container parent, IDocumentReader reader, ref List<string> buffer,
@@ -1150,7 +1161,7 @@ namespace AsciiDocNet
 			attributes = null;
 		}
 
-		// TODO: Handle nested inline elements e.g. a Strong may contain an Emphasis, TextLiteral, Monospace, etc. This is what IContainerInlineElement is for
+		// TODO: Handle nested inline elements
 		private IList<IInlineElement> ProcessInlineElements(string block, InlineElementType elementType = InlineElementType.All)
 		{
 			var elements = new List<IInlineElement>();
@@ -1276,7 +1287,7 @@ namespace AsciiDocNet
 						}
 
 						// we want to keep the index of matches for ordering purposes so
-						// replace any matches with whitespace
+						// replace any matches with whitespace. This could be optimized
 						return new string(' ', match.Length);
 					});
 				}
@@ -1561,55 +1572,58 @@ namespace AsciiDocNet
 			}
 		}
 
-		private void ProcessRemaining(Container document, List<string> buffer, AttributeList attributes)
+		private void ProcessBuffer(Container parent, ref List<string> buffer, ref AttributeList attributes)
 		{
 			if (buffer.Count > 0)
 			{
 				if (attributes.ContainBlockName("quote"))
 				{
-					ProcessLine<Quote>(document, ref buffer, ref attributes);
+					ProcessLine<Quote>(parent, ref buffer, ref attributes);
 				}
 				else if (attributes.ContainBlockName("pass"))
 				{
-					ProcessSimple<Pass>(document, ref buffer, ref attributes);
+					ProcessSimple<Pass>(parent, ref buffer, ref attributes);
 				}
 				else if (attributes.ContainBlockName("example"))
 				{
-					ProcessLine<Example>(document, ref buffer, ref attributes);
+					ProcessLine<Example>(parent, ref buffer, ref attributes);
 				}
 				else if (attributes.ContainBlockName("stem"))
 				{
-					ProcessSimple<Stem>(document, ref buffer, ref attributes);
+					ProcessSimple<Stem>(parent, ref buffer, ref attributes);
 				}
 				else if (attributes.ContainBlockName("sidebar"))
 				{
-					ProcessLine<Sidebar>(document, ref buffer, ref attributes);
+					ProcessLine<Sidebar>(parent, ref buffer, ref attributes);
 				}
 				else if (attributes.ContainBlockName("source"))
 				{
-					ProcessLine<Sidebar>(document, ref buffer, ref attributes);
+					ProcessSimple<Source>(parent, ref buffer, ref attributes);
 				}
 				else if (attributes.ContainBlockName("listing"))
 				{
-					ProcessSimple<Listing>(document, ref buffer, ref attributes);
+					ProcessSimple<Listing>(parent, ref buffer, ref attributes);
 				}
 				else if (attributes.ContainBlockName("literal"))
 				{
-					ProcessSimple<Literal>(document, ref buffer, ref attributes);
+					ProcessSimple<Literal>(parent, ref buffer, ref attributes);
 				}
 				else if (attributes.ContainBlockName("comment"))
 				{
-					ProcessSimple<Comment>(document, ref buffer, ref attributes);
+					ProcessSimple<Comment>(parent, ref buffer, ref attributes);
 				}
 				else if (attributes.ContainBlockName("verse"))
 				{
-					ProcessLine<Verse>(document, ref buffer, ref attributes);
+					ProcessLine<Verse>(parent, ref buffer, ref attributes);
 				}
 				else
 				{
-					ProcessParagraph(document, ref buffer, ref attributes);
+					ProcessParagraph(parent, ref buffer, ref attributes);
 				}
 			}
+
+			buffer = new List<string>(8);
+			attributes = null;
 		}
 
 		// TODO: Simple elements i.e. those that simply have a verbatim string value, should probably still take a paragraph or literal

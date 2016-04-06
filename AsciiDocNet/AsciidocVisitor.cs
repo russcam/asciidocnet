@@ -125,9 +125,9 @@ namespace AsciiDocNet
 		public virtual void Visit(Source source)
 		{
 			Visit(source.Attributes);
-			_writer.WriteLine(Patterns.Source);
+			_writer.WriteLine(Patterns.Block.Source);
 			_writer.WriteLine(source.Text);
-			_writer.WriteLine(Patterns.Source);
+			_writer.WriteLine(Patterns.Block.Source);
 			foreach (var callout in source.Callouts)
 			{
 				Visit(callout);
@@ -242,12 +242,12 @@ namespace AsciiDocNet
 
 			if (isBlock)
 			{
-				_writer.WriteLine(Patterns.Quote);
+				_writer.WriteLine(Patterns.Block.Quote);
 			}
 			Visit((Container)quote);
 			if (isBlock)
 			{
-				_writer.WriteLine(Patterns.Quote);
+				_writer.WriteLine(Patterns.Block.Quote);
 				_writer.WriteLine();
 			}
 		}
@@ -298,9 +298,9 @@ namespace AsciiDocNet
 		public virtual void Visit(Open open)
 		{
 			Visit(open.Attributes);
-			_writer.WriteLine(Patterns.Open);
+			_writer.WriteLine(Patterns.Block.Open);
 			Visit((Container)open);
-			_writer.WriteLine(Patterns.Open);
+			_writer.WriteLine(Patterns.Block.Open);
 			_writer.WriteLine();
 		}
 
@@ -312,9 +312,9 @@ namespace AsciiDocNet
 		public virtual void Visit(Literal literal)
 		{
 			Visit(literal.Attributes);
-			_writer.WriteLine(Patterns.Literal);
+			_writer.WriteLine(Patterns.Block.Literal);
 			_writer.WriteLine(literal.Text);
-			_writer.WriteLine(Patterns.Literal);
+			_writer.WriteLine(Patterns.Block.Literal);
 			_writer.WriteLine();
 		}
 
@@ -477,9 +477,9 @@ namespace AsciiDocNet
 		{
 			Visit(listing.Attributes);
 
-			_writer.WriteLine(Patterns.Listing);
+			_writer.WriteLine(Patterns.Block.Listing);
 			_writer.WriteLine(listing.Text);
-			_writer.WriteLine(Patterns.Listing);
+			_writer.WriteLine(Patterns.Block.Listing);
 			foreach (var callout in listing.Callouts)
 			{
 				Visit(callout);
@@ -495,12 +495,12 @@ namespace AsciiDocNet
 
 			if (isBlock)
 			{
-				_writer.WriteLine(Patterns.Example);
+				_writer.WriteLine(Patterns.Block.Example);
 			}
 			Visit((Container)example);
 			if (isBlock)
 			{
-				_writer.WriteLine(Patterns.Example);
+				_writer.WriteLine(Patterns.Block.Example);
 				_writer.WriteLine();
 			}
 		}
@@ -509,9 +509,9 @@ namespace AsciiDocNet
 		{
 			if (comment.Style == CommentStyle.MultiLine)
 			{
-				_writer.WriteLine(Patterns.Comment);
+				_writer.WriteLine(Patterns.Block.Comment);
 				_writer.WriteLine(comment.Text);
-				_writer.WriteLine(Patterns.Comment);
+				_writer.WriteLine(Patterns.Block.Comment);
 				_writer.WriteLine();
 			}
 			else
@@ -528,27 +528,27 @@ namespace AsciiDocNet
 		public virtual void Visit(Fenced fenced)
 		{
 			Visit(fenced.Attributes);
-			_writer.WriteLine(Patterns.Fenced);
+			_writer.WriteLine(Patterns.Block.Fenced);
 			_writer.WriteLine(fenced.Text);
-			_writer.WriteLine(Patterns.Fenced);
+			_writer.WriteLine(Patterns.Block.Fenced);
 			_writer.WriteLine();
 		}
 
 		public virtual void Visit(Pass pass)
 		{
 			Visit(pass.Attributes);
-			_writer.WriteLine(Patterns.Pass);
+			_writer.WriteLine(Patterns.Block.Pass);
 			_writer.WriteLine(pass.Text);
-			_writer.WriteLine(Patterns.Pass);
+			_writer.WriteLine(Patterns.Block.Pass);
 			_writer.WriteLine();
 		}
 
 		public virtual void Visit(Sidebar sidebar)
 		{
 			Visit(sidebar.Attributes);
-			_writer.WriteLine(Patterns.Sidebar);
+			_writer.WriteLine(Patterns.Block.Sidebar);
 			Visit((Container)sidebar);
-			_writer.WriteLine(Patterns.Sidebar);
+			_writer.WriteLine(Patterns.Block.Sidebar);
 			_writer.WriteLine();
 		}
 
@@ -628,9 +628,9 @@ namespace AsciiDocNet
 			}
 
 			Visit(stem.Attributes);
-			_writer.WriteLine(Patterns.Stem);
+			_writer.WriteLine(Patterns.Block.Stem);
 			_writer.WriteLine(stem.Text);
-			_writer.WriteLine(Patterns.Stem);
+			_writer.WriteLine(Patterns.Block.Stem);
 			_writer.WriteLine();
 		}
 
@@ -646,12 +646,12 @@ namespace AsciiDocNet
 
 			if (isBlock)
 			{
-				_writer.WriteLine(Patterns.Verse);
+				_writer.WriteLine(Patterns.Block.Verse);
 			}
 			Visit((Container)verse);
 			if (isBlock)
 			{
-				_writer.WriteLine(Patterns.Verse);
+				_writer.WriteLine(Patterns.Block.Verse);
 				_writer.WriteLine();
 			}
 		}

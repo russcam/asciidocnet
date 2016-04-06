@@ -42,3 +42,6 @@ _NCrunch*/
 # Nuget packages
 /packages
 *.nupkg
+
+#Github credentials
+AsciiDocNet.Tests/credentials.json
