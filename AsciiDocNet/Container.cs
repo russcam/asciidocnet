@@ -30,7 +30,36 @@ namespace AsciiDocNet
 			}
 		}
 
+		public static bool operator ==(Container left, Container right)
+		{
+			return Equals(left, right);
+		}
+
+		public static bool operator !=(Container left, Container right)
+		{
+			return !Equals(left, right);
+		}
+
 		public abstract TVisitor Accept<TVisitor>(TVisitor visitor) where TVisitor : IDocumentVisitor;
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj))
+			{
+				return false;
+			}
+			if (ReferenceEquals(this, obj))
+			{
+				return true;
+			}
+
+			return obj.GetType() == this.GetType() && Equals((Container)obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return Elements.GetHashCode();
+		}
 
 		public void Add(IElement item)
 		{
@@ -95,6 +124,12 @@ namespace AsciiDocNet
 				item.Parent = null;
 				Elements.RemoveAt(index);
 			}
+		}
+
+		protected bool Equals(Container other)
+		{
+			return Elements.Count == other.Elements.Count &&
+			       Elements.SequenceEqual(other.Elements);
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()

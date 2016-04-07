@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AsciiDocNet
 {
@@ -26,10 +27,55 @@ namespace AsciiDocNet
 
 		public IList<IInlineElement> Elements { get; } = new List<IInlineElement>();
 
+		public static bool operator ==(Mark left, Mark right)
+		{
+			return Equals(left, right);
+		}
+
+		public static bool operator !=(Mark left, Mark right)
+		{
+			return !Equals(left, right);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj))
+			{
+				return false;
+			}
+			if (ReferenceEquals(this, obj))
+			{
+				return true;
+			}
+			if (obj.GetType() != this.GetType())
+			{
+				return false;
+			}
+			return Equals((Mark)obj);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				var hashCode = Attributes.GetHashCode();
+				hashCode = (hashCode * 397) ^ DoubleDelimited.GetHashCode();
+				hashCode = (hashCode * 397) ^ Elements.GetHashCode();
+				return hashCode;
+			}
+		}
+
 		public TVisitor Accept<TVisitor>(TVisitor visitor) where TVisitor : IDocumentVisitor
 		{
 			visitor.Visit(this);
 			return visitor;
+		}
+
+		protected bool Equals(Mark other)
+		{
+			return Equals(Attributes, other.Attributes) && 
+				DoubleDelimited == other.DoubleDelimited && 
+				Elements.SequenceEqual(other.Elements);
 		}
 	}
 }

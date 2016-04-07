@@ -86,6 +86,7 @@
     <Compile Include="Unit\AttributeEntryTests.cs" />
     <Compile Include="Unit\AttributeReferenceTests.cs" />
     <Compile Include="Unit\AuthorInfoTests.cs" />
+    <Compile Include="Unit\CheckListItemTests.cs" />
     <Compile Include="Unit\DelimitedContainerInlineElementTests.cs" />
     <Compile Include="Unit\LabeledListItemTests.cs" />
     <Compile Include="Unit\StrongTests.cs" />

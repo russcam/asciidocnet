@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
@@ -7,7 +8,7 @@ namespace AsciiDocNet
 {
 	public static class EnumExtensions
 	{
-		internal static Dictionary<string, object> EnumCache = new Dictionary<string, object>();
+		internal static ConcurrentDictionary<string, object> EnumCache = new ConcurrentDictionary<string, object>();
 
 		internal static T ToEnum<T>(this string input) where T : struct
 		{
@@ -25,7 +26,7 @@ namespace AsciiDocNet
 				if (name.Equals(input, StringComparison.OrdinalIgnoreCase))
 				{
 					var value = (T)Enum.Parse(enumType, name, true);
-					EnumCache.Add(key, value);
+					EnumCache.TryAdd(key, value);
 					return value;
 				}
 
@@ -35,7 +36,7 @@ namespace AsciiDocNet
 				if (enumMemberAttribute != null && enumMemberAttribute.Name == input)
 				{
 					var value = (T)Enum.Parse(enumType, name);
-					EnumCache.Add(key, value);
+					EnumCache.TryAdd(key, value);
 					return value;
 				}
 			}

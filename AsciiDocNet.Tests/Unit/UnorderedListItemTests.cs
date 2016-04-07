@@ -1,3 +1,4 @@
+using System.Linq;
 using NUnit.Framework;
 
 namespace AsciiDocNet.Tests.Unit
@@ -21,6 +22,7 @@ namespace AsciiDocNet.Tests.Unit
 			var list = (UnorderedList)document[0];
 
 			Assert.IsTrue(list.Items.Count == count);
+			Assert.IsTrue(list.Items.All(i => i.GetType() == typeof(UnorderedListItem)));
 		}
 
 		[Test]

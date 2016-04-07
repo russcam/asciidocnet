@@ -83,7 +83,8 @@ namespace AsciiDocNet
 				}
 				else if (PatternMatcher.CheckListItem.IsMatch(reader.Line))
 				{
-					throw new NotImplementedException("TODO Check list item");
+					ProcessCheckListItem(new ParsingContext(document), reader, ref buffer, ref attributes);
+					continue;
 				}
 				else if (PatternMatcher.OrderedListItem.IsMatch(reader.Line))
 				{
@@ -174,6 +175,63 @@ namespace AsciiDocNet
 			return document;
 		}
 
+		private void ProcessCheckListItem(ParsingContext context, IDocumentReader reader, ref List<string> buffer, ref AttributeList attributes)
+		{
+			ProcessParagraph(context.Parent, ref buffer);
+			var match = PatternMatcher.CheckListItem.Match(reader.Line);
+			if (!match.Success)
+			{
+				throw new ArgumentException("not a check list item");
+			}
+
+			var level = match.Groups["level"].Value;
+			var isChecked = !string.IsNullOrWhiteSpace(match.Groups["checked"].Value);
+			var text = match.Groups["text"].Value;
+
+			var listItem = new CheckListItem(level.Length, isChecked);
+			listItem.Attributes.Add(attributes);
+
+			buffer.Add(text);
+			reader.ReadLine();
+
+			while (reader.Line != null &&
+				   !PatternMatcher.ListItemContinuation.IsMatch(reader.Line) &&
+				   !PatternMatcher.BlankCharacters.IsMatch(reader.Line) &&
+				   !PatternMatcher.CheckListItem.IsMatch(reader.Line) &&
+				   !PatternMatcher.ListItem.IsMatch(reader.Line) &&
+				   !context.IsMatch(reader.Line))
+			{
+				buffer.Add(reader.Line);
+				reader.ReadLine();
+			}
+
+			// TODO: handle list item continuations (i.e. continued with +)
+			ProcessParagraph(listItem, ref buffer);
+
+			UnorderedList unorderedList;
+			if (context.Parent.Count > 0)
+			{
+				unorderedList = context.Parent[context.Parent.Count - 1] as UnorderedList;
+
+				if (unorderedList != null && unorderedList.Items.Count > 0 && unorderedList.Items[0].Level == listItem.Level)
+				{
+					unorderedList.Items.Add(listItem);
+				}
+				else
+				{
+					unorderedList = new UnorderedList { Items = { listItem } };
+					context.Parent.Add(unorderedList);
+				}
+			}
+			else
+			{
+				unorderedList = new UnorderedList { Items = { listItem } };
+				context.Parent.Add(unorderedList);
+			}
+
+			attributes = null;
+		}
+
 		private InlineElementRuleMatch<TInlineElement> CreateContainerInlineElement<TInlineElement>(
 			Match match,
 			InlineElementConstraint constraint)
@@ -214,7 +272,7 @@ namespace AsciiDocNet
 						element.Elements.Add(inlineElement);
 					}
 
-					var startIndex = match.Value[0] == ' ' ? match.Index + 1 : match.Index;
+					var startIndex = match.Value[0] == ' ' || match.Value[0] == '\t' ? match.Index + 1 : match.Index;
 					var endIndex = match.Index + match.Length;
 					return new InlineElementRuleMatch<TInlineElement>(element, startIndex, endIndex);
 				}
@@ -233,7 +291,7 @@ namespace AsciiDocNet
 						element.Attributes.Add(attributes);
 					}
 
-					var startIndex = match.Value[0] == ' ' ? match.Index + 1 : match.Index;
+					var startIndex = match.Value[0] == ' ' || match.Value[0] == '\t' ? match.Index + 1 : match.Index;
 					var endIndex = match.Index + match.Length;
 
 					//TODO: do something with match.Groups[1].Value
@@ -478,7 +536,8 @@ namespace AsciiDocNet
 		private void ParseComment(Container parent, string input, ref List<string> buffer, ref AttributeList attributes)
 		{
 			ProcessParagraph(parent, ref buffer);
-			var comment = new Comment(input);
+
+			var comment = new Comment(input.Substring(2));
 			parent.Add(comment);
 			attributes = null;
 		}
@@ -997,7 +1056,8 @@ namespace AsciiDocNet
 				}
 				else if (PatternMatcher.CheckListItem.IsMatch(reader.Line))
 				{
-					throw new NotImplementedException("TODO Check List");
+					ProcessCheckListItem(new ParsingContext(parent, delimiterRegex), reader, ref buffer, ref attributes);
+					continue;
 				}
 				else if (PatternMatcher.OrderedListItem.IsMatch(reader.Line))
 				{
@@ -1068,7 +1128,7 @@ namespace AsciiDocNet
 							throw new InvalidOperationException($"Unrecognized block delimiter: {delimiter}");
 					}
 				}
-				else
+				else if (!PatternMatcher.BlankCharacters.IsMatch(reader.Line))
 				{
 					buffer.Add(reader.Line);
 				}
@@ -1620,9 +1680,10 @@ namespace AsciiDocNet
 				{
 					ProcessParagraph(parent, ref buffer, ref attributes);
 				}
+
+				buffer = new List<string>(8);
 			}
 
-			buffer = new List<string>(8);
 			attributes = null;
 		}
 

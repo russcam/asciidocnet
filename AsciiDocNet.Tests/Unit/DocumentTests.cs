@@ -18,8 +18,8 @@ namespace AsciiDocNet.Tests.Unit
 		private const string RepositoryName = "elasticsearch-net";
 		private const string RepositoryOwner = "elastic";
 		private const string ShaCommit = "98d4fb99ed9e20258b6180358fbc5988b0c3c43b";
-
 		private const string TestDocumentsDir = "test-documents";
+
 		private readonly bool FetchFiles = true;
 
 		public IEnumerable<FileInfo> Files
@@ -78,7 +78,7 @@ namespace AsciiDocNet.Tests.Unit
 					}
 		
 					var asciidocs = tree.Tree.Where(i =>
-						i.Path.StartsWith("docs/asciidoc") && i.Path.EndsWith(".asciidoc"));
+						i.Path.StartsWith("docs/asciidoc/") && i.Path.EndsWith(".asciidoc"));
 
 					foreach (var asciidoc in asciidocs)
 					{
@@ -122,7 +122,10 @@ namespace AsciiDocNet.Tests.Unit
 		{
 			var document = Document.Load(file.FullName);
 			document.Accept(Visitor);
-			File.WriteAllText(file.Name, Builder.ToString());
+
+			var content = Builder.ToString();
+			var visitedDocument = Document.Parse(content);
+			Assert.AreEqual(document, visitedDocument);
 		}
 
 		private static string GetContent(string base64Encoded)

@@ -36,9 +36,46 @@ namespace AsciiDocNet
 
 		public AttributeList Attributes { get; } = new AttributeList();
 
+		public InlineElementType ContainElementType { get; } = InlineElementType.All;
+
 		public IList<IInlineElement> Elements { get; } = new List<IInlineElement>();
 
-		public InlineElementType ContainElementType { get; } = InlineElementType.All;
+		public Container Parent { get; set; }
+
+		public static bool operator ==(Paragraph left, Paragraph right)
+		{
+			return Equals(left, right);
+		}
+
+		public static bool operator !=(Paragraph left, Paragraph right)
+		{
+			return !Equals(left, right);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj))
+			{
+				return false;
+			}
+			if (ReferenceEquals(this, obj))
+			{
+				return true;
+			}
+			if (obj.GetType() != this.GetType())
+			{
+				return false;
+			}
+			return Equals((Paragraph)obj);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				return (Attributes.GetHashCode() * 397) ^ Elements.GetHashCode();
+			}
+		}
 
 		public TVisitor Accept<TVisitor>(TVisitor visitor) where TVisitor : IDocumentVisitor
 		{
@@ -46,6 +83,9 @@ namespace AsciiDocNet
 			return visitor;
 		}
 
-		public Container Parent { get; set; }
+		protected bool Equals(Paragraph other)
+		{
+			return Equals(Attributes, other.Attributes) && Elements.SequenceEqual(other.Elements);
+		}
 	}
 }

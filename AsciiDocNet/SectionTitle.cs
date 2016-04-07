@@ -57,10 +57,55 @@ namespace AsciiDocNet
 
 		public Container Parent { get; set; }
 
+		public static bool operator ==(SectionTitle left, SectionTitle right)
+		{
+			return Equals(left, right);
+		}
+
+		public static bool operator !=(SectionTitle left, SectionTitle right)
+		{
+			return !Equals(left, right);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj))
+			{
+				return false;
+			}
+			if (ReferenceEquals(this, obj))
+			{
+				return true;
+			}
+			if (obj.GetType() != this.GetType())
+			{
+				return false;
+			}
+			return Equals((SectionTitle)obj);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				var hashCode = _level;
+				hashCode = (hashCode * 397) ^ Attributes.GetHashCode();
+				hashCode = (hashCode * 397) ^ Elements.GetHashCode();
+				return hashCode;
+			}
+		}
+
 		public TVisitor Accept<TVisitor>(TVisitor visitor) where TVisitor : IDocumentVisitor
 		{
 			visitor.Visit(this);
 			return visitor;
+		}
+
+		protected bool Equals(SectionTitle other)
+		{
+			return _level == other._level &&
+			       Attributes.Equals(other.Attributes) &&
+			       Elements.SequenceEqual(other.Elements);
 		}
 
 		private static void ValidateLevel(int level)

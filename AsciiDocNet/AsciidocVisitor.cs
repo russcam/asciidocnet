@@ -119,7 +119,15 @@ namespace AsciiDocNet
 			Visit(paragraph.Attributes);
 			Visit(paragraph.Elements);
 			_writer.WriteLine();
-			_writer.WriteLine();
+
+			if (paragraph.Elements.Count > 0)
+			{
+				var lastElement = paragraph.Elements[paragraph.Elements.Count - 1];
+				if (!lastElement.ToString().EndsWith("\r\n"))
+				{
+					_writer.WriteLine();
+				}
+			}
 		}
 
 		public virtual void Visit(Source source)
@@ -325,7 +333,17 @@ namespace AsciiDocNet
 
 		public virtual void Visit(CheckListItem listItem)
 		{
-			throw new NotImplementedException("TODO Visit Check List");
+			_writer.Write("{0} [{1}] ", new string('-', listItem.Level), listItem.Checked? "x" : " ");
+			for (int index = 0; index < listItem.Count; index++)
+			{
+				var element = listItem[index];
+				var lastElement = index == listItem.Count - 1;
+				element.Accept(this);
+				if (!lastElement)
+				{
+					_writer.WriteLine("+");
+				}
+			}
 		}
 
 		public virtual void Visit(OrderedListItem listItem)
@@ -516,7 +534,7 @@ namespace AsciiDocNet
 			}
 			else
 			{
-				_writer.WriteLine("// {0}", comment.Text);
+				_writer.WriteLine("//{0}", comment.Text);
 			}
 		}
 

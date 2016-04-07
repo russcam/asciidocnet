@@ -40,6 +40,44 @@ namespace AsciiDocNet
 			get { return _attributes?.FirstOrDefault(a => a.Name.Equals(name, StringComparison.OrdinalIgnoreCase)); }
 		}
 
+		public static bool operator ==(AttributeList left, AttributeList right)
+		{
+			return Equals(left, right);
+		}
+
+		public static bool operator !=(AttributeList left, AttributeList right)
+		{
+			return !Equals(left, right);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj))
+			{
+				return false;
+			}
+			if (ReferenceEquals(this, obj))
+			{
+				return true;
+			}
+			if (obj.GetType() != this.GetType())
+			{
+				return false;
+			}
+			return Equals((AttributeList)obj);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				var hashCode = _attributes?.GetHashCode() ?? 0;
+				hashCode = (hashCode * 397) ^ (Anchor?.GetHashCode() ?? 0);
+				hashCode = (hashCode * 397) ^ (Title?.GetHashCode() ?? 0);
+				return hashCode;
+			}
+		}
+
 		public AttributeList Add(AttributeList attributeList)
 		{
 			if (attributeList == null)
@@ -122,6 +160,28 @@ namespace AsciiDocNet
 		public bool Remove(Attribute item) => _attributes != null && _attributes.Remove(item);
 
 		public void RemoveAt(int index) => _attributes?.RemoveAt(index);
+
+		protected bool Equals(AttributeList other)
+		{
+			return AttributesEqual(_attributes, other._attributes) &&
+			       Equals(Anchor, other.Anchor) &&
+			       Equals(Title, other.Title);
+		}
+
+		private static bool AttributesEqual(List<Attribute> attributes, List<Attribute> other)
+		{
+			if (attributes == null && other == null)
+			{
+				return true;
+			}
+			if (attributes == null || other == null)
+			{
+				return false;
+			}
+
+			return attributes.Count == other.Count &&
+			       attributes.SequenceEqual(other);
+		}
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	}
