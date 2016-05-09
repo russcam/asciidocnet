@@ -84,7 +84,7 @@ namespace AsciiDocNet
 
 		public bool Contains(IElement item) => Elements != null && Elements.Contains(item);
 
-		public void CopyTo(IElement[] array, int arrayIndex) => Elements.CopyTo(array, arrayIndex);
+		public void CopyTo(IElement[] array, int arrayIndex) => Elements?.CopyTo(array, arrayIndex);
 
 		public IEnumerator<IElement> GetEnumerator()
 		{

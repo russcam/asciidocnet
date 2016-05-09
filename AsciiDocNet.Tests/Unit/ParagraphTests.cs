@@ -17,8 +17,8 @@ namespace AsciiDocNet.Tests.Unit
 
 			var element = (Paragraph)document[0];
 
-			Assert.AreEqual(1, element.Elements.Count);
-			Assert.IsInstanceOf<TextLiteral>(element.Elements[0]);
+			Assert.AreEqual(1, element.Count);
+			Assert.IsInstanceOf<TextLiteral>(element[0]);
 		}
 
 		[Test]
@@ -33,10 +33,10 @@ namespace AsciiDocNet.Tests.Unit
 
 			var element = (Paragraph)document[0];
 
-			Assert.AreEqual(3, element.Elements.Count);
-			Assert.IsInstanceOf<TextLiteral>(element.Elements[0]);
-			Assert.IsInstanceOf<Strong>(element.Elements[1]);
-			Assert.IsInstanceOf<TextLiteral>(element.Elements[2]);
+			Assert.AreEqual(3, element.Count);
+			Assert.IsInstanceOf<TextLiteral>(element[0]);
+			Assert.IsInstanceOf<Strong>(element[1]);
+			Assert.IsInstanceOf<TextLiteral>(element[2]);
 		}
 
 		[Test]
@@ -51,10 +51,10 @@ namespace AsciiDocNet.Tests.Unit
 
 			var element = (Paragraph)document[0];
 
-			Assert.AreEqual(3, element.Elements.Count);
-			Assert.IsInstanceOf<TextLiteral>(element.Elements[0]);
-			Assert.IsInstanceOf<Emphasis>(element.Elements[1]);
-			Assert.IsInstanceOf<TextLiteral>(element.Elements[2]);
+			Assert.AreEqual(3, element.Count);
+			Assert.IsInstanceOf<TextLiteral>(element[0]);
+			Assert.IsInstanceOf<Emphasis>(element[1]);
+			Assert.IsInstanceOf<TextLiteral>(element[2]);
 		}
 
 		[Test]
@@ -69,12 +69,12 @@ namespace AsciiDocNet.Tests.Unit
 
 			var element = (Paragraph)document[0];
 
-			Assert.AreEqual(5, element.Elements.Count);
-			Assert.IsInstanceOf<TextLiteral>(element.Elements[0]);
-			Assert.IsInstanceOf<Strong>(element.Elements[1]);
-			Assert.IsInstanceOf<TextLiteral>(element.Elements[2]);
-			Assert.IsInstanceOf<Emphasis>(element.Elements[3]);
-			Assert.IsInstanceOf<TextLiteral>(element.Elements[4]);
+			Assert.AreEqual(5, element.Count);
+			Assert.IsInstanceOf<TextLiteral>(element[0]);
+			Assert.IsInstanceOf<Strong>(element[1]);
+			Assert.IsInstanceOf<TextLiteral>(element[2]);
+			Assert.IsInstanceOf<Emphasis>(element[3]);
+			Assert.IsInstanceOf<TextLiteral>(element[4]);
 		}
 
 		[Test]

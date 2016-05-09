@@ -85,7 +85,7 @@ namespace AsciiDocNet
 			}
 
 			_writer.Write("<strong>");
-			Visit(strong.Elements);
+			Visit((InlineContainer)strong);
 			_writer.Write("</strong>");
 		}
 
@@ -128,13 +128,13 @@ namespace AsciiDocNet
 			if (classes != null)
 			{
 				_writer.Write("<span class=\"{0}\">", classes);
-				Visit(mark.Elements);
+				Visit((InlineContainer)mark);
 				_writer.Write("</span>");
 			}
 			else
 			{
 				_writer.Write("<mark>");
-				Visit(mark.Elements);
+				Visit((InlineContainer)mark);
 				_writer.Write("</mark>");
 			}
 		}
@@ -147,9 +147,9 @@ namespace AsciiDocNet
 			}
 		}
 
-		public virtual void Visit(IList<IInlineElement> inlineElements)
+		public virtual void Visit(InlineContainer elements)
 		{
-			foreach (var element in inlineElements)
+			foreach (var element in elements)
 			{
 				element.Accept(this);
 			}
@@ -269,7 +269,7 @@ namespace AsciiDocNet
 			}
 
 			_writer.Write("<code>");
-			Visit(monospace.Elements);
+			Visit((InlineContainer)monospace);
 			_writer.Write("</code>");
 		}
 
@@ -302,7 +302,7 @@ namespace AsciiDocNet
 				_writer.WriteLine("<div class=\"paragraph\">");
 				_writer.Write("<p>");
 
-				Visit(paragraph.Elements);
+				Visit((InlineContainer)paragraph);
 
 				_writer.WriteLine("</p>");
 				_writer.WriteLine("</div>");
@@ -310,7 +310,7 @@ namespace AsciiDocNet
 			else
 			{
 				_writer.Write("<p>");
-				Visit(paragraph.Elements);
+				Visit((InlineContainer)paragraph);
 				_writer.Write("</p>");
 			}
 		}
@@ -323,7 +323,7 @@ namespace AsciiDocNet
 			}
 
 			_writer.Write(quotation.DoubleDelimited ? "“" : "‘");
-			Visit(quotation.Elements);
+			Visit((InlineContainer)quotation);
 			_writer.Write(quotation.DoubleDelimited ? "”" : "’");
 		}
 
@@ -402,7 +402,7 @@ namespace AsciiDocNet
 			}
 			else
 			{
-				_writer.WriteLine("<title>AsciidocNet</title>");
+				_writer.WriteLine("<title>AsciiDocNet</title>");
 			}
 		}
 
@@ -453,7 +453,9 @@ namespace AsciiDocNet
 
 		private static string HtmlEncode(string text)
 		{
-			return Substitutor.SpecialCharacters.Aggregate(text, (current, specialCharacter) => current.Replace(specialCharacter.Key, specialCharacter.Value));
+			return Substitutor.SpecialCharacters.Aggregate(
+				text, 
+				(current, specialCharacter) => current.Replace(specialCharacter.Key, specialCharacter.Value));
 		}
 	}
 }

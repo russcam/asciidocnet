@@ -32,7 +32,7 @@ namespace AsciiDocNet
 
 		void Visit(Container elements);
 
-		void Visit(IList<IInlineElement> inlineElements);
+		void Visit(InlineContainer elements);
 
 		void Visit(Image image);
 

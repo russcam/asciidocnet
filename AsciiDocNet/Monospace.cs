@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace AsciiDocNet
 {
-	public class Monospace : IContainerInlineElement, IAttributable
+	public class Monospace : InlineContainer, IInlineElement, IAttributable
 	{
 		public Monospace(string text)
 		{
-			Elements.Add(new TextLiteral(text));
+			Add(new TextLiteral(text));
 		}
 
 		public Monospace()
@@ -16,15 +16,13 @@ namespace AsciiDocNet
 
 		public AttributeList Attributes { get; } = new AttributeList();
 
-		public InlineElementType ContainElementType { get; } =
+		public override InlineElementType ContainElementType { get; } =
 			InlineElementType.Literal | InlineElementType.AttributeReference | InlineElementType.Emphasis | InlineElementType.EmphasisDouble |
 			InlineElementType.InlineAnchor | InlineElementType.InternalAnchor | InlineElementType.Mark |
 			InlineElementType.MarkDouble | InlineElementType.Strong |
 			InlineElementType.StrongDouble | InlineElementType.Subscript | InlineElementType.Superscript;
 
 		public bool DoubleDelimited { get; set; }
-
-		public IList<IInlineElement> Elements { get; } = new List<IInlineElement>();
 
 		public static bool operator ==(Monospace left, Monospace right)
 		{
@@ -64,7 +62,7 @@ namespace AsciiDocNet
 			}
 		}
 
-		public TVisitor Accept<TVisitor>(TVisitor visitor) where TVisitor : IDocumentVisitor
+		public override TVisitor Accept<TVisitor>(TVisitor visitor)
 		{
 			visitor.Visit(this);
 			return visitor;

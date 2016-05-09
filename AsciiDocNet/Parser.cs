@@ -235,7 +235,7 @@ namespace AsciiDocNet
 		private InlineElementRuleMatch<TInlineElement> CreateContainerInlineElement<TInlineElement>(
 			Match match,
 			InlineElementConstraint constraint)
-			where TInlineElement : IContainerInlineElement, IAttributable, new()
+			where TInlineElement : InlineContainer, IInlineElement, IAttributable, new()
 		{
 			string unEscapedAttributes = null;
 			var firstMatch = match.Groups[0].Value;
@@ -252,7 +252,7 @@ namespace AsciiDocNet
 					firstMatch = firstMatch.Substring(1, firstMatch.Length - 1);
 					foreach (var inlineElement in ProcessInlineElements(firstMatch, element.ContainElementType))
 					{
-						element.Elements.Add(inlineElement);
+						element.Add(inlineElement);
 					}
 
 					return new InlineElementRuleMatch<TInlineElement>(element, match.Index, match.Index + match.Length);
@@ -269,7 +269,7 @@ namespace AsciiDocNet
 
 					foreach (var inlineElement in ProcessInlineElements(match.Groups[3].Value, element.ContainElementType))
 					{
-						element.Elements.Add(inlineElement);
+						element.Add(inlineElement);
 					}
 
 					var startIndex = match.Value[0] == ' ' || match.Value[0] == '\t' ? match.Index + 1 : match.Index;
@@ -283,7 +283,7 @@ namespace AsciiDocNet
 
 					foreach (var inlineElement in ProcessInlineElements(match.Groups[3].Value, element.ContainElementType))
 					{
-						element.Elements.Add(inlineElement);
+						element.Add(inlineElement);
 					}
 
 					if (attributes != null)
@@ -304,7 +304,7 @@ namespace AsciiDocNet
 
 				foreach (var inlineElement in ProcessInlineElements(match.Groups[2].Value, element.ContainElementType))
 				{
-					element.Elements.Add(inlineElement);
+					element.Add(inlineElement);
 				}
 
 				var attributes = ParseQuotedAttributes(match.Groups[1].Value);
@@ -539,7 +539,6 @@ namespace AsciiDocNet
 
 			var comment = new Comment(input.Substring(2));
 			parent.Add(comment);
-			attributes = null;
 		}
 
 		private void ParseDocumentTitle(Document document, IDocumentReader reader, ref AttributeList attributes)
@@ -1702,6 +1701,24 @@ namespace AsciiDocNet
 		private void ProcessTable(Container parent, IDocumentReader reader, ref List<string> buffer, ref AttributeList attributes)
 		{
 			ProcessParagraph(parent, ref buffer);
+
+			var match = PatternMatcher.Table.Match(reader.Line);
+			if (!match.Success)
+			{
+				throw new ArgumentException("not the start of a table");
+			}
+
+			var delimiter = match.Groups[1].Value;
+			var rows = new List<TableRow>();
+			reader.ReadLine();
+			while (reader.Line != null &&
+				   !Regex.IsMatch(reader.Line, Regex.Escape(match.Groups[0].Value)))
+			{
+
+
+				reader.ReadLine();
+			}
+
 			throw new NotImplementedException("TODO");
 		}
 
@@ -1798,5 +1815,9 @@ namespace AsciiDocNet
 
 			return output.ToArray();
 		}
+	}
+
+	public class TableRow
+	{
 	}
 }

@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace AsciiDocNet.Tests.Unit
 {
 	[TestFixture]
-	public abstract class DelimitedPairContainerInlineElementTests<TElement> where TElement : IContainerInlineElement
+	public abstract class DelimitedPairContainerInlineElementTests<TElement> where TElement : InlineContainer
 	{
 		public virtual string Text { get; } = "This is a paragraph";
 
@@ -22,11 +22,11 @@ namespace AsciiDocNet.Tests.Unit
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.AreEqual(1, paragraph.Elements.Count);
-			Assert.IsInstanceOf<TElement>(paragraph.Elements[0]);
+			Assert.AreEqual(1, paragraph.Count);
+			Assert.IsInstanceOf<TElement>(paragraph[0]);
 
-			var element = (TElement)paragraph.Elements[0];
-			Assert.AreEqual(Text, ((TextLiteral)element.Elements[0]).Text);
+			var element = (TElement)paragraph[0];
+			Assert.AreEqual(Text, ((TextLiteral)element[0]).Text);
 		}
 	}
 
@@ -50,10 +50,10 @@ namespace AsciiDocNet.Tests.Unit
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.AreEqual(1, paragraph.Elements.Count);
-			Assert.IsInstanceOf<TElement>(paragraph.Elements[0]);
+			Assert.AreEqual(1, paragraph.Count);
+			Assert.IsInstanceOf<TElement>(paragraph[0]);
 
-			var element = (TElement)paragraph.Elements[0];
+			var element = (TElement)paragraph[0];
 			Assert.AreEqual(Text, element.Text);
 		}
 	}

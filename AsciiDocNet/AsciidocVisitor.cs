@@ -117,12 +117,12 @@ namespace AsciiDocNet
 			}
 
 			Visit(paragraph.Attributes);
-			Visit(paragraph.Elements);
+			Visit((InlineContainer)paragraph);
 			_writer.WriteLine();
 
-			if (paragraph.Elements.Count > 0)
+			if (paragraph.Count > 0)
 			{
-				var lastElement = paragraph.Elements[paragraph.Elements.Count - 1];
+				var lastElement = paragraph[paragraph.Count - 1];
 				if (!lastElement.ToString().EndsWith("\r\n"))
 				{
 					_writer.WriteLine();
@@ -221,7 +221,7 @@ namespace AsciiDocNet
 				return;
 			}
 			_writer.Write(strong.DoubleDelimited ? "**" : "*");
-			Visit(strong.Elements);
+			Visit((InlineContainer)strong);
 			_writer.Write(strong.DoubleDelimited ? "**" : "*");
 		}
 
@@ -239,7 +239,7 @@ namespace AsciiDocNet
 			if (quotation == null) return;
 
 			_writer.Write(quotation.DoubleDelimited ? "\"`" : "'`");
-			Visit(quotation.Elements);
+			Visit((InlineContainer)quotation);
 			_writer.Write(quotation.DoubleDelimited ? "`\"" : "`'");
 		}
 
@@ -264,7 +264,7 @@ namespace AsciiDocNet
 		{
 			Visit(sectionTitle.Attributes);
 			_writer.Write("{0} ", new string('=', sectionTitle.Level));
-			Visit(sectionTitle.Elements);
+			Visit((InlineContainer)sectionTitle);
 			_writer.WriteLine();
 			_writer.WriteLine();
 		}
@@ -287,7 +287,7 @@ namespace AsciiDocNet
 		public virtual void Visit(Monospace monospace)
 		{
 			_writer.Write(monospace.DoubleDelimited ? "``" : "`");
-			Visit(monospace.Elements);
+			Visit((InlineContainer)monospace);
 			_writer.Write(monospace.DoubleDelimited ? "``" : "`");
 		}
 
@@ -438,11 +438,11 @@ namespace AsciiDocNet
 			}
 		}
 
-		public virtual void Visit(IList<IInlineElement> inlineElements)
+		public virtual void Visit(InlineContainer elements)
 		{
-			for (int index = 0; index < inlineElements.Count; index++)
+			for (int index = 0; index < elements.Count; index++)
 			{
-				var element = inlineElements[index];
+				var element = elements[index];
 				element.Accept(this);
 			}
 		}
@@ -688,7 +688,7 @@ namespace AsciiDocNet
 			}
 
 			_writer.Write(mark.DoubleDelimited ? "##" : "#");
-			Visit(mark.Elements);
+			Visit((InlineContainer)mark);
 			_writer.Write(mark.DoubleDelimited ? "##" : "#");
 		}
 

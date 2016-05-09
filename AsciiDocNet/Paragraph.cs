@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace AsciiDocNet
 {
-	public class Paragraph : IElement, IAttributable, IContainerInlineElement
+	public class Paragraph : InlineContainer, IElement, IAttributable
 	{
 		public Paragraph(IList<IInlineElement> elements)
 		{
@@ -17,7 +17,7 @@ namespace AsciiDocNet
 				throw new ArgumentException("must have at least one element", nameof(elements));
 			}
 
-			Elements = elements;
+			Elements = elements.ToList();
 		}
 
 		public Paragraph(IInlineElement element)
@@ -27,7 +27,7 @@ namespace AsciiDocNet
 				throw new ArgumentNullException(nameof(element));
 			}
 
-			Elements.Add(element);
+			Add(element);
 		}
 
 		public Paragraph(string text) : this(new TextLiteral(text))
@@ -36,20 +36,14 @@ namespace AsciiDocNet
 
 		public AttributeList Attributes { get; } = new AttributeList();
 
-		public InlineElementType ContainElementType { get; } = InlineElementType.All;
-
-		public IList<IInlineElement> Elements { get; } = new List<IInlineElement>();
+		public override InlineElementType ContainElementType { get; } = InlineElementType.All;
 
 		public Container Parent { get; set; }
 
-		public static bool operator ==(Paragraph left, Paragraph right)
+		public override TVisitor Accept<TVisitor>(TVisitor visitor)
 		{
-			return Equals(left, right);
-		}
-
-		public static bool operator !=(Paragraph left, Paragraph right)
-		{
-			return !Equals(left, right);
+			visitor.Visit(this);
+			return visitor;
 		}
 
 		public override bool Equals(object obj)
@@ -77,10 +71,14 @@ namespace AsciiDocNet
 			}
 		}
 
-		public TVisitor Accept<TVisitor>(TVisitor visitor) where TVisitor : IDocumentVisitor
+		public static bool operator ==(Paragraph left, Paragraph right)
 		{
-			visitor.Visit(this);
-			return visitor;
+			return Equals(left, right);
+		}
+
+		public static bool operator !=(Paragraph left, Paragraph right)
+		{
+			return !Equals(left, right);
 		}
 
 		protected bool Equals(Paragraph other)

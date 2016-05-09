@@ -95,6 +95,7 @@ namespace AsciiDocNet
 
 		public virtual void Visit(Mark mark)
 		{
+			Visit((InlineContainer)mark);
 		}
 
 		public virtual void Visit(Container elements)
@@ -111,11 +112,11 @@ namespace AsciiDocNet
 			}
 		}
 
-		public virtual void Visit(IList<IInlineElement> inlineElements)
+		public virtual void Visit(InlineContainer elements)
 		{
-			for (int index = 0; index < inlineElements.Count; index++)
+			for (int index = 0; index < elements.Count; index++)
 			{
-				var inlineElement = inlineElements[index];
+				var inlineElement = elements[index];
 				inlineElement.Accept(this);
 			}
 		}
@@ -219,7 +220,7 @@ namespace AsciiDocNet
 		public virtual void Visit(Paragraph paragraph)
 		{
 			VisitAttributable(paragraph);
-			VisitContainerInlineElement(paragraph);
+			Visit((InlineContainer)paragraph);
 		}
 
 		public virtual void Visit(Quotation quotation)
@@ -234,7 +235,7 @@ namespace AsciiDocNet
 
 		public virtual void Visit(SectionTitle sectionTitle)
 		{
-			VisitContainerInlineElement(sectionTitle);
+			Visit((InlineContainer)sectionTitle);
 		}
 
 		public virtual void Visit(Source source)
@@ -340,15 +341,6 @@ namespace AsciiDocNet
 			{
 				Visit(callout);
 			}
-		}
-
-		private void VisitContainerInlineElement(IContainerInlineElement container)
-		{
-			if (container == null)
-			{
-				return;
-			}
-			Visit(container.Elements);
 		}
 	}
 }

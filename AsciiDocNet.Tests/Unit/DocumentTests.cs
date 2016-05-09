@@ -78,7 +78,8 @@ namespace AsciiDocNet.Tests.Unit
 					}
 		
 					var asciidocs = tree.Tree.Where(i =>
-						i.Path.StartsWith("docs/asciidoc/") && i.Path.EndsWith(".asciidoc"));
+						i.Path.StartsWith("docs/asciidoc/") && 
+						i.Path.EndsWith(".asciidoc"));
 
 					foreach (var asciidoc in asciidocs)
 					{

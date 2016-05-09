@@ -41,11 +41,11 @@ namespace AsciiDocNet.Tests.Unit
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.IsTrue(paragraph.Elements.Count == count);
+			Assert.IsTrue(paragraph.Count == count);
 
-			Assert.IsInstanceOf<Link>(paragraph.Elements[index]);
+			Assert.IsInstanceOf<Link>(paragraph[index]);
 
-			var link = (Link)paragraph.Elements[index];
+			var link = (Link)paragraph[index];
 
 			Assert.AreEqual($"{protocol}://example.com", link.Href);
 			Assert.AreEqual(linkText, link.Text);
@@ -66,8 +66,8 @@ namespace AsciiDocNet.Tests.Unit
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.IsTrue(paragraph.Elements.Count == 3);
-			Assert.IsInstanceOf<Monospace>(paragraph.Elements[1]);
+			Assert.IsTrue(paragraph.Count == 3);
+			Assert.IsInstanceOf<Monospace>(paragraph[1]);
 
 			AsciiDocAssert.AreEqual(text, document);
 		}

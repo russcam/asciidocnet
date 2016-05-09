@@ -1,13 +1,12 @@
-using System.Collections.Generic;
 using System.Linq;
 
 namespace AsciiDocNet
 {
-	public class Quotation : IContainerInlineElement, IAttributable
+	public class Quotation : InlineContainer, IInlineElement, IAttributable
 	{
 		public Quotation(string text, bool doubleDelimited = false)
 		{
-			Elements.Add(new TextLiteral(text));
+			Add(new TextLiteral(text));
 			DoubleDelimited = doubleDelimited;
 		}
 
@@ -17,7 +16,7 @@ namespace AsciiDocNet
 
 		public AttributeList Attributes { get; } = new AttributeList();
 
-		public InlineElementType ContainElementType { get; } =
+		public override InlineElementType ContainElementType { get; } =
 			InlineElementType.Literal | InlineElementType.AttributeReference | InlineElementType.Emphasis | InlineElementType.EmphasisDouble |
 			InlineElementType.ImplicitLink | InlineElementType.InlineAnchor | InlineElementType.InternalAnchor | InlineElementType.Mark |
 			InlineElementType.MarkDouble | InlineElementType.Monospace | InlineElementType.MonospaceDouble | InlineElementType.Strong |
@@ -25,16 +24,10 @@ namespace AsciiDocNet
 
 		public bool DoubleDelimited { get; set; }
 
-		public IList<IInlineElement> Elements { get; } = new List<IInlineElement>();
-
-		public static bool operator ==(Quotation left, Quotation right)
+		public override TVisitor Accept<TVisitor>(TVisitor visitor)
 		{
-			return Equals(left, right);
-		}
-
-		public static bool operator !=(Quotation left, Quotation right)
-		{
-			return !Equals(left, right);
+			visitor.Visit(this);
+			return visitor;
 		}
 
 		public override bool Equals(object obj)
@@ -65,10 +58,14 @@ namespace AsciiDocNet
 			}
 		}
 
-		public TVisitor Accept<TVisitor>(TVisitor visitor) where TVisitor : IDocumentVisitor
+		public static bool operator ==(Quotation left, Quotation right)
 		{
-			visitor.Visit(this);
-			return visitor;
+			return Equals(left, right);
+		}
+
+		public static bool operator !=(Quotation left, Quotation right)
+		{
+			return !Equals(left, right);
 		}
 
 		protected bool Equals(Quotation other)

@@ -19,11 +19,11 @@ namespace AsciiDocNet.Tests.Unit
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.AreEqual(1, paragraph.Elements.Count);
-			Assert.IsInstanceOf<Mark>(paragraph.Elements[0]);
+			Assert.AreEqual(1, paragraph.Count);
+			Assert.IsInstanceOf<Mark>(paragraph[0]);
 
-			var element = (Mark)paragraph.Elements[0];
-			Assert.AreEqual(Paragraph, ((TextLiteral)element.Elements[0]).Text);
+			var element = (Mark)paragraph[0];
+			Assert.AreEqual(Paragraph, ((TextLiteral)element[0]).Text);
 			Assert.AreEqual("green", ((RoleAttribute)element.Attributes[0]).Value);
 		}
 
@@ -39,10 +39,10 @@ namespace AsciiDocNet.Tests.Unit
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.AreEqual(1, paragraph.Elements.Count);
-			Assert.IsInstanceOf<TextLiteral>(paragraph.Elements[0]);
+			Assert.AreEqual(1, paragraph.Count);
+			Assert.IsInstanceOf<TextLiteral>(paragraph[0]);
 
-			var element = (TextLiteral)paragraph.Elements[0];
+			var element = (TextLiteral)paragraph[0];
 			Assert.AreEqual(Paragraph + delimiter, element.Text);
 		}
 	}

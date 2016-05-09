@@ -21,10 +21,10 @@ namespace AsciiDocNet.Tests.Unit
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.AreEqual(1, paragraph.Elements.Count);
-			Assert.IsInstanceOf<TElement>(paragraph.Elements[0]);
+			Assert.AreEqual(1, paragraph.Count);
+			Assert.IsInstanceOf<TElement>(paragraph[0]);
 
-			var element = (TElement)paragraph.Elements[0];
+			var element = (TElement)paragraph[0];
 			Assert.AreEqual(Paragraph, element.Text);
 		}
 
@@ -40,10 +40,10 @@ namespace AsciiDocNet.Tests.Unit
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.AreEqual(3, paragraph.Elements.Count);
-			Assert.IsInstanceOf<TElement>(paragraph.Elements[1]);
+			Assert.AreEqual(3, paragraph.Count);
+			Assert.IsInstanceOf<TElement>(paragraph[1]);
 
-			var element = (TElement)paragraph.Elements[1];
+			var element = (TElement)paragraph[1];
 			Assert.AreEqual(Paragraph, element.Text);
 		}
 	}

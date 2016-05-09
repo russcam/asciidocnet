@@ -53,7 +53,7 @@
     <Compile Include="InlineElementConstraint.cs" />
     <Compile Include="EnumExtensions.cs" />
     <Compile Include="HtmlVisitor.cs" />
-    <Compile Include="IContainerInlineElement.cs" />
+    <Compile Include="InlineContainer.cs" />
     <Compile Include="InlineAnchor.cs" />
     <Compile Include="Attribute.cs" />
     <Compile Include="AttributeEntry.cs" />
