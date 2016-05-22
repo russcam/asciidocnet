@@ -20,7 +20,7 @@ namespace AsciiDocNet.Tests.Unit
 		private const string ShaCommit = "98d4fb99ed9e20258b6180358fbc5988b0c3c43b";
 		private const string TestDocumentsDir = "test-documents";
 
-		private readonly bool FetchFiles = true;
+		private readonly bool FetchFiles = false;
 
 		public IEnumerable<FileInfo> Files
 		{

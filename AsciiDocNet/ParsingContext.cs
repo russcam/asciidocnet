@@ -10,10 +10,6 @@ namespace AsciiDocNet
 			Regex = regex;
 		}
 
-		public ParsingContext(Container parent) : this(parent, null)
-		{
-		}
-
 		public Container Parent { get; }
 
 		public Regex Regex { get; }
