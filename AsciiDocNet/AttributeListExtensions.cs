@@ -20,7 +20,7 @@ namespace AsciiDocNet
 			{
 				return false;
 			}
-			return attributes.Any(a => blockNames.Contains(a.Name, StringComparer.InvariantCultureIgnoreCase));
+			return attributes.Any(a => blockNames.Contains(a.Name, StringComparer.OrdinalIgnoreCase));
 		}
 	}
 }

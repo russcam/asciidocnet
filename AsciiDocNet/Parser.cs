@@ -509,9 +509,9 @@ namespace AsciiDocNet
 				}
 				else if (index == 0 && position == 0)
 				{
-					var hashIndex = input.IndexOf("#", StringComparison.InvariantCultureIgnoreCase);
-					var dotIndex = input.IndexOf(".", StringComparison.InvariantCultureIgnoreCase);
-					var percentIndex = input.IndexOf("%", StringComparison.InvariantCultureIgnoreCase);
+					var hashIndex = input.IndexOf("#", StringComparison.OrdinalIgnoreCase);
+					var dotIndex = input.IndexOf(".", StringComparison.OrdinalIgnoreCase);
+					var percentIndex = input.IndexOf("%", StringComparison.OrdinalIgnoreCase);
 
 					if (hashIndex > -1 || dotIndex > -1 || percentIndex > -1)
 					{
@@ -696,7 +696,7 @@ namespace AsciiDocNet
 
 			value = value.Trim();
 
-			if (value.IndexOf(",", StringComparison.InvariantCultureIgnoreCase) > -1)
+			if (value.IndexOf(",", StringComparison.OrdinalIgnoreCase) > -1)
 			{
 				value = value.Split(new[] { ',' }, 2)[0];
 			}

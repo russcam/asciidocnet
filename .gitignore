@@ -45,3 +45,5 @@ _NCrunch*/
 
 #Github credentials
 AsciiDocNet.Tests/credentials.json
+
+project.lock.json

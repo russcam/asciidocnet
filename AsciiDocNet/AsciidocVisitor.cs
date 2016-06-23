@@ -26,7 +26,7 @@ namespace AsciiDocNet
 				throw new ArgumentException("must specify a path", nameof(path));
 			}
 
-			_writer = new StreamWriter(path);
+			_writer = new StreamWriter(new FileStream(path, FileMode.Create));
 		}
 
 		public AsciiDocVisitor(TextWriter writer)
