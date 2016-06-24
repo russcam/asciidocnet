@@ -1,8 +1,7 @@
-using NUnit.Framework;
+using Xunit;
 
 namespace AsciiDocNet.Tests.Unit
 {
-	[TestFixture]
 	public class CommentTests : DelimitedTextElementTests<Comment>
 	{
 	}

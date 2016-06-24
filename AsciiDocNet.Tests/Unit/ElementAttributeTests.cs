@@ -1,252 +1,251 @@
-using NUnit.Framework;
+using Xunit;
 
 namespace AsciiDocNet.Tests.Unit
 {
-	[TestFixture]
 	public class ElementAttributeTests
 	{
 		private Parser Parser { get; } = new Parser();
 
-		[Test]
-		[TestCase("[#idname.rolename]\nparagraph")]
-		[TestCase("[id=\"idname\",.rolename]\nparagraph")]
-		[TestCase("[id=\"idname\",role=\"rolename\"]\nparagraph")]
+		[Theory]
+		[InlineData("[#idname.rolename]\nparagraph")]
+		[InlineData("[id=\"idname\",.rolename]\nparagraph")]
+		[InlineData("[id=\"idname\",role=\"rolename\"]\nparagraph")]
 		public void ShouldParseAsciiIdElementAttributeAndAsciiRoleElementAttribute(string input)
 		{
 			var document = Document.Parse(input);
 
 			Assert.NotNull(document);
-			Assert.IsTrue(document.Count == 1);
-			Assert.IsInstanceOf<Paragraph>(document[0]);
+			Assert.True(document.Count == 1);
+			Assert.IsType<Paragraph>(document[0]);
 			var paragraph = (Paragraph)document[0];
 
 			var elementAttributes = paragraph.Attributes;
 
-			Assert.IsTrue(elementAttributes.Count == 2);
+			Assert.True(elementAttributes.Count == 2);
 
 			var firstAttribute = elementAttributes[0];
 
-			Assert.IsInstanceOf<IdAttribute>(firstAttribute);
+			Assert.IsType<IdAttribute>(firstAttribute);
 			var idAttribute = (IdAttribute)firstAttribute;
 
-			Assert.AreEqual("idname", idAttribute.Value);
+			Assert.Equal("idname", idAttribute.Value);
 
 			var secondAttribute = elementAttributes[1];
 
-			Assert.IsInstanceOf<RoleAttribute>(secondAttribute);
+			Assert.IsType<RoleAttribute>(secondAttribute);
 			var roleAttribute = (RoleAttribute)secondAttribute;
 
-			Assert.AreEqual(1, roleAttribute.Values.Length);
-			Assert.AreEqual("rolename", roleAttribute.Values[0]);
+			Assert.Equal(1, roleAttribute.Values.Length);
+			Assert.Equal("rolename", roleAttribute.Values[0]);
 		}
 
-		[Test]
+		[Fact]
 		public void ShouldParseOptionAttribute()
 		{
 			var document = Document.Parse("[%header%footer%autowidth]\nparagraph");
 
 			Assert.NotNull(document);
-			Assert.IsTrue(document.Count == 1);
-			Assert.IsInstanceOf<Paragraph>(document[0]);
+			Assert.True(document.Count == 1);
+			Assert.IsType<Paragraph>(document[0]);
 			var paragraph = (Paragraph)document[0];
 
 			var elementAttributes = paragraph.Attributes;
 
-			Assert.IsTrue(elementAttributes.Count == 1);
+			Assert.True(elementAttributes.Count == 1);
 
 			var firstAttribute = elementAttributes[0];
 
-			Assert.IsInstanceOf<OptionsAttribute>(firstAttribute);
+			Assert.IsType<OptionsAttribute>(firstAttribute);
 			var optionsAttribute = (OptionsAttribute)firstAttribute;
 
-			Assert.AreEqual(3, optionsAttribute.Values.Length);
-			Assert.AreEqual("header,footer,autowidth", optionsAttribute.Value);
+			Assert.Equal(3, optionsAttribute.Values.Length);
+			Assert.Equal("header,footer,autowidth", optionsAttribute.Value);
 		}
 
-		[Test]
+		[Fact]
 		public void ShouldParseSingleAsciiElementAttribute()
 		{
 			var document = Document.Parse("[name]\nparagraph");
 
 			Assert.NotNull(document);
-			Assert.IsTrue(document.Count == 1);
-			Assert.IsInstanceOf<Paragraph>(document[0]);
+			Assert.True(document.Count == 1);
+			Assert.IsType<Paragraph>(document[0]);
 			var paragraph = (Paragraph)document[0];
 
 			var elementAttributes = paragraph.Attributes;
 
-			Assert.IsTrue(elementAttributes.Count == 1);
+			Assert.True(elementAttributes.Count == 1);
 
 			var firstAttribute = elementAttributes[0];
 
-			Assert.IsInstanceOf<Attribute>(firstAttribute);
-			Assert.AreEqual("name", firstAttribute.Name);
+			Assert.IsType<Attribute>(firstAttribute);
+			Assert.Equal("name", firstAttribute.Name);
 		}
 
-		[Test]
-		[TestCase("[#name]\nparagraph")]
-		[TestCase("[id=\"name\"]\nparagraph")]
+		[Theory]
+		[InlineData("[#name]\nparagraph")]
+		[InlineData("[id=\"name\"]\nparagraph")]
 		public void ShouldParseSingleAsciiIdElementAttribute(string input)
 		{
 			var document = Document.Parse(input);
 
 			Assert.NotNull(document);
-			Assert.IsTrue(document.Count == 1);
-			Assert.IsInstanceOf<Paragraph>(document[0]);
+			Assert.True(document.Count == 1);
+			Assert.IsType<Paragraph>(document[0]);
 			var paragraph = (Paragraph)document[0];
 
 			var elementAttributes = paragraph.Attributes;
 
-			Assert.IsTrue(elementAttributes.Count == 1);
+			Assert.True(elementAttributes.Count == 1);
 
 			var firstAttribute = elementAttributes[0];
 
-			Assert.IsInstanceOf<IdAttribute>(firstAttribute);
+			Assert.IsType<IdAttribute>(firstAttribute);
 
 			var idAttribute = (IdAttribute)firstAttribute;
 
-			Assert.AreEqual("id", idAttribute.Name);
-			Assert.AreEqual("name", idAttribute.Value);
+			Assert.Equal("id", idAttribute.Name);
+			Assert.Equal("name", idAttribute.Value);
 		}
 
-		[Test]
+		[Fact]
 		public void ShouldParseSingleAsciiNamedElementAttribute()
 		{
 			var document = Document.Parse("[name=\"value\"]\nparagraph");
 
 			Assert.NotNull(document);
-			Assert.IsTrue(document.Count == 1);
-			Assert.IsInstanceOf<Paragraph>(document[0]);
+			Assert.True(document.Count == 1);
+			Assert.IsType<Paragraph>(document[0]);
 			var paragraph = (Paragraph)document[0];
 
 			var elementAttributes = paragraph.Attributes;
 
-			Assert.IsTrue(elementAttributes.Count == 1);
+			Assert.True(elementAttributes.Count == 1);
 
 			var firstAttribute = elementAttributes[0];
 
-			Assert.IsInstanceOf<NamedAttribute>(firstAttribute);
+			Assert.IsType<NamedAttribute>(firstAttribute);
 			var namedAttribute = (NamedAttribute)firstAttribute;
 
-			Assert.AreEqual("value", namedAttribute.Value);
+			Assert.Equal("value", namedAttribute.Value);
 		}
 
-		[Test]
-		[TestCase("[role=\"value\"]\nparagraph")]
-		[TestCase("[.value]\nparagraph")]
+		[Theory]
+		[InlineData("[role=\"value\"]\nparagraph")]
+		[InlineData("[.value]\nparagraph")]
 		public void ShouldParseSingleAsciiRoleElementAttribute(string input)
 		{
 			var document = Document.Parse(input);
 
 			Assert.NotNull(document);
-			Assert.IsTrue(document.Count == 1);
-			Assert.IsInstanceOf<Paragraph>(document[0]);
+			Assert.True(document.Count == 1);
+			Assert.IsType<Paragraph>(document[0]);
 			var paragraph = (Paragraph)document[0];
 
 			var elementAttributes = paragraph.Attributes;
 
-			Assert.IsTrue(elementAttributes.Count == 1);
+			Assert.True(elementAttributes.Count == 1);
 
 			var firstAttribute = elementAttributes[0];
 
-			Assert.IsInstanceOf<RoleAttribute>(firstAttribute);
+			Assert.IsType<RoleAttribute>(firstAttribute);
 			var roleAttribute = (RoleAttribute)firstAttribute;
 
-			Assert.AreEqual(1, roleAttribute.Values.Length);
-			Assert.AreEqual("value", roleAttribute.Values[0]);
+			Assert.Equal(1, roleAttribute.Values.Length);
+			Assert.Equal("value", roleAttribute.Values[0]);
 		}
 
-		[Test]
-		[TestCase("[role=\"value1,value2,value3\"]\nparagraph")]
-		[TestCase("[.value1.value2.value3]\nparagraph")]
+		[Theory]
+		[InlineData("[role=\"value1,value2,value3\"]\nparagraph")]
+		[InlineData("[.value1.value2.value3]\nparagraph")]
 		public void ShouldParseSingleAsciiRoleElementAttributeWithMultipleValues(string input)
 		{
 			var document = Document.Parse(input);
 
 			Assert.NotNull(document);
-			Assert.IsTrue(document.Count == 1);
-			Assert.IsInstanceOf<Paragraph>(document[0]);
+			Assert.True(document.Count == 1);
+			Assert.IsType<Paragraph>(document[0]);
 			var paragraph = (Paragraph)document[0];
 
 			var elementAttributes = paragraph.Attributes;
 
-			Assert.IsTrue(elementAttributes.Count == 1);
+			Assert.True(elementAttributes.Count == 1);
 
 			var firstAttribute = elementAttributes[0];
 
-			Assert.IsInstanceOf<RoleAttribute>(firstAttribute);
+			Assert.IsType<RoleAttribute>(firstAttribute);
 			var roleAttribute = (RoleAttribute)firstAttribute;
 
-			Assert.AreEqual(3, roleAttribute.Values.Length);
-			Assert.AreEqual("value1", roleAttribute.Values[0]);
-			Assert.AreEqual("value2", roleAttribute.Values[1]);
-			Assert.AreEqual("value3", roleAttribute.Values[2]);
+			Assert.Equal(3, roleAttribute.Values.Length);
+			Assert.Equal("value1", roleAttribute.Values[0]);
+			Assert.Equal("value2", roleAttribute.Values[1]);
+			Assert.Equal("value3", roleAttribute.Values[2]);
 		}
 
-		[Test]
+		[Fact]
 		public void ShouldParseStyleAndIdElementAttributes()
 		{
 			var document = Document.Parse("[quote#think]\nparagraph");
 
 			Assert.NotNull(document);
-			Assert.IsTrue(document.Count == 1);
-			Assert.IsInstanceOf<Quote>(document[0]);
+			Assert.True(document.Count == 1);
+			Assert.IsType<Quote>(document[0]);
 			var quote = (Quote)document[0];
 
 			var elementAttributes = quote.Attributes;
 
-			Assert.IsTrue(elementAttributes.Count == 2);
+			Assert.True(elementAttributes.Count == 2);
 
 			var firstAttribute = elementAttributes[0];
 
-			Assert.IsInstanceOf<Attribute>(firstAttribute);
-			Assert.AreEqual("quote", firstAttribute.Name);
+			Assert.IsType<Attribute>(firstAttribute);
+			Assert.Equal("quote", firstAttribute.Name);
 
 			var secondAttribute = elementAttributes[1];
 
-			Assert.IsInstanceOf<IdAttribute>(secondAttribute);
+			Assert.IsType<IdAttribute>(secondAttribute);
 			var idAttribute = (IdAttribute)secondAttribute;
 
-			Assert.AreEqual("id", idAttribute.Name);
-			Assert.AreEqual("think", idAttribute.Value);
+			Assert.Equal("id", idAttribute.Name);
+			Assert.Equal("think", idAttribute.Value);
 		}
 
-		[Test]
+		[Fact]
 		public void ShouldParseCustomAttribute()
 		{
 			var document = Document.Parse("[source, javascript, method-name=\"fluent\"]\nparagraph");
 
 			Assert.NotNull(document);
-			Assert.IsTrue(document.Count == 1);
-			Assert.IsInstanceOf<Source>(document[0]);
+			Assert.True(document.Count == 1);
+			Assert.IsType<Source>(document[0]);
 			var source = (Source)document[0];
 
 			var elementAttributes = source.Attributes;
 
-			Assert.IsTrue(elementAttributes.Count == 3);
+			Assert.True(elementAttributes.Count == 3);
 
 			var firstAttribute = elementAttributes[0];
 
-			Assert.IsInstanceOf<Attribute>(firstAttribute);
-			Assert.AreEqual("source", firstAttribute.Name);
+			Assert.IsType<Attribute>(firstAttribute);
+			Assert.Equal("source", firstAttribute.Name);
 
 			var secondAttribute = elementAttributes[1];
 
-			Assert.IsInstanceOf<Attribute>(secondAttribute);
-			Assert.AreEqual("javascript", secondAttribute.Name);
+			Assert.IsType<Attribute>(secondAttribute);
+			Assert.Equal("javascript", secondAttribute.Name);
 
 			var thirdAttribute = elementAttributes[2];
 
-			Assert.IsInstanceOf<NamedAttribute>(thirdAttribute);
+			Assert.IsType<NamedAttribute>(thirdAttribute);
 			var namedAttribute = (NamedAttribute)thirdAttribute;
 
-			Assert.AreEqual("method-name", namedAttribute.Name);
-			Assert.AreEqual("fluent", namedAttribute.Value);
+			Assert.Equal("method-name", namedAttribute.Name);
+			Assert.Equal("fluent", namedAttribute.Value);
 		}
 
-		[Test]
-		[TestCase('\'')]
-		[TestCase('"')]
+		[Theory]
+		[InlineData('\'')]
+		[InlineData('"')]
 		public void ShouldParseQuotedAttribute(char quoteCharacter)
 		{
 			var value = "'value'";
@@ -258,21 +257,21 @@ namespace AsciiDocNet.Tests.Unit
 			var document = Document.Parse($"[name={quoteCharacter}{value}{quoteCharacter}]\nparagraph");
 
 			Assert.NotNull(document);
-			Assert.IsTrue(document.Count == 1);
-			Assert.IsInstanceOf<Paragraph>(document[0]);
+			Assert.True(document.Count == 1);
+			Assert.IsType<Paragraph>(document[0]);
 			var paragraph = (Paragraph)document[0];
 
 			var elementAttributes = paragraph.Attributes;
 
-			Assert.IsTrue(elementAttributes.Count == 1);
+			Assert.True(elementAttributes.Count == 1);
 
 			var firstAttribute = elementAttributes[0];
 
-			Assert.IsInstanceOf<NamedAttribute>(firstAttribute);
+			Assert.IsType<NamedAttribute>(firstAttribute);
 			var namedAttribute = (NamedAttribute)firstAttribute;
 
-			Assert.AreEqual("name", namedAttribute.Name);
-			Assert.AreEqual(value, namedAttribute.Value);
+			Assert.Equal("name", namedAttribute.Name);
+			Assert.Equal(value, namedAttribute.Value);
 		}
 	}
 }

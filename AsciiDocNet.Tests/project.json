@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "compile": {
+      "exclude": "Specifications/*",
+      "excludeFiles": [
+        "HtmlSectionVisitor.cs",
+        "Unit/DocumentTests.cs"
+      ]
+    }
+  },
+  "testRunner": "xunit",
+  "dependencies": {
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.0-rc2-3002702"
+    },
+    "AsciiDocNet": "1.0.0-*",
+    "Newtonsoft.Json": "8.0.0.0",
+    "xunit": "2.1.0",
+    "dotnet-test-xunit": "1.0.0-rc2-build10025"
+  },
+  "frameworks": {
+    "netcoreapp1.3": {
+      "imports": [
+        "dnxcore50",
+        "portable-net45+win8"
+      ]
+    }
+  }
+}

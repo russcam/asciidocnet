@@ -1,18 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NUnit.Framework;
-using Octokit;
+using Xunit;
 
 namespace AsciiDocNet.Tests.Unit
 {
-	[TestFixture]
 	public class DocumentTests : VisitorTestsBase
 	{
 		private const string RepositoryName = "elasticsearch-net";
@@ -117,8 +113,8 @@ namespace AsciiDocNet.Tests.Unit
 			}
 		}
 
-		[Test]
-		[TestCaseSource(nameof(Files))]
+		[Theory]
+		[MemberData(nameof(Files))]
 		public void ShouldParseDocument(FileInfo file)
 		{
 			var document = Document.Load(file.FullName);
@@ -126,7 +122,7 @@ namespace AsciiDocNet.Tests.Unit
 
 			var content = Builder.ToString();
 			var visitedDocument = Document.Parse(content);
-			Assert.AreEqual(document, visitedDocument);
+			Assert.Equal(document, visitedDocument);
 		}
 
 		private static string GetContent(string base64Encoded)

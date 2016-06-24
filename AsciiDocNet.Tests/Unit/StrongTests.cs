@@ -1,10 +1,20 @@
-using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace AsciiDocNet.Tests.Unit
 {
-	[TestFixture]
-	public class StrongTests : DelimitedContainerInlineElementTests<Strong>
+	public class StrongTests : DelimitedContainerInlineElementTests<Strong, StrongTestsDelimiters>
 	{
-		public override string[] Delimiters { get; } = { "*", "**" };
+	}
+
+    public class StrongTestsDelimiters : ReusableClassData
+	{
+		protected override IEnumerable<object[]> Data 
+		{ 
+			get 
+			{ 
+				yield return new object[] { "*" };
+				yield return new object[] { "**" };
+			}
+		}
 	}
 }

@@ -1,13 +1,13 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 
 namespace AsciiDocNet.Tests
 {
 	public class AsciiDocAssert
 	{
-		public static void AreEqual(string asciidoc, Document document)
+		public static void Equal(string asciidoc, Document document)
 		{
 			var directoryAttribute = document.Attributes.FirstOrDefault(a => a.Name == "docdir");
 			if (directoryAttribute != null)
@@ -21,7 +21,7 @@ namespace AsciiDocNet.Tests
 				document.Accept(visitor);
 			}
 
-			Assert.AreEqual(asciidoc, builder.ToString().TrimEnd('\r', '\n'));
+			Assert.Equal(asciidoc, builder.ToString().TrimEnd('\r', '\n'));
 		}
 	}
 }

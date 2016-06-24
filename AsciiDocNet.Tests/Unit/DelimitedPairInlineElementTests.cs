@@ -1,60 +1,60 @@
 using System;
-using NUnit.Framework;
+using System.Collections;
+using System.Collections.Generic;
+using Xunit;
 
 namespace AsciiDocNet.Tests.Unit
 {
-	[TestFixture]
-	public abstract class DelimitedPairContainerInlineElementTests<TElement> where TElement : InlineContainer
+	public abstract class DelimitedPairContainerInlineElementTests<TElement, TPairs> : ClassDataBase<TPairs>
+		where TElement : InlineContainer
+		where TPairs : ReusableClassData, new()
 	{
 		public virtual string Text { get; } = "This is a paragraph";
 
-		public abstract Tuple<string, string>[] DelimiterPairs { get; }
-
-		[Test]
-		[TestCaseSource(nameof(DelimiterPairs))]
+		[Theory]
+		[MemberData(nameof(ClassData))]
 		public void ShouldParseInlineElement(Tuple<string, string> delimiterPair)
 		{
 			var text = $"{delimiterPair.Item1}{Text}{delimiterPair.Item2}";
 			var document = Document.Parse(text);
 
-			Assert.AreEqual(1, document.Count);
-			Assert.IsInstanceOf<Paragraph>(document[0]);
+			Assert.Equal(1, document.Count);
+			Assert.IsType<Paragraph>(document[0]);
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.AreEqual(1, paragraph.Count);
-			Assert.IsInstanceOf<TElement>(paragraph[0]);
+			Assert.Equal(1, paragraph.Count);
+			Assert.IsType<TElement>(paragraph[0]);
 
 			var element = (TElement)paragraph[0];
-			Assert.AreEqual(Text, ((TextLiteral)element[0]).Text);
+			Assert.Equal(Text, ((TextLiteral)element[0]).Text);
 		}
 	}
 
 
-	[TestFixture]
-	public abstract class DelimitedPairInlineElementTests<TElement> where TElement : IInlineElement, IText
+	public abstract class DelimitedPairInlineElementTests<TElement, TPairs> : ClassDataBase<TPairs>
+		where TElement : IInlineElement, IText
+		where TPairs : ReusableClassData, new()
 	{
 		public virtual string Text { get; } = "This is a paragraph";
 
-		public abstract Tuple<string, string>[] DelimiterPairs { get; }
-
-		[Test]
-		[TestCaseSource(nameof(DelimiterPairs))]
+		[Theory]
+		[MemberData(nameof(ClassData))]
 		public void ShouldParseInlineElement(Tuple<string, string> delimiterPair)
 		{
 			var text = $"{delimiterPair.Item1}{Text}{delimiterPair.Item2}";
 			var document = Document.Parse(text);
 
-			Assert.AreEqual(1, document.Count);
-			Assert.IsInstanceOf<Paragraph>(document[0]);
+			Assert.Equal(1, document.Count);
+			Assert.IsType<Paragraph>(document[0]);
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.AreEqual(1, paragraph.Count);
-			Assert.IsInstanceOf<TElement>(paragraph[0]);
+			Assert.Equal(1, paragraph.Count);
+			Assert.IsType<TElement>(paragraph[0]);
 
 			var element = (TElement)paragraph[0];
-			Assert.AreEqual(Text, element.Text);
+			Assert.Equal(Text, element.Text);
 		}
 	}
 }

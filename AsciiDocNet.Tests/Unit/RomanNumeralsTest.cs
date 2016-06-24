@@ -1,21 +1,20 @@
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 
 namespace AsciiDocNet.Tests.Unit
 {
-	[TestFixture]
 	public class RomanNumeralsTest
 	{
-		public IEnumerable<int> TestCases => Enumerable.Range(1, 3046);
+		public static IEnumerable<object[]> TestCases => Enumerable.Range(1, 3046).Select(i => new object[] { i });
 
-		[Test]
-		[TestCaseSource(nameof(TestCases))]
+		[Theory]
+		[MemberData(nameof(TestCases))]
 		public void ShouldConvertToRomanNumeralAndBack(int input)
 		{
 			var numeral = RomanNumerals.ToNumeral(input);
 			var converted = RomanNumerals.ToInt(numeral);
-			Assert.AreEqual(converted, input);
+			Assert.Equal(converted, input);
 		}
 	}
 }

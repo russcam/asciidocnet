@@ -1,10 +1,7 @@
 {
   "version": "1.0.0-*",
   "dependencies": {
-    "NETStandard.Library": {
-      "type": "platform",
-      "version": "1.5.0-rc2-24027"
-    },
+    "NETStandard.Library": "1.5.0-rc2-24027",
     "System.ComponentModel.Annotations": "4.1.0-rc2-24027",
     "System.Reflection.TypeExtensions": "4.1.0-rc2-24027"
   },

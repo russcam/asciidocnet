@@ -1,11 +1,21 @@
 using System;
-using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace AsciiDocNet.Tests.Unit
 {
-	[TestFixture]
-	public class QuotationTests : DelimitedPairContainerInlineElementTests<Quotation>
+	public class QuotationTests : DelimitedPairContainerInlineElementTests<Quotation, QuotationTestsPairs>
 	{
-		public override Tuple<string,string>[] DelimiterPairs { get; } = { Tuple.Create("\"`", "`\""), Tuple.Create("'`", "`'") };
+	}
+
+	public class QuotationTestsPairs : ReusableClassData
+	{
+		protected override IEnumerable<object[]> Data 
+		{ 
+			get 
+			{ 
+				yield return new object[] { Tuple.Create("\"`", "`\"") };
+				yield return new object[] { Tuple.Create("'`", "`'") };
+			}
+		}
 	}
 }

@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 
 namespace AsciiDocNet.Tests.Unit
 {
-	[TestFixture]
 	public class DocumentTitleTests
 	{
 		private const string Title = "Document Title";
@@ -13,11 +12,11 @@ namespace AsciiDocNet.Tests.Unit
 		private const string DocumentTitle = "= " + Title;
 		private const string DocumentWithSubtitle = DocumentTitle + ":" + Subtitle;
 
-		public IEnumerable<string> Titles
+		public static IEnumerable<object[]> Titles
 		{
 			get
 			{
-				yield return DocumentTitle;
+				yield return new object[] { DocumentTitle };
 
 				var allowedPrecedingEntries = new List<string>
 				{
@@ -28,21 +27,21 @@ namespace AsciiDocNet.Tests.Unit
 
 				foreach (var entry in allowedPrecedingEntries)
 				{
-					yield return $"{entry}\n{DocumentTitle}";
+					yield return new object[] { $"{entry}\n{DocumentTitle}" };
 				}
 
 				foreach (var entry in allowedPrecedingEntries.Zip(allowedPrecedingEntries, (first, second) => first + "\n" + second))
 				{
-					yield return $"{entry}\n{DocumentTitle}";
+					yield return new object[] { $"{entry}\n{DocumentTitle}" };
 				}
 			}
 		}
 
-		public IEnumerable<string> TitlesWithSubtitle
+		public static IEnumerable<object[]> TitlesWithSubtitle
 		{
 			get
 			{
-				yield return DocumentWithSubtitle;
+				yield return new object[] { DocumentWithSubtitle };
 
 				var allowedPrecedingEntries = new List<string>
 				{
@@ -53,35 +52,35 @@ namespace AsciiDocNet.Tests.Unit
 
 				foreach (var entry in allowedPrecedingEntries)
 				{
-					yield return $"{entry}\n{DocumentWithSubtitle}";
+					yield return new object[] { $"{entry}\n{DocumentWithSubtitle}" };
 				}
 
 				foreach (var entry in allowedPrecedingEntries.Zip(allowedPrecedingEntries, (first, second) => first + "\n" + second))
 				{
-					yield return $"{entry}\n{DocumentWithSubtitle}";
+					yield return new object[] { $"{entry}\n{DocumentWithSubtitle}" };
 				}
 			}
 		}
 
-		[Test]
-		[TestCaseSource(nameof(Titles))]
+		[Theory]
+		[MemberData(nameof(Titles))]
 		public void ShouldParseDocumentTitle(string input)
 		{
 			var document = Document.Parse(input);
 
-			Assert.IsNotNull(document.Title);
-			Assert.AreEqual(Title, document.Title.Title);
+			Assert.NotNull(document.Title);
+			Assert.Equal(Title, document.Title.Title);
 		}
 
-		[Test]
-		[TestCaseSource(nameof(TitlesWithSubtitle))]
+		[Theory]
+		[MemberData(nameof(TitlesWithSubtitle))]
 		public void ShouldParseDocumentTitleWithSubtitle(string input)
 		{
 			var document = Document.Parse(input);
 
-			Assert.IsNotNull(document.Title);
-			Assert.AreEqual(Title, document.Title.Title);
-			Assert.AreEqual(Subtitle, document.Title.Subtitle);
+			Assert.NotNull(document.Title);
+			Assert.Equal(Title, document.Title.Title);
+			Assert.Equal(Subtitle, document.Title.Subtitle);
 		}
 	}
 }

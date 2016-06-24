@@ -1,9 +1,8 @@
 using System;
-using NUnit.Framework;
+using Xunit;
 
 namespace AsciiDocNet.Tests.Unit
 {
-	[TestFixture]
 	public abstract class AnchorTests<TElement> where TElement : Anchor, IInlineElement
 	{
 		private const string Id = "anchor-id";
@@ -11,60 +10,60 @@ namespace AsciiDocNet.Tests.Unit
 
 		public abstract Tuple<string,string> DelimiterPair { get; }
 
-		[Test]
+		[Fact]
 		public void ShouldParseWithId()
 		{
 			var document = Document.Parse(DelimiterPair.Item1 + Id + DelimiterPair.Item2 + "reference");
 
-			Assert.AreEqual(1, document.Count);
-			Assert.IsInstanceOf<Paragraph>(document[0]);
+			Assert.Equal(1, document.Count);
+			Assert.IsType<Paragraph>(document[0]);
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.AreEqual(2, paragraph.Count);
-			Assert.IsInstanceOf<TElement>(paragraph[0]);
+			Assert.Equal(2, paragraph.Count);
+			Assert.IsType<TElement>(paragraph[0]);
 
 			var element = (TElement)paragraph[0];
 
-			Assert.AreEqual(Id, element.Id);
+			Assert.Equal(Id, element.Id);
 		}
 
-		[Test]
+		[Fact]
 		public void ShouldParseWithIdAndReference()
 		{
 			var document = Document.Parse(DelimiterPair.Item1 + Id + "," +XRefLabel + DelimiterPair.Item2 + "reference");
 
-			Assert.AreEqual(1, document.Count);
-			Assert.IsInstanceOf<Paragraph>(document[0]);
+			Assert.Equal(1, document.Count);
+			Assert.IsType<Paragraph>(document[0]);
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.AreEqual(2, paragraph.Count);
-			Assert.IsInstanceOf<TElement>(paragraph[0]);
+			Assert.Equal(2, paragraph.Count);
+			Assert.IsType<TElement>(paragraph[0]);
 
 			var element = (TElement)paragraph[0];
 
-			Assert.AreEqual(Id, element.Id);
-			Assert.AreEqual(XRefLabel, element.XRefLabel);
+			Assert.Equal(Id, element.Id);
+			Assert.Equal(XRefLabel, element.XRefLabel);
 		}
 
-		[Test]
+		[Fact]
 		public void ShouldParseInsideParagraphWithIdAndReference()
 		{
 			var document = Document.Parse("This is a " + DelimiterPair.Item1 + Id + "," + XRefLabel + DelimiterPair.Item2 + "reference");
 
-			Assert.AreEqual(1, document.Count);
-			Assert.IsInstanceOf<Paragraph>(document[0]);
+			Assert.Equal(1, document.Count);
+			Assert.IsType<Paragraph>(document[0]);
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.AreEqual(3, paragraph.Count);
-			Assert.IsInstanceOf<TElement>(paragraph[1]);
+			Assert.Equal(3, paragraph.Count);
+			Assert.IsType<TElement>(paragraph[1]);
 
 			var element = (TElement)paragraph[1];
 
-			Assert.AreEqual(Id, element.Id);
-			Assert.AreEqual(XRefLabel, element.XRefLabel);
+			Assert.Equal(Id, element.Id);
+			Assert.Equal(XRefLabel, element.XRefLabel);
 		}
 	}
 }

@@ -1,50 +1,49 @@
-using NUnit.Framework;
+using Xunit;
 
 namespace AsciiDocNet.Tests.Unit
 {
-	[TestFixture]
-	public abstract class DelimitedInlineElementTests<TElement> where TElement : IInlineElement, IText
+	public abstract class DelimitedInlineElementTests<TElement, TDelimiters> : ClassDataBase<TDelimiters>
+		where TElement : IInlineElement, IText
+		where TDelimiters : ReusableClassData, new()
 	{
 		protected const string Paragraph = "This is a paragraph";
 
-		public abstract string[] Delimiters { get; }
-
-		[Test]
-		[TestCaseSource(nameof(Delimiters))]
+		[Theory]
+		[MemberData(nameof(ClassData))]
 		public void ShouldParseInlineElement(string delimiter)
 		{
 			var text = $"{delimiter}{Paragraph}{delimiter}";
 			var document = Document.Parse(text);
 
-			Assert.AreEqual(1, document.Count);
-			Assert.IsInstanceOf<Paragraph>(document[0]);
+			Assert.Equal(1, document.Count);
+			Assert.IsType<Paragraph>(document[0]);
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.AreEqual(1, paragraph.Count);
-			Assert.IsInstanceOf<TElement>(paragraph[0]);
+			Assert.Equal(1, paragraph.Count);
+			Assert.IsType<TElement>(paragraph[0]);
 
 			var element = (TElement)paragraph[0];
-			Assert.AreEqual(Paragraph, element.Text);
+			Assert.Equal(Paragraph, element.Text);
 		}
 
-		[Test]
-		[TestCaseSource(nameof(Delimiters))]
+		[Theory]
+		[MemberData(nameof(ClassData))]
 		public void ShouldParseInlineElementSurroundedBySpaces(string delimiter)
 		{
 			var text = $"    {delimiter}{Paragraph}{delimiter}    ";
 			var document = Document.Parse(text);
 
-			Assert.AreEqual(1, document.Count);
-			Assert.IsInstanceOf<Paragraph>(document[0]);
+			Assert.Equal(1, document.Count);
+			Assert.IsType<Paragraph>(document[0]);
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.AreEqual(3, paragraph.Count);
-			Assert.IsInstanceOf<TElement>(paragraph[1]);
+			Assert.Equal(3, paragraph.Count);
+			Assert.IsType<TElement>(paragraph[1]);
 
 			var element = (TElement)paragraph[1];
-			Assert.AreEqual(Paragraph, element.Text);
+			Assert.Equal(Paragraph, element.Text);
 		}
 	}
 }

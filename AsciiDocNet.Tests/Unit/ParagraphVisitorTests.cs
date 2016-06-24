@@ -1,22 +1,21 @@
-using NUnit.Framework;
+using Xunit;
 
 namespace AsciiDocNet.Tests.Unit
 {
-	[TestFixture]
 	public class ParagraphVisitorTests : VisitorTestsBase
 	{
-		[Test]
-		[TestCase("This is a simple paragraph")]
-		[TestCase("This is a paragraph with a **bold** element")]
-		[TestCase("This is a paragraph with a *bold* element")]
-		[TestCase("This is a paragraph with an __italic__ element")]
-		[TestCase("This is a paragraph with an _italic_ element")]
-		[TestCase("This is a paragraph with a **bold** and an __italic__ element")]
-		[TestCase("This is a paragraph with a *bold* and an _italic_ element")]
+		[Theory]
+		[InlineData("This is a simple paragraph")]
+		[InlineData("This is a paragraph with a **bold** element")]
+		[InlineData("This is a paragraph with a *bold* element")]
+		[InlineData("This is a paragraph with an __italic__ element")]
+		[InlineData("This is a paragraph with an _italic_ element")]
+		[InlineData("This is a paragraph with a **bold** and an __italic__ element")]
+		[InlineData("This is a paragraph with a *bold* and an _italic_ element")]
 		public void OutputShouldMatchInput(string input)
 		{
 			var document = Document.Parse(input);
-			AsciiDocAssert.AreEqual(input, document);
+			AsciiDocAssert.Equal(input, document);
 		}
 	}
 }

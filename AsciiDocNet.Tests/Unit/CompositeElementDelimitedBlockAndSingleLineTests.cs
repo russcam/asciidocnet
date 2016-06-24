@@ -1,12 +1,11 @@
-using NUnit.Framework;
+using Xunit;
 
 namespace AsciiDocNet.Tests.Unit
 {
-	[TestFixture]
 	public abstract class CompositeElementDelimitedBlockAndSingleLineTests<TElement> :
 		CompositeElementDelimitedBlockTests<TElement> where TElement : Container, IElement, IAttributable
 	{
-		[Test]
+		[Fact]
 		public void ShouldParseSingleLine()
 		{
 			var text = $@"[{Name}]
@@ -15,16 +14,16 @@ This is a single line
 			var document = Document.Parse(text);
 
 			Assert.NotNull(document);
-			Assert.IsTrue(document.Count == 1);
+			Assert.True(document.Count == 1);
 
-			Assert.IsInstanceOf<TElement>(document[0]);
+			Assert.IsType<TElement>(document[0]);
 			var example = (TElement)document[0];
 
-			Assert.IsTrue(example.Count == 1);
-			Assert.IsInstanceOf<Paragraph>(example[0]);
+			Assert.True(example.Count == 1);
+			Assert.IsType<Paragraph>(example[0]);
 		}
 
-		[Test]
+		[Fact]
 		public void ShouldParseSingleLineWithTitle()
 		{
 			var text = $@".Block Title
@@ -34,16 +33,16 @@ This is a single line
 			var document = Document.Parse(text);
 
 			Assert.NotNull(document);
-			Assert.IsTrue(document.Count == 1);
+			Assert.True(document.Count == 1);
 
-			Assert.IsInstanceOf<TElement>(document[0]);
+			Assert.IsType<TElement>(document[0]);
 			var element = (TElement)document[0];
 
-			Assert.IsTrue(element.Attributes.HasTitle);
-			Assert.AreEqual("Block Title", element.Attributes.Title.Text);
+			Assert.True(element.Attributes.HasTitle);
+			Assert.Equal("Block Title", element.Attributes.Title.Text);
 
-			Assert.IsTrue(element.Count == 1);
-			Assert.IsInstanceOf<Paragraph>(element[0]);
+			Assert.True(element.Count == 1);
+			Assert.IsType<Paragraph>(element[0]);
 		}
 	}
 }

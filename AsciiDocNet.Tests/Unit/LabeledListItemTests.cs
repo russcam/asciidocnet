@@ -1,11 +1,10 @@
-using NUnit.Framework;
+using Xunit;
 
 namespace AsciiDocNet.Tests.Unit
 {
-	[TestFixture]
 	public class LabeledListItemTests
 	{
-		[Test]
+		[Fact]
 		public void ShouldParseItems()
 		{
 			var text = @"`ElasticsearchClientException`:: These are known exceptions, either an exception that occurred in the request pipeline
@@ -23,13 +22,13 @@ when an API in the client is misused.  These should not be handled as you want t
 
 			var document = Document.Parse(text);
 
-			Assert.IsNotNull(document);
-			Assert.IsTrue(document.Count == 1);
-			Assert.IsInstanceOf<LabeledList>(document[0]);
+			Assert.NotNull(document);
+			Assert.True(document.Count == 1);
+			Assert.IsType<LabeledList>(document[0]);
 
 			var labeledList = (LabeledList)document[0];
 
-			Assert.IsTrue(labeledList.Items.Count == 3);
+			Assert.True(labeledList.Items.Count == 3);
 		}
 	}
 }

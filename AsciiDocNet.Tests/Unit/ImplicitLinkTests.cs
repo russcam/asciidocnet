@@ -1,12 +1,11 @@
 using System.Collections.Generic;
-using NUnit.Framework;
+using Xunit;
 
 namespace AsciiDocNet.Tests.Unit
 {
-	[TestFixture]
 	public class ImplicitLinkTests
 	{
-		public IEnumerable<string> Protocols => new[]
+		public static IEnumerable<string> Protocols => new[]
 		{
 			"http",
 			"https",
@@ -15,61 +14,61 @@ namespace AsciiDocNet.Tests.Unit
 			"irc"
 		};
 
-		public IEnumerable<TestCaseData> TestCases
+		public static IEnumerable<object[]> TestCases
 		{
 			get
 			{
 				foreach (var protocol in Protocols)
 				{
-					yield return new TestCaseData(protocol, $"{protocol}://example.com[link]", "link", 1, 0);
-					yield return new TestCaseData(protocol, $"{protocol}://example.com[]", string.Empty, 1, 0);
-					yield return new TestCaseData(protocol, $"This is a paragraph with a {protocol}://example.com[link] in", "link", 3, 1);
+					yield return new object[]{ protocol, $"{protocol}://example.com[link]", "link", 1, 0 };
+					yield return new object[]{ protocol, $"{protocol}://example.com[]", string.Empty, 1, 0 };
+					yield return new object[]{ protocol, $"This is a paragraph with a {protocol}://example.com[link] in", "link", 3, 1 };
 				}
 			}
 		}
 
-		[Test]
-		[TestCaseSource(nameof(TestCases))]
+		[Theory]
+		[MemberData(nameof(TestCases))]
 		public void ShouldParseImplicitAnchor(string protocol, string asciidoc, string linkText, int count, int index)
 		{
 			var document = Document.Parse(asciidoc);
 
-			Assert.IsNotNull(document);
-			Assert.IsTrue(document.Count == 1);
+			Assert.NotNull(document);
+			Assert.True(document.Count == 1);
 
-			Assert.IsInstanceOf<Paragraph>(document[0]);
+			Assert.IsType<Paragraph>(document[0]);
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.IsTrue(paragraph.Count == count);
+			Assert.True(paragraph.Count == count);
 
-			Assert.IsInstanceOf<Link>(paragraph[index]);
+			Assert.IsType<Link>(paragraph[index]);
 
 			var link = (Link)paragraph[index];
 
-			Assert.AreEqual($"{protocol}://example.com", link.Href);
-			Assert.AreEqual(linkText, link.Text);
+			Assert.Equal($"{protocol}://example.com", link.Href);
+			Assert.Equal(linkText, link.Text);
 
-			AsciiDocAssert.AreEqual(asciidoc, document);
+			AsciiDocAssert.Equal(asciidoc, document);
 		}
 
-		[Test]
+		[Fact]
 		public void ShouldNotParseImplicitLinkInsideMonospace()
 		{
 			var text = "This is a paragraph with a `http://example.com` in";
 			var document = Document.Parse(text);
 
-			Assert.IsNotNull(document);
-			Assert.IsTrue(document.Count == 1);
+			Assert.NotNull(document);
+			Assert.True(document.Count == 1);
 
-			Assert.IsInstanceOf<Paragraph>(document[0]);
+			Assert.IsType<Paragraph>(document[0]);
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.IsTrue(paragraph.Count == 3);
-			Assert.IsInstanceOf<Monospace>(paragraph[1]);
+			Assert.True(paragraph.Count == 3);
+			Assert.IsType<Monospace>(paragraph[1]);
 
-			AsciiDocAssert.AreEqual(text, document);
+			AsciiDocAssert.Equal(text, document);
 		}
 	}
 }

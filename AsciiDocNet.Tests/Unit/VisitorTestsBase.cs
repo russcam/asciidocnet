@@ -1,13 +1,11 @@
 using System.IO;
 using System.Text;
-using NUnit.Framework;
 
 namespace AsciiDocNet.Tests.Unit
 {
 	public abstract class VisitorTestsBase
 	{
-		[SetUp]
-		public void VisitorTestsBaseSetup()
+		public VisitorTestsBase()
 		{
 			Builder = new StringBuilder();
 			Visitor = new AsciiDocVisitor(new StringWriter(Builder));
