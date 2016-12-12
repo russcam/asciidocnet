@@ -1,3 +1,5 @@
+using System;
+
 namespace AsciiDocNet
 {
 	public interface IDocumentReader

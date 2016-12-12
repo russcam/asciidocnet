@@ -357,8 +357,11 @@ namespace AsciiDocNet
 
 			var attributesValue = match.Groups["attributes"].Value;
 			var inputs = SplitOnCharacterOutsideQuotes(attributesValue);
-			var attributeLists = inputs.Select(ParseElementAttributesWithPosition);
 
+			var attributeLists = inputs[0] == "quote" || inputs[0] == "verse"
+				? new[] { new AttributeList { inputs.Select(i => new Attribute(i, true)) } } 
+				: inputs.Select(ParseElementAttributesWithPosition);
+			
 			if (attributes == null)
 			{
 				attributes = new AttributeList();
@@ -459,7 +462,7 @@ namespace AsciiDocNet
 				}
 				else if (currentChar == '=')
 				{
-					var name = input.Substring(start, index).ToLowerInvariant();
+					var name = input.Substring(start, index);
 					for (int i = index + 1; i < input.Length; i++)
 					{
 						var lastChar = i == input.Length - 1;
@@ -473,7 +476,7 @@ namespace AsciiDocNet
 								: input.Substring(index + 1, i - name.Length);
 
 							// TODO: handle known named elements
-							switch (name)
+							switch (name.ToLowerInvariant())
 							{
 								case "id":
 									if (value.IndexOf(",", StringComparison.OrdinalIgnoreCase) > -1)
@@ -518,7 +521,7 @@ namespace AsciiDocNet
 						var minIndex = new[] { hashIndex, dotIndex, percentIndex }.Where(i => i != -1).Min();
 						if (minIndex > 1)
 						{
-							var name = input.Substring(0, minIndex).ToLowerInvariant();
+							var name = input.Substring(0, minIndex);
 							attributes.Add(new Attribute(name));
 							index = minIndex - 1;
 							start = minIndex - 1;
@@ -527,7 +530,7 @@ namespace AsciiDocNet
 				}
 				else if (last)
 				{
-					var name = input.Substring(start).ToLowerInvariant();
+					var name = input.Substring(start);
 					attributes.Add(new Attribute(name));
 				}
 			}
@@ -1580,23 +1583,6 @@ namespace AsciiDocNet
 
 		private void ProcessTable(Container parent, IDocumentReader reader, ref List<string> buffer, ref AttributeList attributes)
 		{
-			ProcessParagraph(parent, ref buffer);
-
-			var match = PatternMatcher.Table.Match(reader.Line);
-			if (!match.Success)
-			{
-				throw new ArgumentException("not the start of a table");
-			}
-
-			var delimiter = match.Groups[1].Value;
-			var rows = new List<TableRow>();
-			reader.ReadLine();
-			while (reader.Line != null &&
-			       !Regex.IsMatch(reader.Line, Regex.Escape(match.Groups[0].Value)))
-			{
-				reader.ReadLine();
-			}
-
 			throw new NotImplementedException("TODO");
 		}
 
@@ -1693,9 +1679,5 @@ namespace AsciiDocNet
 
 			return output.ToArray();
 		}
-	}
-
-	public class TableRow
-	{
 	}
 }

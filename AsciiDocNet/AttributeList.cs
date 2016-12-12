@@ -37,7 +37,20 @@ namespace AsciiDocNet
 
 		public Attribute this[string name]
 		{
-			get { return _attributes?.FirstOrDefault(a => a.Name.Equals(name, StringComparison.OrdinalIgnoreCase)); }
+			get
+			{
+				return _attributes?.FirstOrDefault(a => a.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+			}
+			set
+			{
+				_attributes?.RemoveAll(a => a.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+				if (_attributes == null)
+				{
+					_attributes = new List<Attribute>();
+				}
+
+				_attributes.Add(value);
+			}
 		}
 
 		public static bool operator ==(AttributeList left, AttributeList right)
@@ -134,6 +147,22 @@ namespace AsciiDocNet
 			else
 			{
 				_attributes.Add(item);
+			}
+		}
+
+		public void Add(IEnumerable<Attribute> items)
+		{
+			if (items == null)
+			{
+				return;
+			}
+			if (_attributes == null)
+			{
+				_attributes = new List<Attribute>(items);
+			}
+			else
+			{
+				_attributes.AddRange(items);
 			}
 		}
 

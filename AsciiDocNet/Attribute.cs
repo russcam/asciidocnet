@@ -4,14 +4,18 @@ namespace AsciiDocNet
 {
 	public class Attribute
 	{
-		public Attribute(string name)
+		internal Attribute(string name, bool skipCheck)
 		{
-			if (!IsValidName(name))
+			if (!skipCheck && !IsValidName(name))
 			{
 				throw new ArgumentException($"{name} is not a valid attribute name");
 			}
 
 			Name = name;
+		}
+
+		public Attribute(string name) : this(name, false)
+		{
 		}
 
 		public string Name { get; set; }
