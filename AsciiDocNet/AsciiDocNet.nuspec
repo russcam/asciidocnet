@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/russcam/asciidocnet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Add document equality and simple check list item support</releaseNotes>
+    <releaseNotes>Handle Quote paragraphs</releaseNotes>
     <copyright>Copyright Forloop 2016</copyright>
     <tags>AsciiDoc</tags>
   </metadata>
