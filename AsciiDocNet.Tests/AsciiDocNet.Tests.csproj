@@ -94,6 +94,7 @@
     <Compile Include="Unit\DelimitedContainerInlineElementTests.cs" />
     <Compile Include="Unit\LabeledListItemTests.cs" />
     <Compile Include="Unit\QuoteParagraphTests.cs" />
+    <Compile Include="Unit\SectionTitleTests.cs" />
     <Compile Include="Unit\StrongTests.cs" />
     <Compile Include="Unit\CommentTests.cs" />
     <Compile Include="Unit\CompositeElementDelimitedBlockAndSingleLineTests.cs" />

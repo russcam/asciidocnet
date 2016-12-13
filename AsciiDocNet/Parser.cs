@@ -355,18 +355,42 @@ namespace AsciiDocNet
 				throw new ArgumentException("not a block attribute");
 			}
 
-			var attributesValue = match.Groups["attributes"].Value;
-			var inputs = SplitOnCharacterOutsideQuotes(attributesValue);
+			var attributesValue = match.Groups["attributes"].Value.Trim();
 
-			var attributeLists = inputs[0] == "quote" || inputs[0] == "verse"
-				? new[] { new AttributeList { inputs.Select(i => new Attribute(i, true)) } } 
-				: inputs.Select(ParseElementAttributesWithPosition);
-			
 			if (attributes == null)
 			{
 				attributes = new AttributeList();
 			}
 
+			if (attributesValue.IndexOf(",", StringComparison.Ordinal) == -1)
+			{
+				switch (attributesValue)
+				{
+					case "float":
+						attributes.IsFloating = true;
+						return;
+					case "discrete":
+						attributes.IsDiscrete = true;
+						return;
+					default:
+						attributes.Add(ParseElementAttributesWithPosition(attributesValue, 0));
+						return;
+				}
+			}
+
+			var inputs = SplitOnCharacterOutsideQuotes(attributesValue);
+
+			if (inputs[0] == "quote" || inputs[0] == "verse")
+			{
+				foreach (var i in inputs)
+				{
+					attributes.Add(new Attribute(i, true));
+				}
+
+				return;
+			}
+
+			var attributeLists = inputs.Select(ParseElementAttributesWithPosition);
 			attributes = attributeLists.Aggregate(attributes, (first, second) => first.Add(second));
 		}
 

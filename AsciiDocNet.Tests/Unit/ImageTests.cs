@@ -43,6 +43,7 @@ namespace AsciiDocNet.Tests.Unit
 			var image = (Image)document[0];
 
 			Assert.AreEqual("{imagesdir}/hadouken-indentation.jpg", image.Path);
+			Assert.AreEqual("hadouken indenting example", image.Attributes.Title.Text);
 		}
 	}
 }

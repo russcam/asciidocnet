@@ -39,6 +39,18 @@ namespace AsciiDocNet
 		{
 		}
 
+		public bool IsDiscrete
+		{
+			get { return Attributes.IsDiscrete; }
+			set { Attributes.IsDiscrete = value; }
+		}
+
+		public bool IsFloating
+		{
+			get { return Attributes.IsFloating; }
+			set { Attributes.IsFloating = value; }
+		}
+
 		public AttributeList Attributes { get; } = new AttributeList();
 
 		public override InlineElementType ContainElementType { get; } = InlineElementType.All;

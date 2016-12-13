@@ -8,6 +8,34 @@ namespace AsciiDocNet
 	public class AttributeList : IList<Attribute>
 	{
 		private List<Attribute> _attributes;
+		private bool _isDiscrete;
+		private bool _isFloating;
+
+		internal bool IsDiscrete
+		{
+			get { return _isDiscrete; }
+			set
+			{
+				_isDiscrete = value;
+				if (value)
+				{
+					IsFloating = false;
+				}
+			}
+		}
+
+		internal bool IsFloating
+		{
+			get { return _isFloating; }
+			set
+			{
+				_isFloating = value;
+				if (value)
+				{
+					IsDiscrete = false;
+				}
+			}
+		}
 
 		public Anchor Anchor { get; set; }
 
@@ -17,7 +45,7 @@ namespace AsciiDocNet
 
 		public bool HasTitle => Title != null;
 
-		public bool IsReadOnly => false;
+		bool ICollection<Attribute>.IsReadOnly => false;
 
 		public Title Title { get; set; }
 
@@ -100,6 +128,15 @@ namespace AsciiDocNet
 
 			Add(attributeList.Title);
 			Add(attributeList.Anchor);
+
+			if (attributeList.IsDiscrete)
+			{
+				this.IsDiscrete = true;
+			}
+			if (attributeList.IsFloating)
+			{
+				this.IsFloating = true;
+			}
 
 			if (_attributes == null)
 			{
