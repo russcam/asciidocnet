@@ -28,6 +28,8 @@
 *.sbr
 
 .vs/
+.vs/*
+/src/.vs/restore.dg
 [Rr]elease*/
 
 # ReSharper
@@ -45,3 +47,28 @@ _NCrunch*/
 
 #Github credentials
 AsciiDocNet.Tests/credentials.json
+
+#lock files
+project.lock.json
+*.project.lock.json
+paket.lock
+
+#build files
+build/*
+!build/tools
+!build/keys
+build/tools/*
+!build/tools/sn
+!build/tools/sn/*
+!build/tools/ilmerge
+!build/*.fsx
+!build/*.fsx
+!build/*.ps1
+!build/*.nuspec
+!build/*.png
+!build/scripts
+
+.fake/*
+.fake
+packages/*
+paket.exe

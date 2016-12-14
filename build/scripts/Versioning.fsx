@@ -1,0 +1,144 @@
+﻿#I @"../../packages/build/FAKE/tools"
+#I @"../../packages/build/FSharp.Text.RegexProvider/lib/net40"
+#r @"FakeLib.dll"
+#r @"FSharp.Text.RegexProvider.dll"
+
+#load @"Projects.fsx"
+#load @"Paths.fsx"
+
+open Projects
+open Paths
+
+open System
+open System.Diagnostics
+open System.IO
+open System.Text.RegularExpressions
+open FSharp.Text.RegexProvider
+
+open Fake 
+open AssemblyInfoFile
+open SemVerHelper
+
+type AssemblyInformationRegex = Regex< @"\[assembly\: AssemblyInformationalVersion(Attribute)?\(""(?<Version>[^""]+)""\)\]", noMethodPrefix = true >
+type AssemblyFileRegex = Regex< @"\[assembly\: AssemblyFileVersion(Attribute)?\(""(?<Version>[^""]+)""\)\]", noMethodPrefix = true >
+
+type Versioning() = 
+    
+    static let regexReplaceFirstOccurrence pattern (replacement:string) encoding file =
+        let oldContent = File.ReadAllLines(file, encoding)
+        let mutable replaced = false
+        let newContent = oldContent |> Seq.map (fun l -> 
+            if replaced then l
+            else (
+                if Regex.IsMatch(l, pattern) then (
+                    replaced <- true
+                    Regex.Replace(l, pattern, replacement)
+                ) else l
+            )
+        )
+        File.WriteAllLines(file, newContent, encoding)
+
+    static let suffix = fun (prerelease: PreRelease) -> sprintf "-%s%i" prerelease.Name prerelease.Number.Value
+
+    //returns the current version number 
+    //when version is passed to script we always use that
+    //otherwise we get the current version number and append -ci-datestamp
+    static let currentInformationalVersion = 
+        let assemblyFileContents = ReadFileAsString @"src/AsciiDocNet/Properties/AssemblyInfo.cs"
+        let m = AssemblyInformationRegex().Match assemblyFileContents
+        m.Version.Value
+
+    static let currentFileVersion = 
+        let assemblyFileContents = ReadFileAsString @"src/AsciiDocNet/Properties/AssemblyInfo.cs"
+        let m = AssemblyFileRegex().Match assemblyFileContents
+        m.Version.Value
+
+    static let fileVersion = 
+        let timestampedVersion = (sprintf "%s-ci%s" currentFileVersion (DateTime.UtcNow.ToString("yyyyMMddHHmmss")))
+        let fileVersion = (getBuildParamOrDefault "version" timestampedVersion)
+        let fv = if isNullOrEmpty fileVersion then timestampedVersion else fileVersion
+        fv
+    
+    //CI builds need to be one minor ahead of the whatever we find in master
+    static member FileVersion = 
+        //only increment minor when the current assembly informational version is not already -ci 
+        let i = if currentInformationalVersion.Contains("-ci") then 0 else 1
+        match fileVersion with
+        | f when f.Contains("-ci") ->
+            let v = regex_replace "-ci.+$" "" f
+            let prerelease = regex_replace "^.+-(ci.+)$" "$1" f
+            let version = SemVerHelper.parse v
+            (sprintf "%d.%d.0-%s" version.Major (version.Minor + i) prerelease).Trim()
+        | _ -> fileVersion.Trim()
+
+    static member AssemblyVersion = 
+        let fileVersion = Versioning.FileVersion
+        let fv = if fileVersion.Contains("-ci") then (regex_replace "-ci.+$" "" fileVersion) else fileVersion
+        traceFAKE "patched fileVersion %s" fileVersion
+        let version = SemVerHelper.parse fv
+    
+        let assemblySuffix = if version.PreRelease.IsSome then suffix version.PreRelease.Value else "";
+        let assemblyVersion = sprintf "%i.0.0%s" version.Major assemblySuffix
+      
+        match (assemblySuffix, version.Minor, version.Patch) with
+        | (s, m, p) when s <> "" && s <> "ci" && (m <> 0 || p <> 0)  -> failwithf "Cannot create prereleases for minor or major builds!"
+        | ("", _, _) -> traceFAKE "Building fileversion %s for asssembly version %s" fileVersion assemblyVersion
+        | _ -> traceFAKE "Building prerelease %s for major assembly version %s " fileVersion assemblyVersion
+    
+        assemblyVersion
+
+    static member PatchAssemblyInfos() =
+        let assemblyVersion = Versioning.AssemblyVersion
+        let fileVersion = Versioning.FileVersion
+        !! "src/**/AssemblyInfo.cs"
+        |> Seq.iter(fun f -> 
+            let name = (directoryInfo f).Parent.Parent.Name
+            let projectName = Projects.DotNetProject.TryFindName name
+            let assemblyDescription =
+                match projectName with
+                | Some "AsciiDocNet" -> "AsciiDoc processor for .NET"
+                | _ -> ""
+
+            CreateCSharpAssemblyInfo f [
+                Attribute.Title name
+                Attribute.Copyright (sprintf @"Copyright(c) %i forloop - Russ Cam http://forloop.co.uk" DateTime.UtcNow.Year)
+                Attribute.Description assemblyDescription 
+                Attribute.Company "forloop"
+                Attribute.Configuration "Release"
+                Attribute.Version assemblyVersion
+                Attribute.FileVersion fileVersion
+                Attribute.InformationalVersion fileVersion
+            ]
+        )
+
+    static member PatchProjectJsons() =
+        !! "src/**/project.json"
+        |> Seq.iter(fun f -> 
+            regexReplaceFirstOccurrence 
+                "\"version\"\\s?:\\s?\".*\"" 
+                (sprintf "\"version\": \"%s\"" fileVersion) 
+                (new System.Text.UTF8Encoding(false)) f
+
+            RegexReplaceInFileWithEncoding 
+                "\"releaseNotes\"\\s?:\\s?\".*\"" 
+                (sprintf "\"releaseNotes\": \"See %s/releases/tag/%s\"" Paths.Repository fileVersion) 
+                (new System.Text.UTF8Encoding(false)) f
+        )
+
+    static member ValidateArtifacts() =
+        let assemblyVersion = Versioning.AssemblyVersion
+        let fileVersion = Versioning.FileVersion
+        let tmp = "build/output/_packages/tmp"
+        !! "build/output/_packages/*.nupkg"
+        |> Seq.iter(fun f -> 
+           Unzip tmp f
+           !! (sprintf "%s/**/*.dll" tmp)
+           |> Seq.iter(fun f -> 
+                let fv = FileVersionInfo.GetVersionInfo(f)
+                let a = GetAssemblyVersion f
+                traceFAKE "Assembly: %A File: %s Product: %s => %s" a fv.FileVersion fv.ProductVersion f
+                if (a.Minor > 0 || a.Revision > 0 || a.Build > 0) then failwith (sprintf "%s assembly version is not sticky to its major component" f)
+                if (fv.ProductVersion <> fileVersion) then failwith (sprintf "Expected product info %s to match new version %s " fv.ProductVersion fileVersion)
+           )
+           DeleteDir tmp
+        )
