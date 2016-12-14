@@ -81,7 +81,7 @@ namespace AsciiDocNet.Tests.Unit
 		[Fact]
 		public void CanParseFloatingTitleWithAttributes()
 		{
-			var title = $"[float]\r\n[[title-anchor]]\r\n[attribute1,attribute2]\r\n== This is the title";
+			var title = $"[[title-anchor]]\r\n[float]\r\n[attribute1,attribute2]\r\n== This is the title";
 
 			var document = Document.Parse(title);
 

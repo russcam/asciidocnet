@@ -165,6 +165,15 @@ namespace AsciiDocNet
 				attributes.Anchor.Accept(this);
 			}
 
+			if (attributes.IsDiscrete)
+			{
+				_writer.WriteLine("[discrete]");
+			}
+			else if (attributes.IsFloating)
+			{
+				_writer.WriteLine("[float]");
+			}
+
 			if (attributes.Any())
 			{
 				_writer.Write("[");
@@ -262,14 +271,6 @@ namespace AsciiDocNet
 
 		public virtual void Visit(SectionTitle sectionTitle)
 		{
-			if (sectionTitle.IsDiscrete)
-			{
-				_writer.WriteLine("[discrete]");
-			}
-			else if (sectionTitle.IsFloating)
-			{
-				_writer.WriteLine("[float]");
-			}
 			Visit(sectionTitle.Attributes);
 			_writer.Write("{0} ", new string('=', sectionTitle.Level));
 			Visit((InlineContainer)sectionTitle);

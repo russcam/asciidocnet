@@ -11,10 +11,10 @@ namespace AsciiDocNet
 		private bool _isDiscrete;
 		private bool _isFloating;
 
-		internal bool IsDiscrete
+		public bool IsDiscrete
 		{
 			get { return _isDiscrete; }
-			set
+			internal set
 			{
 				_isDiscrete = value;
 				if (value)
@@ -24,10 +24,10 @@ namespace AsciiDocNet
 			}
 		}
 
-		internal bool IsFloating
+		public bool IsFloating
 		{
 			get { return _isFloating; }
-			set
+			internal set
 			{
 				_isFloating = value;
 				if (value)
