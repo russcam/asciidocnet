@@ -8,7 +8,7 @@ using System.Reflection;
 [assembly: AssemblyConfigurationAttribute("Release")]
 [assembly: AssemblyVersionAttribute("1.0.0")]
 [assembly: AssemblyFileVersionAttribute("1.0.0")]
-[assembly: AssemblyInformationalVersionAttribute("1.0.0-alpha4")]
+[assembly: AssemblyInformationalVersionAttribute("1.0.0-alpha5")]
 namespace System {
     internal static class AssemblyVersionInformation {
         internal const System.String AssemblyTitle = "AsciiDocNet";
@@ -18,6 +18,6 @@ namespace System {
         internal const System.String AssemblyConfiguration = "Release";
         internal const System.String AssemblyVersion = "1.0.0";
         internal const System.String AssemblyFileVersion = "1.0.0";
-        internal const System.String AssemblyInformationalVersion = "1.0.0-alpha4";
+        internal const System.String AssemblyInformationalVersion = "1.0.0-alpha5";
     }
 }
