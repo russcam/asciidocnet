@@ -51,7 +51,6 @@ AsciiDocNet.Tests/credentials.json
 #lock files
 project.lock.json
 *.project.lock.json
-paket.lock
 
 #build files
 build/*
