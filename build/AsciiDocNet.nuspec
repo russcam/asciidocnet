@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>AsciiDocNet</id>
+    <version>$version$</version>
+    <title>AsciiDocNet</title>
+    <authors>forloop and contributors</authors>
+    <owners>forloop</owners>
+	<licenseUrl>https://github.com/russcam/asciidocnet/blob/master/license.md</licenseUrl>
+    <projectUrl>https://github.com/russcam/asciidocnet</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>AsciiDoc processor for .NET</description>
+    <releaseNotes>See https://github.com/russcam/asciidocnet/releases/tag/$version$</releaseNotes>
+    <copyright>Copyright(c) 2016 forloop - Russ Cam http://forloop.co.uk</copyright>
+    <tags>AsciiDoc Markdown</tags>
+	<dependencies>
+		<group targetFramework=".NETFramework4.5" />
+		<group targetFramework=".NETStandard1.3">
+			<dependency id="NETStandard.Library" version="[1.6.0, )" />
+			<dependency id="System.Collections.Specialized" version="[4.0.1, )" />
+			<dependency id="System.Reflection.TypeExtensions" version="[4.1.0, )" />
+			<dependency id="System.ComponentModel.Annotations" version="[4.1.0, )" />
+		</group>
+	</dependencies>
+  </metadata>
+	<files>
+		<file src="output\v4.5\AsciiDocNet\AsciiDocNet.dll" target="lib\net45"/>
+		<file src="output\v4.5\AsciiDocNet\AsciiDocNet.pdb" target="lib\net45"/>
+		<file src="output\v4.5\AsciiDocNet\AsciiDocNet.pdb.srcsrv" target="lib\net45"/>
+		<file src="output\v4.5\AsciiDocNet\AsciiDocNet.XML" target="lib\net45"/>
+
+		<file src="output\netstandard1.3\AsciiDocNet\AsciiDocNet.dll" target="lib\netstandard1.3"/>
+		<file src="output\netstandard1.3\AsciiDocNet\AsciiDocNet.pdb" target="lib\netstandard1.3"/>
+		<file src="output\netstandard1.3\AsciiDocNet\AsciiDocNet.pdb.srcsrv" target="lib\netstandard1.3"/>
+	</files>
+</package>

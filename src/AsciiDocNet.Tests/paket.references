@@ -1,0 +1,6 @@
+xunit
+xunit.abstractions
+SpecFlow.xUnit
+DiffPlex
+Newtonsoft.Json
+Octokit
