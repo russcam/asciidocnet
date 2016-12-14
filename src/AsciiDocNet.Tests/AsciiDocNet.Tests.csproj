@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsciiDocAssert.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="HtmlSectionVisitor.cs" />
     <Compile Include="Specifications\CrossReferences.feature.cs">
       <AutoGen>True</AutoGen>

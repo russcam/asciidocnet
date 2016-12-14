@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Xunit;
-using System.Text.RegularExpressions;
+using AsciiDocNet.Tests.Extensions;
 using DiffPlex;
 using DiffPlex.DiffBuilder;
 using DiffPlex.DiffBuilder.Model;
@@ -12,8 +12,6 @@ namespace AsciiDocNet.Tests
 {
 	public class AsciiDocAssert
 	{
-		private static readonly Regex MultiReturn = new Regex("\r{2,}", RegexOptions.Compiled | RegexOptions.Multiline);
-		private static readonly Regex NewLine = new Regex("(?<!\r)\n", RegexOptions.Compiled | RegexOptions.Multiline);
 		public static void Equal(string asciidoc, Document document)
 		{
 			var directoryAttribute = document.Attributes.FirstOrDefault(a => a.Name == "docdir");
@@ -28,8 +26,8 @@ namespace AsciiDocNet.Tests
 				document.Accept(visitor);
 			}
 
-			var expected = MultiReturn.Replace(NewLine.Replace(asciidoc, "\r\n"), "\r").TrimEnd('\r', '\n');
-			var actual = builder.ToString().TrimEnd('\r', '\n');
+			var expected = asciidoc.ConsistentLineEndings().RemoveTrailingNewLine();
+			var actual = builder.ToString().RemoveTrailingNewLine();
 
 			Diff(expected, actual);
 			Assert.True(true);

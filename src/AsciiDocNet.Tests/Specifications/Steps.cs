@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
+using AsciiDocNet.Tests.Extensions;
 using TechTalk.SpecFlow;
 using Xunit;
 
@@ -26,7 +28,7 @@ namespace AsciiDocNet.Tests.Specifications
 				source.Accept(visitor);
 			}
 
-	        var output = builder.ToString().TrimEnd('\r', '\n');
+	        var output = builder.ToString().RemoveTrailingNewLine();
 			this.ScenarioContext.Add("output", output);
         }
         
@@ -34,6 +36,8 @@ namespace AsciiDocNet.Tests.Specifications
         public void ThenTheResultShouldMatchTheHtmlSource(string text)
         {
 	        var output = this.ScenarioContext.Get<string>("output");
+	        text = text.ConsistentLineEndings();
+	        output = output.ConsistentLineEndings();
 			Assert.Equal(text, output);
         }
     }
