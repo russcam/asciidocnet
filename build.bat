@@ -34,10 +34,6 @@ IF /I "%1"=="release" (
 	IF NOT [%2]==[] (set VERSION="%2")
 	IF /I "%3"=="skiptests" (set SKIPTESTS=1)
 	IF /I "%2"=="skiptests" (set SKIPTESTS=1)
-	IF /I "%JAVA_HOME%"=="" (
-	   ECHO JAVA_HOME not set exiting release early!
-	   EXIT /B 1
-	)
 )
 
 ECHO starting build using target=%TARGET% version=%VERSION% skiptests=%SKIPTESTS%
