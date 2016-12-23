@@ -8,13 +8,13 @@ namespace AsciiDocNet.Tests
 		{
 		}
 
-		public override void Visit(Document document)
+		public override void VisitDocument(Document document)
 		{
 			foreach (var attribute in document.Attributes)
 			{
-				Visit(attribute);
+				VisitAttributeEntry(attribute);
 			}
-			Visit((Container)document);
+			VisitContainer(document);
 		}
 	}
 }

@@ -5,6 +5,12 @@ namespace AsciiDocNet
 	/// </summary>
 	public interface IAttributable
 	{
-		AttributeList Attributes { get; }
+        /// <summary>
+        /// Gets the attributes.
+        /// </summary>
+        /// <value>
+        /// The attributes.
+        /// </value>
+        AttributeList Attributes { get; }
 	}
 }

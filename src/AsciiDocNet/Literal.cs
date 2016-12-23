@@ -2,9 +2,32 @@
 
 namespace AsciiDocNet
 {
-	public class Literal : IElement, IAttributable, IText
+    /// <summary>
+    /// A literal element.
+    /// <para></para>
+    /// Output text is displayed exactly as entered
+    /// </summary>
+    /// <example>
+    /// ....
+    /// A literal block
+    /// ....
+    /// </example>
+    /// <example>
+    /// [literal]
+    /// a literal
+    /// </example>
+    /// <seealso cref="AsciiDocNet.IElement" />
+    /// <seealso cref="AsciiDocNet.IAttributable" />
+    /// <seealso cref="AsciiDocNet.IText" />
+    public class Literal : IElement, IAttributable, IText
 	{
-		public Literal(string text)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Literal"/> class.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="System.ArgumentException">must be at least one character</exception>
+        public Literal(string text)
 		{
 			if (text == null)
 			{
@@ -19,44 +42,81 @@ namespace AsciiDocNet
 			Text = text;
 		}
 
-		public Literal()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Literal"/> class.
+        /// </summary>
+        public Literal()
 		{
 		}
 
-		public AttributeList Attributes { get; } = new AttributeList();
+        /// <summary>
+        /// Gets the attributes.
+        /// </summary>
+        /// <value>
+        /// The attributes.
+        /// </value>
+        public AttributeList Attributes { get; } = new AttributeList();
 
-		public Container Parent { get; set; }
+        /// <summary>
+        /// Gets or sets the parent element
+        /// </summary>
+        /// <value>
+        /// The parent.
+        /// </value>
+        public Container Parent { get; set; }
 
-		public string Text { get; set; }
+        /// <summary>
+        /// Gets or sets the text.
+        /// </summary>
+        /// <value>
+        /// The text.
+        /// </value>
+        public string Text { get; set; }
 
-		public static bool operator ==(Literal left, Literal right)
+        /// <summary>
+        /// Implements the operator ==.
+        /// </summary>
+        /// <param name="left">The left.</param>
+        /// <param name="right">The right.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator ==(Literal left, Literal right) => Equals(left, right);
+
+        /// <summary>
+        /// Implements the operator !=.
+        /// </summary>
+        /// <param name="left">The left.</param>
+        /// <param name="right">The right.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator !=(Literal left, Literal right) => !Equals(left, right);
+
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool Equals(object obj)
 		{
-			return Equals(left, right);
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+
+            return obj.GetType() == this.GetType() && Equals((Literal)obj);
 		}
 
-		public static bool operator !=(Literal left, Literal right)
-		{
-			return !Equals(left, right);
-		}
-
-		public override bool Equals(object obj)
-		{
-			if (ReferenceEquals(null, obj))
-			{
-				return false;
-			}
-			if (ReferenceEquals(this, obj))
-			{
-				return true;
-			}
-			if (obj.GetType() != this.GetType())
-			{
-				return false;
-			}
-			return Equals((Literal)obj);
-		}
-
-		public override int GetHashCode()
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// </returns>
+        public override int GetHashCode()
 		{
 			unchecked
 			{
@@ -64,15 +124,27 @@ namespace AsciiDocNet
 			}
 		}
 
-		public TVisitor Accept<TVisitor>(TVisitor visitor) where TVisitor : IDocumentVisitor
+        /// <summary>
+        /// Accepts a visitor to visit this element instance
+        /// </summary>
+        /// <typeparam name="TVisitor">The type of the visitor.</typeparam>
+        /// <param name="visitor">The visitor.</param>
+        /// <returns>
+        /// The visitor
+        /// </returns>
+        public TVisitor Accept<TVisitor>(TVisitor visitor) where TVisitor : IDocumentVisitor
 		{
-			visitor.Visit(this);
+			visitor.VisitLiteral(this);
 			return visitor;
 		}
 
-		protected bool Equals(Literal other)
-		{
-			return Equals(Attributes, other.Attributes) && string.Equals(Text, other.Text);
-		}
+        /// <summary>
+        /// Determines whether the specified <see cref="Literal" />, is equal to this instance.
+        /// </summary>
+        /// <param name="other">The other.</param>
+        /// <returns>true if equal; otherwise, false</returns>
+        protected bool Equals(Literal other) => 
+            Equals(Attributes, other.Attributes) && 
+            string.Equals(Text, other.Text);
 	}
 }

@@ -1,11 +1,12 @@
-using System;
-
 namespace AsciiDocNet
 {
-	public interface IDocumentReader
+    /// <summary>
+    /// Reads an Asciidoc document
+    /// </summary>
+    public interface IDocumentReader
 	{
 		/// <summary>
-		/// The path to the source
+		/// The path to the source from which lines are read
 		/// </summary>
 		string Path { get; }
 

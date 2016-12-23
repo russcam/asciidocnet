@@ -1,6 +1,6 @@
 namespace AsciiDocNet
 {
-	public static class Patterns
+	internal static class Patterns
 	{
 		public const string CharacterClassAll = @"[\s\S]";
 		public const string CharacterClassAlpha = "a-zA-Z";

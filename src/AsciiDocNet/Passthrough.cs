@@ -1,24 +1,40 @@
 namespace AsciiDocNet
 {
     /// <summary>
-    /// An example element. 	
+    /// A passthrough element.
     /// <para></para>
-    /// Designates example content or defines an admonition block
+    /// Unprocessed content that is sent directly to the output
     /// </summary>
     /// <example>
-    /// ====
-    /// This is an example
-    /// ====
+    /// ++++
+    /// This will be sent directly to the output
+    /// ++++
     /// </example>
     /// <example>
-    /// [example]
-    /// This is also an example
+    /// [pass]
+    /// This will also be sent to the output
     /// </example>
-    /// <seealso cref="AsciiDocNet.Container" />
     /// <seealso cref="AsciiDocNet.IElement" />
+    /// <seealso cref="AsciiDocNet.IText" />
     /// <seealso cref="AsciiDocNet.IAttributable" />
-    public class Example : Container, IElement, IAttributable
+    public class Passthrough : IElement, IText, IAttributable
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Passthrough"/> class.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        public Passthrough(string text)
+        {
+            Text = text;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Passthrough"/> class.
+        /// </summary>
+        public Passthrough()
+        {
+        }
+
         /// <summary>
         /// Gets the attributes.
         /// </summary>
@@ -36,6 +52,14 @@ namespace AsciiDocNet
         public Container Parent { get; set; }
 
         /// <summary>
+        /// Gets or sets the text.
+        /// </summary>
+        /// <value>
+        /// The text.
+        /// </value>
+        public string Text { get; set; }
+
+        /// <summary>
         /// Implements the operator ==.
         /// </summary>
         /// <param name="left">The left.</param>
@@ -43,7 +67,7 @@ namespace AsciiDocNet
         /// <returns>
         /// The result of the operator.
         /// </returns>
-        public static bool operator ==(Example left, Example right) => Equals(left, right);
+        public static bool operator ==(Passthrough left, Passthrough right) => Equals(left, right);
 
         /// <summary>
         /// Implements the operator !=.
@@ -53,19 +77,7 @@ namespace AsciiDocNet
         /// <returns>
         /// The result of the operator.
         /// </returns>
-        public static bool operator !=(Example left, Example right) => !Equals(left, right);
-
-        /// <summary>
-        /// Accepts a visitor to visit this element instance
-        /// </summary>
-        /// <typeparam name="TVisitor">The type of the visitor.</typeparam>
-        /// <param name="visitor">The visitor.</param>
-        /// <returns></returns>
-        public override TVisitor Accept<TVisitor>(TVisitor visitor)
-        {
-            visitor.VisitExample(this);
-            return visitor;
-        }
+        public static bool operator !=(Passthrough left, Passthrough right) => !Equals(left, right);
 
         /// <summary>
         /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
@@ -84,7 +96,8 @@ namespace AsciiDocNet
             {
                 return true;
             }
-            return obj.GetType() == this.GetType() && Equals((Example)obj);
+
+            return obj.GetType() == this.GetType() && Equals((Passthrough)obj);
         }
 
         /// <summary>
@@ -97,17 +110,31 @@ namespace AsciiDocNet
         {
             unchecked
             {
-                return (base.GetHashCode() * 397) ^ (Attributes?.GetHashCode() ?? 0);
+                return (Attributes.GetHashCode() * 397) ^ Text.GetHashCode();
             }
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="Example" />, is equal to this instance.
+        /// Accepts a visitor to visit this element instance
+        /// </summary>
+        /// <typeparam name="TVisitor">The type of the visitor.</typeparam>
+        /// <param name="visitor">The visitor.</param>
+        /// <returns>
+        /// The visitor
+        /// </returns>
+        public TVisitor Accept<TVisitor>(TVisitor visitor) where TVisitor : IDocumentVisitor
+        {
+            visitor.VisitPassthrough(this);
+            return visitor;
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="Passthrough" />, is equal to this instance.
         /// </summary>
         /// <param name="other">The other.</param>
         /// <returns>true if equal; otherwise, false</returns>
-        protected bool Equals(Example other) => 
-            base.Equals(other) && 
-            Equals(Attributes, other.Attributes);
+        protected bool Equals(Passthrough other) =>
+            Attributes.Equals(other.Attributes) &&
+            string.Equals(Text, other.Text);
     }
 }

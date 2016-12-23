@@ -2,114 +2,333 @@ using System.Collections.Generic;
 
 namespace AsciiDocNet
 {
-	public interface IDocumentVisitor
-	{
-		void Visit(Admonition admonition);
+    /// <summary>
+    /// Visits elements of an AsciiDoc
+    /// </summary>
+    public interface IDocumentVisitor
+    {
+        /// <summary>
+        /// Visits the admonition.
+        /// </summary>
+        /// <param name="admonition">The admonition.</param>
+        void VisitAdmonition(Admonition admonition);
 
-		void Visit(Anchor anchor);
+        /// <summary>
+        /// Visits the anchor.
+        /// </summary>
+        /// <param name="anchor">The anchor.</param>
+        void VisitAnchor(Anchor anchor);
 
-		void Visit(Attribute attribute);
+        /// <summary>
+        /// Visits the attribute.
+        /// </summary>
+        /// <param name="attribute">The attribute.</param>
+        void VisitAttribute(Attribute attribute);
 
-		void Visit(AttributeEntry attributeEntry);
+        /// <summary>
+        /// Visits the attribute entry.
+        /// </summary>
+        /// <param name="attributeEntry">The attribute entry.</param>
+        void VisitAttributeEntry(AttributeEntry attributeEntry);
 
-		void Visit(AttributeList attributes);
+        /// <summary>
+        /// Visits the attribute list.
+        /// </summary>
+        /// <param name="attributes">The attributes.</param>
+        void VisitAttributeList(AttributeList attributes);
 
-		void Visit(AttributeReference reference);
+        /// <summary>
+        /// Visits the attribute reference.
+        /// </summary>
+        /// <param name="reference">The reference.</param>
+        void VisitAttributeReference(AttributeReference reference);
 
-		void Visit(Audio audio);
+        /// <summary>
+        /// Visits the audio.
+        /// </summary>
+        /// <param name="audio">The audio.</param>
+        void VisitAudio(Audio audio);
 
-		void Visit(AuthorInfo author);
+        /// <summary>
+        /// Visits the author
+        /// </summary>
+        /// <param name="author">The author.</param>
+        void VisitAuthorInfo(AuthorInfo author);
 
-		void Visit(IList<AuthorInfo> authors);
+        /// <summary>
+        /// Visits the authors.
+        /// </summary>
+        /// <param name="authors">The authors.</param>
+        void VisitAuthorInfos(IList<AuthorInfo> authors);
 
-		void Visit(Strong strong);
+        /// <summary>
+        /// Visits the strong.
+        /// </summary>
+        /// <param name="strong">The strong.</param>
+        void VisitStrong(Strong strong);
 
-		void Visit(CheckListItem listItem);
+        /// <summary>
+        /// Visits the check list item.
+        /// </summary>
+        /// <param name="listItem">The list item.</param>
+        void VisitCheckListItem(CheckListItem listItem);
 
-		void Visit(Document document);
+        /// <summary>
+        /// Visits the document.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        void VisitDocument(Document document);
 
-		void Visit(Mark mark);
+        /// <summary>
+        /// Visits the mark.
+        /// </summary>
+        /// <param name="mark">The mark.</param>
+        void VisitMark(Mark mark);
 
-		void Visit(Container elements);
+        /// <summary>
+        /// Visits the container.
+        /// </summary>
+        /// <param name="container">The container.</param>
+        void VisitContainer(Container container);
 
-		void Visit(InlineContainer elements);
+        /// <summary>
+        /// Visits the inline container.
+        /// </summary>
+        /// <param name="inlineContainer">The inline container.</param>
+        void VisitInlineContainer(InlineContainer inlineContainer);
 
-		void Visit(Image image);
+        /// <summary>
+        /// Visits the image.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        void VisitImage(Image image);
 
-		void Visit(Include include);
+        /// <summary>
+        /// Visits the include.
+        /// </summary>
+        /// <param name="include">The include.</param>
+        void VisitInclude(Include include);
 
-		void Visit(Emphasis emphasis);
+        /// <summary>
+        /// Visits the emphasis.
+        /// </summary>
+        /// <param name="emphasis">The emphasis.</param>
+        void VisitEmphasis(Emphasis emphasis);
 
-		void Visit(LabeledListItem listItem);
+        /// <summary>
+        /// Visits the labeled list item.
+        /// </summary>
+        /// <param name="listItem">The list item.</param>
+        void VisitLabeledListItem(LabeledListItem listItem);
 
-		void Visit(LabeledList list);
+        /// <summary>
+        /// Visits the labeled list.
+        /// </summary>
+        /// <param name="list">The list.</param>
+        void VisitLabeledList(LabeledList list);
 
-		void Visit(Link link);
+        /// <summary>
+        /// Visits the link.
+        /// </summary>
+        /// <param name="link">The link.</param>
+        void VisitLink(Link link);
 
-		void Visit(Listing listing);
+        /// <summary>
+        /// Visits the listing.
+        /// </summary>
+        /// <param name="listing">The listing.</param>
+        void VisitListing(Listing listing);
 
-		void Visit(Callout callout);
+        /// <summary>
+        /// Visits the callout.
+        /// </summary>
+        /// <param name="callout">The callout.</param>
+        void VisitCallout(Callout callout);
 
-		void Visit(UnorderedListItem listItem);
+        /// <summary>
+        /// Visits the unordered list item.
+        /// </summary>
+        /// <param name="listItem">The list item.</param>
+        void VisitUnorderedListItem(UnorderedListItem listItem);
 
-		void Visit(UnorderedList list);
+        /// <summary>
+        /// Visits the unordered list.
+        /// </summary>
+        /// <param name="list">The list.</param>
+        void VisitUnorderedList(UnorderedList list);
 
-		void Visit(TextLiteral text);
+        /// <summary>
+        /// Visits the text literal.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        void VisitTextLiteral(TextLiteral text);
 
-		void Visit(Literal literal);
+        /// <summary>
+        /// Visits the literal.
+        /// </summary>
+        /// <param name="literal">The literal.</param>
+        void VisitLiteral(Literal literal);
 
-		void Visit(Media media);
+        /// <summary>
+        /// Visits the media.
+        /// </summary>
+        /// <param name="media">The media.</param>
+        void VisitMedia(Media media);
 
-		void Visit(Monospace monospace);
+        /// <summary>
+        /// Visits the monospace.
+        /// </summary>
+        /// <param name="monospace">The monospace.</param>
+        void VisitMonospace(Monospace monospace);
 
-		void Visit(NamedAttribute attribute);
+        /// <summary>
+        /// Visits the named attribute.
+        /// </summary>
+        /// <param name="attribute">The attribute.</param>
+        void VisitNamedAttribute(NamedAttribute attribute);
 
-		void Visit(Open open);
+        /// <summary>
+        /// Visits the open.
+        /// </summary>
+        /// <param name="open">The open.</param>
+        void VisitOpen(Open open);
 
-		void Visit(OrderedListItem listItem);
+        /// <summary>
+        /// Visits the ordered list item.
+        /// </summary>
+        /// <param name="listItem">The list item.</param>
+        void VisitOrderedListItem(OrderedListItem listItem);
 
-		void Visit(OrderedList list);
+        /// <summary>
+        /// Visits the ordered list.
+        /// </summary>
+        /// <param name="list">The list.</param>
+        void VisitOrderedList(OrderedList list);
 
-		void Visit(Paragraph paragraph);
+        /// <summary>
+        /// Visits the paragraph.
+        /// </summary>
+        /// <param name="paragraph">The paragraph.</param>
+        void VisitParagraph(Paragraph paragraph);
 
-		void Visit(Quotation quotation);
+        /// <summary>
+        /// Visits the quotation mark.
+        /// </summary>
+        /// <param name="quotation">The QuotationMark.</param>
+        void VisitQuotationMark(QuotationMark quotation);
 
-		void Visit(Quote quote);
+        /// <summary>
+        /// Visits the quote.
+        /// </summary>
+        /// <param name="quote">The quote.</param>
+        void VisitQuote(Quote quote);
 
-		void Visit(SectionTitle sectionTitle);
+        /// <summary>
+        /// Visits the section title.
+        /// </summary>
+        /// <param name="sectionTitle">The section title.</param>
+        void VisitSectionTitle(SectionTitle sectionTitle);
 
-		void Visit(Source source);
+        /// <summary>
+        /// Visits the source.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        void VisitSource(Source source);
 
-		void Visit(Title title);
+        /// <summary>
+        /// Visits the title.
+        /// </summary>
+        /// <param name="title">The title.</param>
+        void VisitTitle(Title title);
 
-		void Visit(UnsetAttributeEntry attributeEntry);
+        /// <summary>
+        /// Visits the unset attribute entry.
+        /// </summary>
+        /// <param name="attributeEntry">The attribute entry.</param>
+        void VisitUnsetAttributeEntry(UnsetAttributeEntry attributeEntry);
 
-		void Visit(Video video);
+        /// <summary>
+        /// Visits the video.
+        /// </summary>
+        /// <param name="video">The video.</param>
+        void VisitVideo(Video video);
 
-		void Visit(Example example);
+        /// <summary>
+        /// Visits the example.
+        /// </summary>
+        /// <param name="example">The example.</param>
+        void VisitExample(Example example);
 
-		void Visit(Comment comment);
+        /// <summary>
+        /// Visits the comment.
+        /// </summary>
+        /// <param name="comment">The comment.</param>
+        void VisitComment(Comment comment);
 
-		void Visit(Fenced fenced);
+        /// <summary>
+        /// Visits the fenced.
+        /// </summary>
+        /// <param name="fenced">The fenced.</param>
+        void VisitFenced(Fenced fenced);
 
-		void Visit(Pass pass);
+        /// <summary>
+        /// Visits the passthrough.
+        /// </summary>
+        /// <param name="passthrough">The Passthrough.</param>
+        void VisitPassthrough(Passthrough passthrough);
 
-		void Visit(Sidebar sidebar);
+        /// <summary>
+        /// Visits the sidebar.
+        /// </summary>
+        /// <param name="sidebar">The sidebar.</param>
+        void VisitSidebar(Sidebar sidebar);
 
-		void Visit(Table table);
+        /// <summary>
+        /// Visits the table.
+        /// </summary>
+        /// <param name="table">The table.</param>
+        void VisitTable(Table table);
 
-		void Visit(DocumentTitle title);
+        /// <summary>
+        /// Visits the document title.
+        /// </summary>
+        /// <param name="title">The title.</param>
+        void VisitDocumentTitle(DocumentTitle title);
 
-		void Visit(InternalAnchor anchor);
+        /// <summary>
+        /// Visits the internal anchor.
+        /// </summary>
+        /// <param name="anchor">The anchor.</param>
+        void VisitInternalAnchor(InternalAnchor anchor);
 
-		void Visit(InlineAnchor anchor);
+        /// <summary>
+        /// Visits the inline anchor.
+        /// </summary>
+        /// <param name="anchor">The anchor.</param>
+        void VisitInlineAnchor(InlineAnchor anchor);
 
-		void Visit(Stem stem);
+        /// <summary>
+        /// Visits the stem.
+        /// </summary>
+        /// <param name="stem">The stem.</param>
+        void VisitStem(Stem stem);
 
-		void Visit(Verse verse);
+        /// <summary>
+        /// Visits the verse.
+        /// </summary>
+        /// <param name="verse">The verse.</param>
+        void VisitVerse(Verse verse);
 
-		void Visit(Subscript subscript);
+        /// <summary>
+        /// Visits the subscript.
+        /// </summary>
+        /// <param name="subscript">The subscript.</param>
+        void VisitSubscript(Subscript subscript);
 
-		void Visit(Superscript superscript);
-	}
+        /// <summary>
+        /// Visits the superscript.
+        /// </summary>
+        /// <param name="superscript">The superscript.</param>
+        void VisitSuperscript(Superscript superscript);
+    }
 }

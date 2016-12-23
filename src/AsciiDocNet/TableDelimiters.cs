@@ -2,14 +2,26 @@
 
 namespace AsciiDocNet
 {
-	public enum TableDelimiters
+    /// <summary>
+    /// The table delimiter
+    /// </summary>
+    public enum TableDelimiters
 	{
-		[Display(ShortName = "|")]
+        /// <summary>
+        /// Pipe separated
+        /// </summary>
+        [Display(ShortName = "|")]
 		Psv,
 
+        /// <summary>
+        /// Colon separated
+        /// </summary>
 		[Display(ShortName = ":")]
 		Dsv,
 
+        /// <summary>
+        /// Comma separated
+        /// </summary>
 		[Display(ShortName = ",")]
 		Csv
 	}

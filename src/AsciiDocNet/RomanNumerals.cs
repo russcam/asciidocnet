@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AsciiDocNet
 {
-	public static class RomanNumerals
+	internal static class RomanNumerals
 	{
 		private static readonly string[][] RomanNumeralsStrings =
 		{

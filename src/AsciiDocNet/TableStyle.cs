@@ -2,30 +2,57 @@
 
 namespace AsciiDocNet
 {
-	public enum TableStyle
-	{
-		[Display(ShortName = "d")]
-		None,
+    /// <summary>
+    /// The table style
+    /// </summary>
+    public enum TableStyle
+    {
+        /// <summary>
+        /// none
+        /// </summary>
+        [Display(ShortName = "d")]
+        None,
 
-		[Display(ShortName = "s")]
-		Strong,
+        /// <summary>
+        /// strong
+        /// </summary>
+        [Display(ShortName = "s")]
+        Strong,
 
-		[Display(ShortName = "e")]
-		Emphasis,
+        /// <summary>
+        /// emphasis
+        /// </summary>
+        [Display(ShortName = "e")]
+        Emphasis,
 
-		[Display(ShortName = "m")]
-		Monospaced,
+        /// <summary>
+        /// monospaced
+        /// </summary>
+        [Display(ShortName = "m")]
+        Monospaced,
 
-		[Display(ShortName = "h")]
-		Header,
+        /// <summary>
+        /// header
+        /// </summary>
+        [Display(ShortName = "h")]
+        Header,
 
-		[Display(ShortName = "l")]
-		Literal,
+        /// <summary>
+        /// literal
+        /// </summary>
+        [Display(ShortName = "l")]
+        Literal,
 
-		[Display(ShortName = "v")]
-		Verse,
+        /// <summary>
+        /// verse
+        /// </summary>
+        [Display(ShortName = "v")]
+        Verse,
 
-		[Display(ShortName = "a")]
-		Asciidoc
-	}
+        /// <summary>
+        /// asciidoc
+        /// </summary>
+        [Display(ShortName = "a")]
+        Asciidoc
+    }
 }

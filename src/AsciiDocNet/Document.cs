@@ -1,16 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 namespace AsciiDocNet
 {
-	public class Document : Container
+    /// <summary>
+    /// A Asciidoc document
+    /// </summary>
+    /// <seealso cref="AsciiDocNet.Container" />
+    public class Document : Container
 	{
-		public Document() : this(null)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Document"/> class.
+        /// </summary>
+        public Document() : this(null)
 		{
 		}
 
-		public Document(string source)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Document"/> class.
+        /// </summary>
+        /// <param name="source">The source path of the document</param>
+        public Document(string source)
 		{
 			if (!string.IsNullOrEmpty(source))
 			{
@@ -23,81 +35,170 @@ namespace AsciiDocNet
 			}
 		}
 
-		public IList<AttributeEntry> Attributes { get; } = new List<AttributeEntry>();
+        /// <summary>
+        /// Gets the attributes.
+        /// </summary>
+        /// <value>
+        /// The attributes.
+        /// </value>
+        public IList<AttributeEntry> Attributes { get; } = new List<AttributeEntry>();
 
-		public AuthorInfo Author => Authors.FirstOrDefault();
+        /// <summary>
+        /// Gets the authors.
+        /// </summary>
+        /// <value>
+        /// The authors.
+        /// </value>
+        public IList<AuthorInfo> Authors { get; } = new List<AuthorInfo>();
 
-		public IList<AuthorInfo> Authors { get; } = new List<AuthorInfo>();
+        /// <summary>
+        /// Gets or sets the type of the document.
+        /// </summary>
+        /// <value>
+        /// The type of the document.
+        /// </value>
+        public DocType DocType { get; set; } = DocType.Article;
 
-		public DocType DocType { get; set; } = DocType.Article;
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
+        /// <value>
+        /// The title.
+        /// </value>
+        public DocumentTitle Title { get; set; }
 
-		public DocumentTitle Title { get; set; }
-
-		public static Document Load(string path)
+        /// <summary>
+        /// Loads a document from the specified path
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>
+        /// A new instance of <see cref="Document" />
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="System.AggregateException"></exception>
+        public static Document Load(string path)
 		{
-			if (string.IsNullOrEmpty(path))
-			{
-				return new Document();
-			}
+            if (path == null)
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
 
-			using (var asciiReader = new DocumentReader(path))
+            if (path.Length == 0)
+            {
+                throw new AggregateException($"{nameof(path)} must not be empty.");
+            }
+
+			using (var reader = new DocumentReader(path))
 			{
 				var parser = new Parser();
-				return parser.Process(asciiReader);
+				return parser.Parse(reader);
 			}
 		}
 
-		public static Document Load(Stream stream)
+        /// <summary>
+        /// Loads a document from the specified stream
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <returns>
+        /// A new instance of <see cref="Document" />
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="System.ArgumentException"></exception>
+        public static Document Load(Stream stream)
 		{
-			if (stream == null || stream.Length == 0)
+			if (stream == null)
 			{
-				return new Document();
+				throw new ArgumentNullException(nameof(stream));
 			}
+
+            if (stream.Length == 0)
+            {
+                throw new ArgumentException($"{nameof(stream)} must not be empty.");
+            }
 
 			using (var reader = new StreamReader(stream))
 			{
 				using (var asciiReader = new DocumentReader(reader))
 				{
 					var parser = new Parser();
-					return parser.Process(asciiReader);
+					return parser.Parse(asciiReader);
 				}
 			}
 		}
 
-		public static bool operator ==(Document left, Document right)
+        /// <summary>
+        /// Implements the operator ==.
+        /// </summary>
+        /// <param name="left">The left.</param>
+        /// <param name="right">The right.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator ==(Document left, Document right)
 		{
 			return Equals(left, right);
 		}
 
-		public static bool operator !=(Document left, Document right)
+        /// <summary>
+        /// Implements the operator !=.
+        /// </summary>
+        /// <param name="left">The left.</param>
+        /// <param name="right">The right.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator !=(Document left, Document right)
 		{
 			return !Equals(left, right);
 		}
 
-		public static Document Parse(string text)
+        /// <summary>
+        /// Parses a document from the specified string
+        /// </summary>
+        /// <param name="text">The string.</param>
+        /// <returns>A new instance of <see cref="Document"/></returns>
+        public static Document Parse(string text)
 		{
-			if (string.IsNullOrEmpty(text))
-			{
-				return new Document();
-			}
+            if (text == null)
+            {
+                throw new ArgumentNullException(nameof(text));
+            }
 
-			using (var reader = new StringReader(text))
+            if (text.Length == 0)
+            {
+                throw new ArgumentException($"{nameof(text)} must not be empty.");
+            }
+
+            using (var reader = new StringReader(text))
 			{
 				using (var asciiReader = new DocumentReader(reader))
 				{
 					var parser = new Parser();
-					return parser.Process(asciiReader);
+					return parser.Parse(asciiReader);
 				}
 			}
 		}
 
-		public override TVisitor Accept<TVisitor>(TVisitor visitor)
+        /// <summary>
+        /// Accepts a visitor to visit this document instance
+        /// </summary>
+        /// <typeparam name="TVisitor">The type of the visitor.</typeparam>
+        /// <param name="visitor">The visitor.</param>
+        /// <returns></returns>
+        public override TVisitor Accept<TVisitor>(TVisitor visitor)
 		{
-			visitor.Visit(this);
+			visitor.VisitDocument(this);
 			return visitor;
 		}
 
-		public override bool Equals(object obj)
+        /// <summary>
+        /// Determines whether the specified <see cref="object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool Equals(object obj)
 		{
 			if (ReferenceEquals(null, obj))
 			{
@@ -110,7 +211,13 @@ namespace AsciiDocNet
 			return obj.GetType() == this.GetType() && Equals((Document)obj);
 		}
 
-		public override int GetHashCode()
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// </returns>
+        public override int GetHashCode()
 		{
 			unchecked
 			{
@@ -123,11 +230,16 @@ namespace AsciiDocNet
 			}
 		}
 
-		protected bool Equals(Document other)
+        /// <summary>
+        /// Determines whether the specified <see cref="Document" />, is equal to this instance.
+        /// </summary>
+        /// <param name="other">The other.</param>
+        /// <returns>true if equal; otherwise, false</returns>
+        protected bool Equals(Document other)
 		{
 			return base.Equals(other) &&
-			       Equals(Attributes, other.Attributes) &&
-			       Equals(Authors, other.Authors) &&
+			       Attributes.SequenceEqual(other.Attributes) &&
+			       Authors.SequenceEqual(other.Authors) &&
 			       DocType == other.DocType &&
 			       Equals(Title, other.Title);
 		}

@@ -67,7 +67,7 @@
     <Compile Include="LabeledList.cs" />
     <Compile Include="Link.cs" />
     <Compile Include="OrderedList.cs" />
-    <Compile Include="ParsingContext.cs" />
+    <Compile Include="ParserContext.cs" />
     <Compile Include="RomanNumerals.cs" />
     <Compile Include="Strong.cs" />
     <Compile Include="CheckListItem.cs" />
@@ -95,10 +95,10 @@
     <Compile Include="OptionsAttribute.cs" />
     <Compile Include="OrderedListItem.cs" />
     <Compile Include="Paragraph.cs" />
-    <Compile Include="Pass.cs" />
+    <Compile Include="Passthrough.cs" />
     <Compile Include="PatternMatcher.cs" />
     <Compile Include="Patterns.cs" />
-    <Compile Include="Quotation.cs" />
+    <Compile Include="QuotationMark.cs" />
     <Compile Include="Quote.cs" />
     <Compile Include="DocumentReader.cs" />
     <Compile Include="RoleAttribute.cs" />

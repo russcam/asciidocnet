@@ -2,345 +2,563 @@ using System.Collections.Generic;
 
 namespace AsciiDocNet
 {
-	public abstract class NoopVisitor : IDocumentVisitor
-	{
-		public virtual void Visit(Admonition admonition)
-		{
-			VisitAttributable(admonition);
-			Visit((Container)admonition);
-		}
+    /// <summary>
+    /// A base visitor from which to derive visitors to
+    /// visit AsciiDoc documents
+    /// </summary>
+    /// <remarks>
+    /// Override only the visit methods for elements to visit.
+    /// </remarks>
+    /// <seealso cref="AsciiDocNet.IDocumentVisitor" />
+    public abstract class NoopVisitor : IDocumentVisitor
+    {
+        /// <summary>
+        /// Visits the admonition.
+        /// </summary>
+        /// <param name="admonition">The admonition.</param>
+        public virtual void VisitAdmonition(Admonition admonition)
+        {
+            VisitAttributable(admonition);
+            VisitContainer(admonition);
+        }
 
-		public virtual void Visit(Anchor anchor)
-		{
-		}
+        /// <summary>
+        /// Visits the anchor.
+        /// </summary>
+        /// <param name="anchor">The anchor.</param>
+        public virtual void VisitAnchor(Anchor anchor)
+        {
+        }
 
-		public virtual void Visit(Attribute attribute)
-		{
-		}
+        /// <summary>
+        /// Visits the attribute.
+        /// </summary>
+        /// <param name="attribute">The attribute.</param>
+        public virtual void VisitAttribute(Attribute attribute)
+        {
+        }
 
-		public virtual void Visit(AttributeEntry attributeEntry)
-		{
-		}
+        /// <summary>
+        /// Visits the attribute entry.
+        /// </summary>
+        /// <param name="attributeEntry">The attribute entry.</param>
+        public virtual void VisitAttributeEntry(AttributeEntry attributeEntry)
+        {
+        }
 
-		public virtual void Visit(AttributeList attributes)
-		{
-			if (attributes == null)
-			{
-				return;
-			}
+        /// <summary>
+        /// Visits the attribute list.
+        /// </summary>
+        /// <param name="attributes">The attributes.</param>
+        public virtual void VisitAttributeList(AttributeList attributes)
+        {
+            if (attributes == null) return;
 
-			if (attributes.HasAnchor)
-			{
-				attributes.Anchor.Accept(this);
-			}
+            if (attributes.HasAnchor)
+            {
+                attributes.Anchor.Accept(this);
+            }
 
-			if (attributes.HasTitle)
-			{
-				attributes.Title.Accept(this);
-			}
+            if (attributes.HasTitle)
+            {
+                attributes.Title.Accept(this);
+            }
 
-			foreach (var attribute in attributes)
-			{
-				attribute.Accept(this);
-			}
-		}
+            foreach (var attribute in attributes)
+            {
+                attribute.Accept(this);
+            }
+        }
 
-		public virtual void Visit(AttributeReference reference)
-		{
-		}
+        /// <summary>
+        /// Visits the attribute reference.
+        /// </summary>
+        /// <param name="reference">The reference.</param>
+        public virtual void VisitAttributeReference(AttributeReference reference)
+        {
+        }
 
-		public virtual void Visit(Audio audio)
-		{
-			VisitAttributable(audio);
-		}
+        /// <summary>
+        /// Visits the audio.
+        /// </summary>
+        /// <param name="audio">The audio.</param>
+        public virtual void VisitAudio(Audio audio)
+        {
+            VisitAttributable(audio);
+        }
 
-		public virtual void Visit(AuthorInfo author)
-		{
-		}
+        /// <summary>
+        /// Visits the author
+        /// </summary>
+        /// <param name="author">The author.</param>
+        public virtual void VisitAuthorInfo(AuthorInfo author)
+        {
+        }
 
-		public virtual void Visit(IList<AuthorInfo> authors)
-		{
-			foreach (var author in authors)
-			{
-				author.Accept(this);
-			}
-		}
+        /// <summary>
+        /// Visits the authors.
+        /// </summary>
+        /// <param name="authors">The authors.</param>
+        public virtual void VisitAuthorInfos(IList<AuthorInfo> authors)
+        {
+            foreach (var author in authors)
+            {
+                author.Accept(this);
+            }
+        }
 
-		public virtual void Visit(Strong strong)
-		{
-		}
+        /// <summary>
+        /// Visits the strong.
+        /// </summary>
+        /// <param name="strong">The strong.</param>
+        public virtual void VisitStrong(Strong strong)
+        {
+        }
 
-		public virtual void Visit(CheckListItem listItem)
-		{
-			VisitAttributable(listItem);
-			Visit((Container)listItem);
-		}
+        /// <summary>
+        /// Visits the check list item.
+        /// </summary>
+        /// <param name="listItem">The list item.</param>
+        public virtual void VisitCheckListItem(CheckListItem listItem)
+        {
+            VisitAttributable(listItem);
+            VisitContainer(listItem);
+        }
 
-		public virtual void Visit(Document document)
-		{
-			if (document == null)
-			{
-				return;
-			}
+        /// <summary>
+        /// Visits the document.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        public virtual void VisitDocument(Document document)
+        {
+            if (document == null) return;
 
-			foreach (var attribute in document.Attributes)
-			{
-				attribute.Accept(this);
-			}
+            foreach (var attribute in document.Attributes)
+            {
+                attribute.Accept(this);
+            }
 
-			Visit(document.Title);
-			Visit(document.Authors);
-			Visit((Container)document);
-		}
+            VisitDocumentTitle(document.Title);
+            VisitAuthorInfos(document.Authors);
+            VisitContainer(document);
+        }
 
-		public virtual void Visit(Mark mark)
-		{
-			Visit((InlineContainer)mark);
-		}
+        /// <summary>
+        /// Visits the mark.
+        /// </summary>
+        /// <param name="mark">The mark.</param>
+        public virtual void VisitMark(Mark mark)
+        {
+            VisitInlineContainer(mark);
+        }
 
-		public virtual void Visit(Container elements)
-		{
-			if (elements == null)
-			{
-				return;
-			}
+        /// <summary>
+        /// Visits the container.
+        /// </summary>
+        /// <param name="container">The container.</param>
+        public virtual void VisitContainer(Container container)
+        {
+            if (container == null) return;
+            for (int index = 0; index < container.Count; index++)
+            {
+                var element = container[index];
+                element.Accept(this);
+            }
+        }
 
-			for (int index = 0; index < elements.Count; index++)
-			{
-				var element = elements[index];
-				element.Accept(this);
-			}
-		}
+        /// <summary>
+        /// Visits the inline container.
+        /// </summary>
+        /// <param name="inlineContainer">The inline container.</param>
+        public virtual void VisitInlineContainer(InlineContainer inlineContainer)
+        {
+            if (inlineContainer == null) return;
+            for (int index = 0; index < inlineContainer.Count; index++)
+            {
+                var inlineElement = inlineContainer[index];
+                inlineElement.Accept(this);
+            }
+        }
 
-		public virtual void Visit(InlineContainer elements)
-		{
-			for (int index = 0; index < elements.Count; index++)
-			{
-				var inlineElement = elements[index];
-				inlineElement.Accept(this);
-			}
-		}
+        /// <summary>
+        /// Visits the image.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        public virtual void VisitImage(Image image)
+        {
+            VisitAttributable(image);
+        }
 
-		public virtual void Visit(Image image)
-		{
-			VisitAttributable(image);
-		}
+        /// <summary>
+        /// Visits the include.
+        /// </summary>
+        /// <param name="include">The include.</param>
+        public virtual void VisitInclude(Include include)
+        {
+        }
 
-		public virtual void Visit(Include include)
-		{
-		}
+        /// <summary>
+        /// Visits the emphasis.
+        /// </summary>
+        /// <param name="emphasis">The emphasis.</param>
+        public virtual void VisitEmphasis(Emphasis emphasis)
+        {
+        }
 
-		public virtual void Visit(Emphasis emphasis)
-		{
-		}
+        /// <summary>
+        /// Visits the labeled list item.
+        /// </summary>
+        /// <param name="listItem">The list item.</param>
+        public virtual void VisitLabeledListItem(LabeledListItem listItem)
+        {
+            VisitAttributable(listItem);
+            VisitContainer(listItem);
+        }
 
-		public virtual void Visit(LabeledListItem listItem)
-		{
-			VisitAttributable(listItem);
-			Visit((Container)listItem);
-		}
+        /// <summary>
+        /// Visits the labeled list.
+        /// </summary>
+        /// <param name="list">The list.</param>
+        public virtual void VisitLabeledList(LabeledList list)
+        {
+            if (list == null) return;
+            foreach (var listItem in list.Items)
+            {
+                listItem.Accept(this);
+            }
+        }
 
-		public virtual void Visit(LabeledList list)
-		{
-			foreach (var listItem in list.Items)
-			{
-				listItem.Accept(this);
-			}
-		}
+        /// <summary>
+        /// Visits the link.
+        /// </summary>
+        /// <param name="link">The link.</param>
+        public virtual void VisitLink(Link link)
+        {
+        }
 
-		public virtual void Visit(Link link)
-		{
-		}
+        /// <summary>
+        /// Visits the listing.
+        /// </summary>
+        /// <param name="listing">The listing.</param>
+        public virtual void VisitListing(Listing listing)
+        {
+            VisitAttributable(listing);
+            VisitCallouts(listing);
+        }
 
-		public virtual void Visit(Listing listing)
-		{
-			VisitAttributable(listing);
-			VisitCallouts(listing);
-		}
+        /// <summary>
+        /// Visits the callout.
+        /// </summary>
+        /// <param name="callout">The callout.</param>
+        public virtual void VisitCallout(Callout callout)
+        {
+        }
 
-		public virtual void Visit(Callout callout)
-		{
-		}
+        /// <summary>
+        /// Visits the unordered list item.
+        /// </summary>
+        /// <param name="listItem">The list item.</param>
+        public virtual void VisitUnorderedListItem(UnorderedListItem listItem)
+        {
+            VisitAttributable(listItem);
+            VisitContainer(listItem);
+        }
 
-		public virtual void Visit(UnorderedListItem listItem)
-		{
-			VisitAttributable(listItem);
-			Visit((Container)listItem);
-		}
+        /// <summary>
+        /// Visits the unordered list.
+        /// </summary>
+        /// <param name="list">The list.</param>
+        public virtual void VisitUnorderedList(UnorderedList list)
+        {
+            foreach (var listItem in list.Items)
+            {
+                listItem.Accept(this);
+            }
+        }
 
-		public virtual void Visit(UnorderedList list)
-		{
-			foreach (var listItem in list.Items)
-			{
-				listItem.Accept(this);
-			}
-		}
+        /// <summary>
+        /// Visits the text literal.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        public virtual void VisitTextLiteral(TextLiteral text)
+        {
+        }
 
-		public virtual void Visit(TextLiteral text)
-		{
-		}
+        /// <summary>
+        /// Visits the literal.
+        /// </summary>
+        /// <param name="literal">The literal.</param>
+        public virtual void VisitLiteral(Literal literal)
+        {
+            VisitAttributable(literal);
+        }
 
-		public virtual void Visit(Literal literal)
-		{
-			VisitAttributable(literal);
-		}
+        /// <summary>
+        /// Visits the media.
+        /// </summary>
+        /// <param name="media">The media.</param>
+        public virtual void VisitMedia(Media media)
+        {
+        }
 
-		public virtual void Visit(Media media)
-		{
-		}
+        /// <summary>
+        /// Visits the monospace.
+        /// </summary>
+        /// <param name="monospace">The monospace.</param>
+        public virtual void VisitMonospace(Monospace monospace)
+        {
+        }
 
-		public virtual void Visit(Monospace monospace)
-		{
-		}
+        /// <summary>
+        /// Visits the named attribute.
+        /// </summary>
+        /// <param name="attribute">The attribute.</param>
+        public virtual void VisitNamedAttribute(NamedAttribute attribute)
+        {
+        }
 
-		public virtual void Visit(NamedAttribute attribute)
-		{
-		}
+        /// <summary>
+        /// Visits the open.
+        /// </summary>
+        /// <param name="open">The open.</param>
+        public virtual void VisitOpen(Open open)
+        {
+            VisitAttributable(open);
+            VisitContainer(open);
+        }
 
-		public virtual void Visit(Open open)
-		{
-			VisitAttributable(open);
-			Visit((Container)open);
-		}
+        /// <summary>
+        /// Visits the ordered list item.
+        /// </summary>
+        /// <param name="listItem">The list item.</param>
+        public virtual void VisitOrderedListItem(OrderedListItem listItem)
+        {
+            VisitAttributable(listItem);
+            VisitContainer(listItem);
+        }
 
-		public virtual void Visit(OrderedListItem listItem)
-		{
-			VisitAttributable(listItem);
-			Visit((Container)listItem);
-		}
+        /// <summary>
+        /// Visits the ordered list.
+        /// </summary>
+        /// <param name="list">The list.</param>
+        public virtual void VisitOrderedList(OrderedList list)
+        {
+            foreach (var listItem in list.Items)
+            {
+                listItem.Accept(this);
+            }
+        }
 
-		public virtual void Visit(OrderedList list)
-		{
-			foreach (var listItem in list.Items)
-			{
-				listItem.Accept(this);
-			}
-		}
+        /// <summary>
+        /// Visits the paragraph.
+        /// </summary>
+        /// <param name="paragraph">The paragraph.</param>
+        public virtual void VisitParagraph(Paragraph paragraph)
+        {
+            VisitAttributable(paragraph);
+            VisitInlineContainer(paragraph);
+        }
 
-		public virtual void Visit(Paragraph paragraph)
-		{
-			VisitAttributable(paragraph);
-			Visit((InlineContainer)paragraph);
-		}
+        /// <summary>
+        /// Visits the quotation mark.
+        /// </summary>
+        /// <param name="quotation">The QuotationMark.</param>
+        public virtual void VisitQuotationMark(QuotationMark quotation)
+        {
+        }
 
-		public virtual void Visit(Quotation quotation)
-		{
-		}
+        /// <summary>
+        /// Visits the quote.
+        /// </summary>
+        /// <param name="quote">The quote.</param>
+        public virtual void VisitQuote(Quote quote)
+        {
+            VisitAttributable(quote);
+            VisitContainer(quote);
+        }
 
-		public virtual void Visit(Quote quote)
-		{
-			VisitAttributable(quote);
-			Visit((Container)quote);
-		}
+        /// <summary>
+        /// Visits the section title.
+        /// </summary>
+        /// <param name="sectionTitle">The section title.</param>
+        public virtual void VisitSectionTitle(SectionTitle sectionTitle)
+        {
+            VisitInlineContainer(sectionTitle);
+        }
 
-		public virtual void Visit(SectionTitle sectionTitle)
-		{
-			Visit((InlineContainer)sectionTitle);
-		}
+        /// <summary>
+        /// Visits the source.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        public virtual void VisitSource(Source source)
+        {
+            VisitAttributable(source);
+            VisitCallouts(source);
+        }
 
-		public virtual void Visit(Source source)
-		{
-			VisitAttributable(source);
-			VisitCallouts(source);
-		}
+        /// <summary>
+        /// Visits the title.
+        /// </summary>
+        /// <param name="title">The title.</param>
+        public virtual void VisitTitle(Title title)
+        {
+        }
 
-		public virtual void Visit(Title title)
-		{
-		}
+        /// <summary>
+        /// Visits the unset attribute entry.
+        /// </summary>
+        /// <param name="attributeEntry">The attribute entry.</param>
+        public virtual void VisitUnsetAttributeEntry(UnsetAttributeEntry attributeEntry)
+        {
+        }
 
-		public virtual void Visit(UnsetAttributeEntry attributeEntry)
-		{
-		}
+        /// <summary>
+        /// Visits the video.
+        /// </summary>
+        /// <param name="video">The video.</param>
+        public virtual void VisitVideo(Video video)
+        {
+            VisitAttributable(video);
+        }
 
-		public virtual void Visit(Video video)
-		{
-			VisitAttributable(video);
-		}
+        /// <summary>
+        /// Visits the example.
+        /// </summary>
+        /// <param name="example">The example.</param>
+        public virtual void VisitExample(Example example)
+        {
+            VisitAttributable(example);
+            VisitContainer(example);
+        }
 
-		public virtual void Visit(Example example)
-		{
-			VisitAttributable(example);
-			Visit((Container)example);
-		}
+        /// <summary>
+        /// Visits the comment.
+        /// </summary>
+        /// <param name="comment">The comment.</param>
+        public virtual void VisitComment(Comment comment)
+        {
+            VisitAttributable(comment);
+        }
 
-		public virtual void Visit(Comment comment)
-		{
-			VisitAttributable(comment);
-		}
+        /// <summary>
+        /// Visits the fenced.
+        /// </summary>
+        /// <param name="fenced">The fenced.</param>
+        public virtual void VisitFenced(Fenced fenced)
+        {
+            VisitAttributable(fenced);
+        }
 
-		public virtual void Visit(Fenced fenced)
-		{
-			VisitAttributable(fenced);
-		}
+        /// <summary>
+        /// Visits the passthrough.
+        /// </summary>
+        /// <param name="passthrough">The Passthrough.</param>
+        public virtual void VisitPassthrough(Passthrough passthrough)
+        {
+            VisitAttributable(passthrough);
+        }
 
-		public virtual void Visit(Pass pass)
-		{
-			VisitAttributable(pass);
-		}
+        /// <summary>
+        /// Visits the sidebar.
+        /// </summary>
+        /// <param name="sidebar">The sidebar.</param>
+        public virtual void VisitSidebar(Sidebar sidebar)
+        {
+            VisitAttributable(sidebar);
+            VisitContainer(sidebar);
+        }
 
-		public virtual void Visit(Sidebar sidebar)
-		{
-			VisitAttributable(sidebar);
-			Visit((Container)sidebar);
-		}
+        /// <summary>
+        /// Visits the table.
+        /// </summary>
+        /// <param name="table">The table.</param>
+        public virtual void VisitTable(Table table)
+        {
+            VisitAttributable(table);
+            VisitContainer(table);
+        }
 
-		public virtual void Visit(Table table)
-		{
-			VisitAttributable(table);
-			Visit((Container)table);
-		}
+        /// <summary>
+        /// Visits the document title.
+        /// </summary>
+        /// <param name="title">The title.</param>
+        public virtual void VisitDocumentTitle(DocumentTitle title)
+        {
+            VisitAttributable(title);
+        }
 
-		public virtual void Visit(DocumentTitle title)
-		{
-			VisitAttributable(title);
-		}
+        /// <summary>
+        /// Visits the internal anchor.
+        /// </summary>
+        /// <param name="anchor">The anchor.</param>
+        public virtual void VisitInternalAnchor(InternalAnchor anchor)
+        {
+        }
 
-		public virtual void Visit(InternalAnchor anchor)
-		{
-		}
+        /// <summary>
+        /// Visits the inline anchor.
+        /// </summary>
+        /// <param name="anchor">The anchor.</param>
+        public virtual void VisitInlineAnchor(InlineAnchor anchor)
+        {
+        }
 
-		public virtual void Visit(InlineAnchor anchor)
-		{
-		}
+        /// <summary>
+        /// Visits the stem.
+        /// </summary>
+        /// <param name="stem">The stem.</param>
+        public virtual void VisitStem(Stem stem)
+        {
+            VisitAttributable(stem);
+        }
 
-		public virtual void Visit(Stem stem)
-		{
-			VisitAttributable(stem);
-		}
+        /// <summary>
+        /// Visits the verse.
+        /// </summary>
+        /// <param name="verse">The verse.</param>
+        public virtual void VisitVerse(Verse verse)
+        {
+            VisitAttributable(verse);
+            VisitContainer(verse);
+        }
 
-		public virtual void Visit(Verse verse)
-		{
-			VisitAttributable(verse);
-			Visit((Container)verse);
-		}
+        /// <summary>
+        /// Visits the subscript.
+        /// </summary>
+        /// <param name="subscript">The subscript.</param>
+        public virtual void VisitSubscript(Subscript subscript)
+        {
+        }
 
-		public virtual void Visit(Subscript subscript)
-		{
-		}
+        /// <summary>
+        /// Visits the superscript.
+        /// </summary>
+        /// <param name="superscript">The superscript.</param>
+        public virtual void VisitSuperscript(Superscript superscript)
+        {
+        }
 
-		public virtual void Visit(Superscript superscript)
-		{
-		}
+        /// <summary>
+        /// Visits the attributable.
+        /// </summary>
+        /// <param name="attributable">The attributable.</param>
+        private void VisitAttributable(IAttributable attributable)
+        {
+            if (attributable == null) return;
+            VisitAttributeList(attributable.Attributes);
+        }
 
-		private void VisitAttributable(IAttributable attributable)
-		{
-			if (attributable == null)
-			{
-				return;
-			}
-			Visit(attributable.Attributes);
-		}
-
-		private void VisitCallouts(Listing element)
-		{
-			if (element == null)
-			{
-				return;
-			}
-			foreach (var callout in element.Callouts)
-			{
-				Visit(callout);
-			}
-		}
-	}
+        /// <summary>
+        /// Visits the callouts.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        private void VisitCallouts(Listing element)
+        {
+            if (element == null) return;
+            foreach (var callout in element.Callouts)
+            {
+                VisitCallout(callout);
+            }
+        }
+    }
 }

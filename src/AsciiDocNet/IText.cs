@@ -5,6 +5,12 @@ namespace AsciiDocNet
 	/// </summary>
 	public interface IText
 	{
-		string Text { get; set; }
+        /// <summary>
+        /// Gets or sets the text.
+        /// </summary>
+        /// <value>
+        /// The text.
+        /// </value>
+        string Text { get; set; }
 	}
 }

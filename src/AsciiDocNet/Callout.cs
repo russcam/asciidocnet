@@ -1,56 +1,93 @@
 namespace AsciiDocNet
 {
-	// TODO: Callout can have other elements
-	public class Callout
-	{
-		public Callout(int number, string text)
-		{
-			Number = number;
-			Text = text;
-		}
+    // TODO: Callout can have other elements
+    /// <summary>
+    /// A callout for annotating verbatim text.
+    /// </summary>
+    public class Callout
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Callout"/> class.
+        /// </summary>
+        /// <param name="number">The number.</param>
+        /// <param name="text">The text.</param>
+        public Callout(int number, string text)
+        {
+            Number = number;
+            Text = text;
+        }
 
-		public int Number { get; set; }
+        /// <summary>
+        /// Gets or sets the number.
+        /// </summary>
+        /// <value>
+        /// The number.
+        /// </value>
+        public int Number { get; set; }
 
-		public string Text { get; set; }
+        /// <summary>
+        /// Gets or sets the text.
+        /// </summary>
+        /// <value>
+        /// The text.
+        /// </value>
+        public string Text { get; set; }
 
-		public static bool operator ==(Callout left, Callout right)
-		{
-			return Equals(left, right);
-		}
+        /// <summary>
+        /// Implements the operator ==.
+        /// </summary>
+        /// <param name="left">The left.</param>
+        /// <param name="right">The right.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator ==(Callout left, Callout right) => Equals(left, right);
 
-		public static bool operator !=(Callout left, Callout right)
-		{
-			return !Equals(left, right);
-		}
+        /// <summary>
+        /// Implements the operator !=.
+        /// </summary>
+        /// <param name="left">The left.</param>
+        /// <param name="right">The right.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator !=(Callout left, Callout right) => !Equals(left, right);
 
-		public override bool Equals(object obj)
-		{
-			if (ReferenceEquals(null, obj))
-			{
-				return false;
-			}
-			if (ReferenceEquals(this, obj))
-			{
-				return true;
-			}
-			if (obj.GetType() != this.GetType())
-			{
-				return false;
-			}
-			return Equals((Callout)obj);
-		}
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            return obj.GetType() == this.GetType() && Equals((Callout)obj);
+        }
 
-		public override int GetHashCode()
-		{
-			unchecked
-			{
-				return (Number * 397) ^ (Text?.GetHashCode() ?? 0);
-			}
-		}
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// </returns>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (Number * 397) ^ (Text?.GetHashCode() ?? 0);
+            }
+        }
 
-		protected bool Equals(Callout other)
-		{
-			return Number == other.Number && string.Equals(Text, other.Text);
-		}
-	}
+        /// <summary>
+        /// Determines whether the specified <see cref="Callout" />, is equal to this instance.
+        /// </summary>
+        /// <param name="other">The other.</param>
+        /// <returns>true if equal; otherwise, false</returns>
+        protected bool Equals(Callout other) => Number == other.Number && string.Equals(Text, other.Text);
+    }
 }

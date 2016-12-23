@@ -14,14 +14,8 @@ namespace AsciiDocNet.Tests.Unit
 	{
 		protected abstract IEnumerable<object[]> Data { get; }
 
-		public IEnumerator<object[]> GetEnumerator()
-		{
-			return Data.GetEnumerator();
-		}
+		public IEnumerator<object[]> GetEnumerator() => Data.GetEnumerator();
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	}
 }

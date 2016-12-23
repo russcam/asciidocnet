@@ -2,21 +2,39 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AsciiDocNet
 {
-	public enum AdmonitionStyle
-	{
-		[Display(Name = "TIP")]
-		Tip,
+    /// <summary>
+    /// An Adomonition style
+    /// </summary>
+    public enum AdmonitionStyle
+    {
+        /// <summary>
+        /// A tip admonition
+        /// </summary>
+        [Display(Name = "TIP")]
+        Tip,
 
-		[Display(Name = "NOTE")]
-		Note,
+        /// <summary>
+        /// A note admonition
+        /// </summary>
+        [Display(Name = "NOTE")]
+        Note,
 
-		[Display(Name = "IMPORTANT")]
-		Important,
+        /// <summary>
+        /// A important admonition
+        /// </summary>
+        [Display(Name = "IMPORTANT")]
+        Important,
 
-		[Display(Name = "WARNING")]
-		Warning,
+        /// <summary>
+        /// A warning admonition
+        /// </summary>
+        [Display(Name = "WARNING")]
+        Warning,
 
-		[Display(Name = "CAUTION")]
-		Caution,
-	}
+        /// <summary>
+        /// A caution admonition
+        /// </summary>
+        [Display(Name = "CAUTION")]
+        Caution,
+    }
 }

@@ -2,7 +2,7 @@
 
 namespace AsciiDocNet
 {
-	public static class Substitutor
+	internal static class Substitutor
 	{
 		public static IReadOnlyDictionary<string, string> SpecialCharacters => 
 			new Dictionary<string, string> {

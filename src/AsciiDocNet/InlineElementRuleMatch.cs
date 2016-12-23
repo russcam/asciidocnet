@@ -1,24 +1,69 @@
 namespace AsciiDocNet
 {
-	public class InlineElementRuleMatch<TInlineElement> : InlineElementRuleMatch where TInlineElement : IInlineElement
+    /// <summary>
+    /// A match for an inline element rule
+    /// </summary>
+    /// <typeparam name="TInlineElement">The type of the inline element.</typeparam>
+    /// <seealso cref="AsciiDocNet.InlineElementRuleMatch" />
+    public class InlineElementRuleMatch<TInlineElement> : InlineElementRuleMatch where TInlineElement : IInlineElement
 	{
-		public new TInlineElement Element => (TInlineElement)base.Element;
+        /// <summary>
+        /// Gets the element.
+        /// </summary>
+        /// <value>
+        /// The element.
+        /// </value>
+        public new TInlineElement Element => (TInlineElement)base.Element;
 
-		public InlineElementRuleMatch(TInlineElement element, int startIndex, int endIndex) 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InlineElementRuleMatch{TInlineElement}"/> class.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="startIndex">The start index.</param>
+        /// <param name="endIndex">The end index.</param>
+        public InlineElementRuleMatch(TInlineElement element, int startIndex, int endIndex) 
 			: base(element, startIndex, endIndex)
 		{
 		}
 	}
 
-	public class InlineElementRuleMatch
+    /// <summary>
+    /// A match for an inline element rule
+    /// </summary>
+    /// <seealso cref="AsciiDocNet.InlineElementRuleMatch" />
+    public class InlineElementRuleMatch
 	{
-		public IInlineElement Element { get; }
+        /// <summary>
+        /// Gets the element.
+        /// </summary>
+        /// <value>
+        /// The element.
+        /// </value>
+        public IInlineElement Element { get; }
 
-		public int StartIndex { get; }
+        /// <summary>
+        /// Gets the start index.
+        /// </summary>
+        /// <value>
+        /// The start index.
+        /// </value>
+        public int StartIndex { get; }
 
-		public int EndIndex { get; }
+        /// <summary>
+        /// Gets the end index.
+        /// </summary>
+        /// <value>
+        /// The end index.
+        /// </value>
+        public int EndIndex { get; }
 
-		public InlineElementRuleMatch(IInlineElement element, int startIndex, int endIndex)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InlineElementRuleMatch"/> class.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="startIndex">The start index.</param>
+        /// <param name="endIndex">The end index.</param>
+        public InlineElementRuleMatch(IInlineElement element, int startIndex, int endIndex)
 		{
 			Element = element;
 			StartIndex = startIndex;
