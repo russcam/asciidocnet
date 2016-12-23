@@ -1607,7 +1607,345 @@ namespace AsciiDocNet
 
 		private void ProcessTable(Container parent, IDocumentReader reader, ref List<string> buffer, ref AttributeList attributes)
 		{
+			//ProcessParagraph(parent, ref buffer);
+
+			//var match = PatternMatcher.Table.Match(reader.Line);
+			//if (!match.Success)
+			//{
+			//	throw new ArgumentException("not the start of a table");
+			//}
+
+			//var delimiter = GetTableDelimiter(match.Groups[1].Value, attributes);			
+			//// number of columns is determined by the number of cells found in the first
+			//// non-blank line after the delimiter or by the values assigned to the cols
+			//// attribute
+			//TableColumnLayouts layout = null;
+			//var columnsAttribute = attributes["cols"] as NamedAttribute;
+			//if (columnsAttribute != null)
+			//{
+				
+			//	layout = ParseColumnsLayout(columnsAttribute.Value);
+			//}
+
+			//var table = new Table { Layout = layout, Delimiter = delimiter, Attributes = { attributes }};
+
+			//table.CreateColumns();
+
+			//var skipped = reader.ReadWhile(line => !PatternMatcher.BlankCharacters.IsMatch(line));
+			//var skipImplicitHeader = table.Attributes["header-option"] != null || table.Attributes["noheader-option"] != null;
+			//var lineNumber = reader.LineNumber;
+			//var tableParserContext = new TableParserContext(reader, table);
+
+			//while (reader.ReadLine() != null)
+			//{
+			//	var line = reader.Line;
+			//	string nextLine;
+
+			//	if (!skipImplicitHeader &&
+			//	    skipped == 0 &&
+			//	    reader.LineNumber == lineNumber + 1 &&
+			//	    (nextLine = reader.PeekLine()) != null && PatternMatcher.BlankCharacters.IsMatch(nextLine))
+			//	{
+			//		table.HasHeaderOption = true;
+			//		table.Attributes["header-option"] = new NamedAttribute("header-option", string.Empty, false);
+
+			//		var optionsAttribute = table.Attributes["options"] as NamedAttribute;
+			//		if (optionsAttribute != null && !optionsAttribute.Value.Contains("header"))
+			//		{
+			//			optionsAttribute.Value += ",header";
+			//		}
+			//		else
+			//		{
+			//			table.Attributes.Add(new NamedAttribute("options", "header", false));
+			//		}
+			//	}
+
+			//	if (tableParserContext.Format == TableDelimiters.Psv)
+			//	{
+			//		if (line.StartsWith(table.Delimiter))
+			//		{
+			//			line = line.Substring(1);
+			//			tableParserContext.CloseOpenCell();
+			//		}
+			//	}
+			//}
+
+			//// process the first row
+			//ProcessTableRow(table, reader, ref buffer);
+
+			////while (reader.Line != null &&
+			////       !Regex.IsMatch(reader.Line, Regex.Escape(match.Groups[0].Value)))
+			////{
+			////	if (PatternMatcher.BlankCharacters.IsMatch(reader.Line))
+			////	{
+			////		continue;
+			////	}
+
+
+			////	// a blank
+			////	reader.ReadLine();
+
+			////}
+
 			throw new NotImplementedException("TODO");
+		}
+
+
+
+		private void ProcessTableRow(Table table, IDocumentReader reader, ref List<string> buffer)
+		{
+			if (!table.Any() && !table.Layout.Any())
+			{				
+				var headerRow = false;
+				reader.ReadLine();
+				if (!PatternMatcher.BlankCharacters.IsMatch(reader.Line))
+				{
+					headerRow = true;
+				}
+				else
+				{
+					reader.ReadLine();
+				}
+
+
+
+				// create cells and add to row;
+				// we're in the first row, calculate the column count
+
+
+			}
+		}
+
+		private string GetTableDelimiter(string value, AttributeList attributes)
+		{
+			var delimiter = value;
+			var formatAttribute = attributes["format"] as NamedAttribute;
+			if (formatAttribute != null)
+			{
+				switch (formatAttribute.Value)
+				{
+					case "csv":
+						delimiter = ",";
+						break;
+					case "dsv":
+						delimiter = ":";
+						break;
+					case "psv":
+						delimiter = "|";
+						break;
+				}
+			}
+
+			var separatorAttribute = attributes["separator"] as NamedAttribute;
+			if (separatorAttribute != null)
+			{
+				if (separatorAttribute.Value.Length > 1)
+				{
+					// TODO: friendlier way to handle this.
+					throw new Exception("separator must be a single character");
+				}
+
+				delimiter = separatorAttribute.Value;
+			}
+
+			return delimiter;
+		}
+
+		private TableCellLayout ParseTableCellSpec(IDocumentReader reader, TableCellPosition position, string delimiter = null)
+		{
+			var line = reader.Line;
+			Match match = null;
+			var layout = new TableCellLayout();
+
+			switch (position)
+			{
+				case TableCellPosition.Start:
+					if (delimiter != null && line.Contains(delimiter))
+					{
+						var parts = line.Split(new[] { delimiter }, 2, StringSplitOptions.None);
+						match = PatternMatcher.CellSpecStart.Match(parts[0]);
+
+						if (match.Success)
+						{
+							if (string.IsNullOrEmpty(match.Groups[0].Value))
+							{
+								reader.Line = parts[1];
+								return layout;
+							}
+
+							reader.Line = parts[1];
+						}
+						else
+						{
+							return null;
+						}		
+					}
+					else
+					{
+						return null;
+					}
+					break;
+				case TableCellPosition.End:
+					match = PatternMatcher.CellSpecEnd.Match(line);
+
+					if (match.Success)
+					{
+						if (match.Groups[0].Value.TrimStart().Length == 0)
+						{
+							reader.Line = line.TrimEnd();
+							return layout;
+						}
+						// TODO: Verify this
+						reader.Line = line.Substring(0, match.Captures[0].Index);
+					}
+					else
+					{
+						return layout;
+					}
+					break;
+			}
+
+			if (!string.IsNullOrEmpty(match?.Groups[1].Value))
+			{
+				var values = match.Groups[1].Value.Split(new[] { '.' }, StringSplitOptions.None);
+				int colSpec = 1;
+				int rowSpec = 1;
+				if (values.Length > 0 && !int.TryParse(values[0], out colSpec))
+				{
+					colSpec = 1;
+				}
+				if (values.Length > 1 && !int.TryParse(values[1], out rowSpec))
+				{
+					rowSpec = 1;
+				}
+
+				if (match.Groups[2].Value == "+")
+				{
+					if (colSpec != 1)
+					{
+						layout.ColSpan = colSpec;
+					}
+					if (rowSpec != 1)
+					{
+						layout.RowSpan = rowSpec;
+					}
+				}
+				else if (match.Groups[2].Value == "*" && colSpec != 1)
+				{
+					layout.RepeatCol = colSpec;
+				}
+			}
+
+			if (!string.IsNullOrEmpty(match?.Groups[3].Value))
+			{
+				var values = match.Groups[1].Value.Split(new[] { '.' }, StringSplitOptions.None);
+				TableHorizontalAlignment horizontalAlignment;
+				if (values.Length > 0 &&
+					!string.IsNullOrEmpty(values[0]) &&
+					TableHorizontalAlignmentExtensions.TryGetValue(values[0], out horizontalAlignment))
+				{
+					layout.HorizontalAlign = horizontalAlignment;
+				}
+
+				TableVerticalAlignment verticalAlignment;
+				if (values.Length > 1 &&
+					!string.IsNullOrEmpty(values[1]) &&
+					TableVerticalAlignmentExtensions.TryGetValue(values[1], out verticalAlignment))
+				{
+					layout.VerticalAlign = verticalAlignment;
+				}
+			}
+
+			if (!string.IsNullOrEmpty(match?.Groups[4].Value))
+			{
+				TableStyle tableStyle;
+				if (TableStyleExtensions.TryGetValue(match.Groups[4].Value, out tableStyle))
+				{
+					layout.Style = tableStyle;
+				}
+			}
+
+			return layout;
+		}
+
+		private TableColumnLayouts ParseColumnsLayout(string value)
+		{
+			var layout = new TableColumnLayouts();
+			var specifiers = value.Split(',');
+			if (!specifiers.Any())
+			{
+				return layout;
+			}
+
+			foreach (var specifier in specifiers)
+			{
+				var spec = new TableColumnLayout();
+				if (string.IsNullOrEmpty(specifier))
+				{
+					spec.Width = 1;
+					layout.Add(spec);
+				}
+				else
+				{
+					var match = PatternMatcher.ColumnSpec.Match(specifier);
+					if (match.Success)
+					{
+						var alignment = match.Groups[2].Value;
+						if (!string.IsNullOrEmpty(alignment))
+						{
+							var values = alignment.Split(new[] { '.' }, StringSplitOptions.None);
+							TableHorizontalAlignment horizontalAlignment;
+							if (values.Length > 0 && 
+								!string.IsNullOrEmpty(values[0]) && 
+								TableHorizontalAlignmentExtensions.TryGetValue(values[0], out horizontalAlignment))
+							{
+								spec.HorizontalAlign = horizontalAlignment;
+							}
+
+							TableVerticalAlignment verticalAlignment;
+							if (values.Length > 1 &&
+								!string.IsNullOrEmpty(values[1]) &&
+								TableVerticalAlignmentExtensions.TryGetValue(values[1], out verticalAlignment))
+							{
+								spec.VerticalAlign = verticalAlignment;
+							}
+						}
+
+						var width = match.Groups[3].Value;
+						spec.Width = !string.IsNullOrEmpty(width) ? int.Parse(width): 1;
+
+						var style = match.Groups[4].Value;
+						TableStyle tableStyle;
+						if (!string.IsNullOrEmpty(style) && TableStyleExtensions.TryGetValue(style, out tableStyle))
+						{
+							spec.Style = tableStyle;
+						}
+
+						var copyStyle = match.Groups[1].Value;
+						if (!string.IsNullOrEmpty(copyStyle))
+						{
+							var duplicate = int.Parse(copyStyle);
+							layout.Add(spec);
+							for (int i = 1; i < duplicate; i++)
+							{
+								layout.Add(new TableColumnLayout
+								{
+									Width = spec.Width,
+									VerticalAlign = spec.VerticalAlign,
+									HorizontalAlign = spec.HorizontalAlign,
+									Style = spec.Style
+								});
+							}
+						}
+						else
+						{
+							layout.Add(spec);
+						}
+					}
+				}
+			}
+
+			return layout;
 		}
 
 		private void ProcessUnorderedListItem(ParsingContext context, IDocumentReader reader, ref List<string> buffer, ref AttributeList attributes)
@@ -1704,4 +2042,134 @@ namespace AsciiDocNet
 			return output.ToArray();
 		}
 	}
+
+	//internal class TableParserContext
+	//{
+	//	private readonly IDocumentReader _reader;
+	//	private readonly Table _table;
+	//	private Stack<TableCellLayout> _cellSpecs = new Stack<TableCellLayout>();<TableCellLayout>();
+	//	private int _colCount;
+	//	private string _buffer;
+	//	private List<TableCell> _currentRow;
+	//	private int _columnVisits;
+	//	private List<int> _activeRowSpans;
+
+	//	public TableParserContext(IDocumentReader reader, Table table)
+	//	{
+	//		_reader = reader;
+	//		_table = table;
+	//		Format = TableDelimiters.Psv;
+	//		TableDelimiters format;
+
+	//		_colCount = !table.Any() ? -1 : table.Count;
+
+	//		var formatAttribute = table.Attributes["format"] as NamedAttribute;
+	//		if (formatAttribute != null && Enum.TryParse(formatAttribute.Value, true, out format))
+	//		{
+	//			Format = format;
+	//		}
+
+	//		CellOpen = false;
+	//		_buffer = string.Empty;
+	//		_currentRow = new List<TableCell>();
+	//		_activeRowSpans = new List<int>();
+	//	}
+
+	//	public TableDelimiters Format { get; private set; }
+
+	//	public void CloseOpenCell(TableCellLayout spec = null)
+	//	{
+	//		_cellSpecs.Push(spec ?? new TableCellLayout());
+	//		if (CellOpen)
+	//		{
+	//			CloseCell(true);
+
+	//		}
+	//	}
+
+	//	private void CloseCell(bool endOfLine = false)
+	//	{
+	//		var cellText = _buffer.Trim();
+	//		_buffer = string.Empty;
+	//		TableCellLayout spec = null;
+	//		int repeat = 1;
+
+	//		if (Format == TableDelimiters.Psv)
+	//		{
+	//			spec = _cellSpecs.Pop() ?? new TableCellLayout();
+	//			repeat = spec.RepeatCol.GetValueOrDefault(1);
+	//		}
+	//		else if (Format == TableDelimiters.Csv)
+	//		{
+	//			if (cellText.Contains("\""))
+	//			{
+	//				if (cellText.StartsWith("\"") && cellText.EndsWith("\""))
+	//				{
+	//					cellText = cellText.Trim('"').Trim();
+	//				}
+
+	//				cellText = Regex.Replace(cellText, "(\"+)", "\"");
+	//			}
+	//		}
+
+	//		for (int i = 0; i < repeat; i++)
+	//		{
+	//			TableColumn column;
+	//			if (_colCount == -1)
+	//			{
+	//				column = new TableColumn(_table.Count + i, null);
+	//				_table.Add(column);
+	//				int extraColumns;
+	//				if (spec?.ColSpan != null && (extraColumns = spec.ColSpan.Value - 1) > 0)
+	//				{
+	//					var offset = _table.Count;
+	//					for (int j = 0; j < offset; j++)
+	//					{
+	//						_table.Add(new TableColumn(offset + j, null));
+	//					}
+	//				}
+	//			}
+	//			else
+	//			{
+	//				// TODO: Check this logic
+	//				if (_currentRow.Count > _table.Count)
+	//				{
+	//					return;
+	//				}
+
+	//				column = _table[_currentRow.Count];
+	//			}
+
+	//			var cell = new TableCell(column, cellText, spec);
+	//			if (cell.Layout.RowSpan.GetValueOrDefault(1) > 1)
+	//			{
+	//				ActivateRowSpan(cell.Layout.RowSpan, cell.Layout.ColSpan);
+	//			}
+
+	//			_columnVisits += cell.Layout.ColSpan.GetValueOrDefault(1);
+	//			_currentRow.Add(cell);
+
+	//			if (EndOfRow && (_colCount != -1 || _lineNumber > 0 || (endOfLine && i == repeat))
+	//			{
+	//				CloseRow();
+	//			}
+	//		}
+
+	//		CellOpen = false;
+	//	}
+
+	//	public bool EndOfRow => _colCount == -1 || EffectiveColumnVisits == _colCount;
+
+	//	public int EffectiveColumnVisits => _columnVisits + _activeRowSpans[0];
+
+	//	private void ActivateRowSpan(int? rowSpan, int? colSpan)
+	//	{
+	//		for (int i = 1; i < rowSpan.Value - 1; i++)
+	//		{
+	//			_activeRowSpans[i] = (_activeRowSpans.Count > i ? _activeRowSpans[i] : 0) + colSpan.Value;
+	//		}
+	//	}
+
+	//	public bool CellOpen { get; private set; }
+	//}
 }

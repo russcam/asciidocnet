@@ -287,7 +287,7 @@ namespace AsciiDocNet
 		public virtual void Visit(Table table)
 		{
 			VisitAttributable(table);
-			Visit((Container)table);
+			//Visit((Container)table);
 		}
 
 		public virtual void Visit(DocumentTitle title)

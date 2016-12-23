@@ -39,6 +39,12 @@ namespace AsciiDocNet
 			new Regex(
 				$@"^(?<level>(?:\-|\*){{1,5}}){Patterns.CharacterGroupWhitespace}+\[(?<checked>\*|\s|x|X)\]{Patterns.CharacterGroupWhitespace}+(?<text>.*?)$");
 
+		public static readonly Regex ColumnSpec = new Regex(@"^(?:(\d+)\*)?([<^>](?:\.[<^>]?)?|(?:[<^>]?\.)?[<^>])?(\d+%?)?([a-z])?$");
+
+		public static readonly Regex CellSpecStart = new Regex($@"^{Patterns.CharacterGroupWhitespace}*(?:(\d+(?:\.\d*)?|(?:\d*\.)?\d+)([*+]))?([<^>](?:\.[<^>]?)?|(?:[<^>]?\.)?[<^>])?([a-z])?$");
+
+		public static readonly Regex CellSpecEnd = new Regex($@"{Patterns.CharacterGroupWhitespace}+(?:(\d+(?:\.\d*)?|(?:\d*\.)?\d+)([*+]))?([<^>](?:\.[<^>]?)?|(?:[<^>]?\.)?[<^>])?([a-z])?$");
+
 		public static readonly Regex CommentBlock = new Regex($"^{Regex.Escape(Patterns.Block.Comment)}{Patterns.CharacterGroupWhitespace}*$");
 
 		public static readonly Regex CommentLine = new Regex(@"^//(?:[^/]|$)");
@@ -129,7 +135,6 @@ namespace AsciiDocNet
 		};
 
 		public static readonly Regex InlineImage = new Regex(@"\\?(?:image|icon):([^:\[][^\[]*)\[((?:\\\]|[^\]])*?)\]");
-
 
 		public static readonly Regex LabeledListItem =
 			new Regex(

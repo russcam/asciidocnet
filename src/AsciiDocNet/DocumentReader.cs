@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace AsciiDocNet
@@ -7,6 +8,7 @@ namespace AsciiDocNet
 	{
 		private readonly TextReader _reader;
 		private bool _disposed;
+		private Queue<string> _buffer;
 
 		public DocumentReader(string path)
 		{
@@ -18,9 +20,12 @@ namespace AsciiDocNet
 			{
 				throw new ArgumentException($"{nameof(path)} must have a length");
 			}
+			if (!File.Exists(path))
+			{
+				throw new FileNotFoundException($"No file found at {path}");
+			}
 
-			var stream = new FileStream(path, FileMode.Open);
-			_reader = new StreamReader(stream);
+			_reader = new StreamReader(new FileStream(path, FileMode.Open));
 		}
 
 		public DocumentReader(TextReader reader)
@@ -33,7 +38,7 @@ namespace AsciiDocNet
 			_reader = reader;
 		}
 
-		public string Line { get; private set; }
+		public string Line { get; set; }
 
 		public int LineNumber { get; private set; }
 
@@ -47,9 +52,53 @@ namespace AsciiDocNet
 
 		public string ReadLine()
 		{
-			Line = _reader.ReadLine();
+			if (_buffer != null && _buffer.Count > 0)
+			{
+				Line = _buffer.Dequeue();
+			}
+			else
+			{
+				Line = _reader.ReadLine();
+			}
+
 			++LineNumber;
 			return Line;
+		}
+
+		public string PeekLine()
+		{
+			if (_buffer != null && _buffer.Count > 0)
+			{
+				return _buffer.Peek();
+			}
+
+			var line = _reader.ReadLine();
+
+			if (_buffer == null)
+			{
+				_buffer = new Queue<string>();
+			}
+
+			_buffer.Enqueue(line);
+			return line;
+		}
+
+		public int ReadWhile(Func<string, bool> predicate)
+		{
+			if (predicate == null)
+			{
+				throw new ArgumentNullException(nameof(predicate));
+			}
+
+			string line;
+			int count = 0;
+			while ((line = ReadLine()) != null && !predicate(line))
+			{
+				++LineNumber;
+				++count;
+			}
+			Line = line;
+			return count;
 		}
 
 		protected virtual void Dispose(bool disposing)

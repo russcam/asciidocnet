@@ -47,6 +47,8 @@
     <Compile Include="Admonition.cs" />
     <Compile Include="AdmonitionStyle.cs" />
     <Compile Include="Anchor.cs" />
+    <Compile Include="BiDirectionalDictionary.cs" />
+    <Compile Include="BiDirectionalDictionaryExtensions.cs" />
     <Compile Include="Callout.cs" />
     <Compile Include="DelimitedBlockSubstitutions.cs" />
     <Compile Include="Container.cs" />
@@ -104,6 +106,11 @@
     <Compile Include="RoleAttribute.cs" />
     <Compile Include="SectionTitle.cs" />
     <Compile Include="SubstitutionsAttribute.cs" />
+    <Compile Include="TableCellLayout.cs" />
+    <Compile Include="TableCellPosition.cs" />
+    <Compile Include="TableColumn.cs" />
+    <Compile Include="TableColumnLayouts.cs" />
+    <Compile Include="TableStyleExtensions.cs" />
     <Compile Include="TextLiteral.cs" />
     <Compile Include="NamedAttribute.cs" />
     <Compile Include="Parser.cs" />
@@ -125,6 +132,7 @@
     <Compile Include="UnorderedList.cs" />
     <Compile Include="UnorderedListItem.cs" />
     <Compile Include="UnsetAttributeEntry.cs" />
+    <Compile Include="ValueAttribute.cs" />
     <Compile Include="Verse.cs" />
     <Compile Include="Video.cs" />
     <Compile Include="CommentStyle.cs" />

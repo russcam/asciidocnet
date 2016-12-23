@@ -4,28 +4,28 @@ namespace AsciiDocNet
 {
 	public enum TableStyle
 	{
-		[Display(ShortName = "d")]
+		[Value("d")]
 		None,
 
-		[Display(ShortName = "s")]
+		[Value("s")]
 		Strong,
 
-		[Display(ShortName = "e")]
+		[Value("e")]
 		Emphasis,
 
-		[Display(ShortName = "m")]
+		[Value("m")]
 		Monospaced,
 
-		[Display(ShortName = "h")]
+		[Value("h")]
 		Header,
 
-		[Display(ShortName = "l")]
+		[Value("l")]
 		Literal,
 
-		[Display(ShortName = "v")]
+		[Value("v")]
 		Verse,
 
-		[Display(ShortName = "a")]
-		Asciidoc
+		[Value("a")]
+		AsciiDoc
 	}
 }

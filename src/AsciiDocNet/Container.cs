@@ -7,7 +7,7 @@ namespace AsciiDocNet
 	/// <summary>
 	///     An element that contains other elements
 	/// </summary>
-	public abstract class Container : IList<IElement>
+	public abstract class Container : IList<IElement> 
 	{
 		protected List<IElement> Elements;
 
