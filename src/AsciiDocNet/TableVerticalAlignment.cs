@@ -2,15 +2,27 @@
 
 namespace AsciiDocNet
 {
-	public enum TableVerticalAlignment
-	{
-		[Display(ShortName = "<")]
-		Top,
+    /// <summary>
+    /// The vertical alignment for a table
+    /// </summary>
+    public enum TableVerticalAlignment
+    {
+        /// <summary>
+        /// The top
+        /// </summary>
+        [Display(ShortName = "<")]
+        Top,
 
-		[Display(ShortName = ">")]
-		Bottom,
+        /// <summary>
+        /// The bottom
+        /// </summary>
+        [Display(ShortName = ">")]
+        Bottom,
 
-		[Display(ShortName = "^")]
-		Middle
-	}
+        /// <summary>
+        /// The middle
+        /// </summary>
+        [Display(ShortName = "^")]
+        Middle
+    }
 }

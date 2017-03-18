@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace AsciiDocNet
 {
-	public static class PatternMatcher
+	internal static class PatternMatcher
 	{
 		public static readonly Regex Admonition =
 			new Regex(
@@ -182,7 +182,7 @@ namespace AsciiDocNet
 		private static readonly Dictionary<Type, Regex> TypeBlockDelimiterRegexes = new Dictionary<Type, Regex>
 		{
 			{ typeof(Fenced), Fenced },
-			{ typeof(Pass), Pass },
+			{ typeof(Passthrough), Pass },
 			{ typeof(Stem), Stem },
 			{ typeof(Source), Source },
 			{ typeof(Literal), Literal },
@@ -198,7 +198,7 @@ namespace AsciiDocNet
 		private static readonly Dictionary<Type, string> TypeBlockDelimiters = new Dictionary<Type, string>
 		{
 			{ typeof(Fenced), Patterns.Block.Fenced },
-			{ typeof(Pass), Patterns.Block.Pass },
+			{ typeof(Passthrough), Patterns.Block.Pass },
 			{ typeof(Stem), Patterns.Block.Stem },
 			{ typeof(Source), Patterns.Block.Source },
 			{ typeof(Literal), Patterns.Block.Literal },

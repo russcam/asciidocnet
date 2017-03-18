@@ -2,15 +2,27 @@
 
 namespace AsciiDocNet
 {
-	public enum TableHorizontalAlignment
+    /// <summary>
+    /// The horizontal table alignment
+    /// </summary>
+    public enum TableHorizontalAlignment
 	{
-		[Display(ShortName = "<")]
+        /// <summary>
+        /// left
+        /// </summary>
+        [Display(ShortName = "<")]
 		Left,
 
-		[Display(ShortName = ">")]
+        /// <summary>
+        /// right
+        /// </summary>
+        [Display(ShortName = ">")]
 		Right,
 
-		[Display(ShortName = "^")]
+        /// <summary>
+        /// center
+        /// </summary>
+        [Display(ShortName = "^")]
 		Center
 	}
 }

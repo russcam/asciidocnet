@@ -3,18 +3,18 @@ using System.Linq;
 
 namespace AsciiDocNet
 {
-	public static class AttributeListExtensions
+    /// <summary>
+    /// Extension methods for <see cref="AttributeList"/>
+    /// </summary>
+    public static class AttributeListExtensions
 	{
-		public static bool ContainBlockName(this AttributeList attributes, string blockName)
-		{
-			if (attributes == null || attributes.Count == 0)
-			{
-				return false;
-			}
-			return attributes.Any(a => a.Name.Equals(blockName));
-		}
-
-		public static bool ContainBlockName(this AttributeList attributes, string[] blockNames)
+        /// <summary>
+        /// Determines whether the attributes has and attribute with the given name
+        /// </summary>
+        /// <param name="attributes">The attributes.</param>
+        /// <param name="blockNames">Names of the blocks,</param>
+        /// <returns></returns>
+        public static bool ContainBlockName(this AttributeList attributes, params string[] blockNames)
 		{
 			if (attributes == null || attributes.Count == 0)
 			{

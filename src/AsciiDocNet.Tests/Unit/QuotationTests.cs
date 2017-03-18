@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AsciiDocNet.Tests.Unit
 {
-	public class QuotationTests : DelimitedPairContainerInlineElementTests<Quotation, QuotationTestsPairs>
+	public class QuotationTests : DelimitedPairContainerInlineElementTests<QuotationMark, QuotationTestsPairs>
 	{
 	}
 

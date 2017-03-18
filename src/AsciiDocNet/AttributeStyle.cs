@@ -2,38 +2,89 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AsciiDocNet
 {
-	public enum AttributeStyle
+    /// <summary>
+    /// The style of attribute
+    /// </summary>
+    public enum AttributeStyle
 	{
-		[Display(Name = "normal")] Normal,
+        /// <summary>
+        /// normal
+        /// </summary>
+        [Display(Name = "normal")] Normal,
 
-		[Display(Name = "literal")] Literal,
+        /// <summary>
+        /// literal
+        /// </summary>
+        [Display(Name = "literal")] Literal,
 
-		[Display(Name = "verse")] Verse,
+        /// <summary>
+        /// verse
+        /// </summary>
+        [Display(Name = "verse")] Verse,
 
-		[Display(Name = "quote")] Quote,
+        /// <summary>
+        /// quote
+        /// </summary>
+        [Display(Name = "quote")] Quote,
 
-		[Display(Name = "listing")] Listing,
+        /// <summary>
+        /// listing
+        /// </summary>
+        [Display(Name = "listing")] Listing,
 
-		[Display(Name = "TIP")] Tip,
+        /// <summary>
+        /// tip
+        /// </summary>
+        [Display(Name = "TIP")] Tip,
 
-		[Display(Name = "NOTE")] Note,
+        /// <summary>
+        /// note
+        /// </summary>
+        [Display(Name = "NOTE")] Note,
 
-		[Display(Name = "IMPORTANT")] Important,
+        /// <summary>
+        /// important
+        /// </summary>
+        [Display(Name = "IMPORTANT")] Important,
 
-		[Display(Name = "WARNING")] Warning,
+        /// <summary>
+        /// warning
+        /// </summary>
+        [Display(Name = "WARNING")] Warning,
 
-		[Display(Name = "CAUTION")] Caution,
+        /// <summary>
+        /// caution
+        /// </summary>
+        [Display(Name = "CAUTION")] Caution,
 
-		[Display(Name = "abstract")] Abstract,
+        /// <summary>
+        /// abstract
+        /// </summary>
+        [Display(Name = "abstract")] Abstract,
 
-		[Display(Name = "partintro")] PartIntro,
+        /// <summary>
+        /// part intro
+        /// </summary>
+        [Display(Name = "partintro")] PartIntro,
 
-		[Display(Name = "comment")] Comment,
+        /// <summary>
+        /// comment
+        /// </summary>
+        [Display(Name = "comment")] Comment,
 
-		[Display(Name = "example")] Example,
+        /// <summary>
+        /// example
+        /// </summary>
+        [Display(Name = "example")] Example,
 
-		[Display(Name = "sidebar")] Sidebar,
+        /// <summary>
+        /// sidebar
+        /// </summary>
+        [Display(Name = "sidebar")] Sidebar,
 
-		[Display(Name = "source")] Source,
+        /// <summary>
+        /// source
+        /// </summary>
+        [Display(Name = "source")] Source,
 	}
 }

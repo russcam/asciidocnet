@@ -1,8 +1,17 @@
 namespace AsciiDocNet
 {
-	public enum InlineElementConstraint
+    /// <summary>
+    /// Whether an inline element is constrained or unconstrained
+    /// </summary>
+    public enum InlineElementConstraint
 	{
-		Constrained,
-		Unconstrained
-	}
+        /// <summary>
+        /// constrained
+        /// </summary>
+        Constrained,
+        /// <summary>
+        /// unconstrained
+        /// </summary>
+        Unconstrained
+    }
 }

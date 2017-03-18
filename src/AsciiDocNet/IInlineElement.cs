@@ -1,10 +1,16 @@
 ﻿namespace AsciiDocNet
 {
-	/// <summary>
-	/// An inline element
-	/// </summary>
-	public interface IInlineElement
+    /// <summary>
+    /// An inline AsciiDoc element
+    /// </summary>
+    public interface IInlineElement
 	{
-		TVisitor Accept<TVisitor>(TVisitor visitor) where TVisitor : IDocumentVisitor;
+        /// <summary>
+        /// Accepts a visitor to visit this element instance
+        /// </summary>
+        /// <typeparam name="TVisitor">The type of the visitor.</typeparam>
+        /// <param name="visitor">The visitor.</param>
+        /// <returns>the visitor</returns>
+        TVisitor Accept<TVisitor>(TVisitor visitor) where TVisitor : IDocumentVisitor;
 	}
 }

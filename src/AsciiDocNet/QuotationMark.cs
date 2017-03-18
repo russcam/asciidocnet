@@ -3,33 +3,28 @@ using System.Linq;
 namespace AsciiDocNet
 {
     /// <summary>
-    /// A strong element
+    /// A quotation mark element
     /// </summary>
-    /// <example>
-    /// *word*
-    /// </example>
     /// <seealso cref="AsciiDocNet.InlineContainer" />
     /// <seealso cref="AsciiDocNet.IInlineElement" />
     /// <seealso cref="AsciiDocNet.IAttributable" />
-    public class Strong : InlineContainer, IInlineElement, IAttributable
-	{
+    public class QuotationMark : InlineContainer, IInlineElement, IAttributable
+    {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Strong"/> class.
+        /// Initializes a new instance of the <see cref="QuotationMark"/> class.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <param name="doubleDelimited">if set to <c>true</c> [double delimited].</param>
-        public Strong(string text, bool doubleDelimited = false)
-		{
-			Add(new TextLiteral(text));
-			DoubleDelimited = doubleDelimited;
-		}
+        public QuotationMark(string text, bool doubleDelimited = false)
+        {
+            Add(new TextLiteral(text));
+            DoubleDelimited = doubleDelimited;
+        }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Strong"/> class.
+        /// Initializes a new instance of the <see cref="QuotationMark"/> class.
         /// </summary>
-        public Strong()
-		{
-		}
+        public QuotationMark() { }
 
         /// <summary>
         /// Gets the attributes.
@@ -46,13 +41,13 @@ namespace AsciiDocNet
         /// The type of elements
         /// </value>
         public override InlineElementType ContainElementType { get; } =
-			InlineElementType.Literal | InlineElementType.AttributeReference | InlineElementType.Emphasis | InlineElementType.EmphasisDouble |
-			InlineElementType.ImplicitLink | InlineElementType.InlineAnchor | InlineElementType.InternalAnchor | InlineElementType.Mark |
-			InlineElementType.MarkDouble | InlineElementType.Monospace | InlineElementType.MonospaceDouble | InlineElementType.Quotation |
-			InlineElementType.QuotationDouble | InlineElementType.Subscript | InlineElementType.Superscript;
+            InlineElementType.Literal | InlineElementType.AttributeReference | InlineElementType.Emphasis | InlineElementType.EmphasisDouble |
+            InlineElementType.ImplicitLink | InlineElementType.InlineAnchor | InlineElementType.InternalAnchor | InlineElementType.Mark |
+            InlineElementType.MarkDouble | InlineElementType.Monospace | InlineElementType.MonospaceDouble | InlineElementType.Strong |
+            InlineElementType.StrongDouble | InlineElementType.Subscript | InlineElementType.Superscript;
 
         /// <summary>
-        /// Gets or sets a value indicating whether this element is [double delimited].
+        /// Gets or sets a value indicating whether [double delimited].
         /// </summary>
         /// <value>
         ///   <c>true</c> if [double delimited]; otherwise, <c>false</c>.
@@ -68,10 +63,10 @@ namespace AsciiDocNet
         /// The visitor
         /// </returns>
         public override TVisitor Accept<TVisitor>(TVisitor visitor)
-		{
-			visitor.VisitStrong(this);
-			return visitor;
-		}
+        {
+            visitor.VisitQuotationMark(this);
+            return visitor;
+        }
 
         /// <summary>
         /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
@@ -81,18 +76,18 @@ namespace AsciiDocNet
         ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
-		{
-			if (ReferenceEquals(null, obj))
-			{
-				return false;
-			}
-			if (ReferenceEquals(this, obj))
-			{
-				return true;
-			}
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
 
-			return obj.GetType() == this.GetType() && Equals((Strong)obj);
-		}
+            return obj.GetType() == this.GetType() && Equals((QuotationMark)obj);
+        }
 
         /// <summary>
         /// Returns a hash code for this instance.
@@ -101,15 +96,15 @@ namespace AsciiDocNet
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
         /// </returns>
         public override int GetHashCode()
-		{
-			unchecked
-			{
-				var hashCode = DoubleDelimited.GetHashCode();
-				hashCode = (hashCode * 397) ^ Attributes.GetHashCode();
-				hashCode = (hashCode * 397) ^ Elements.GetHashCode();
-				return hashCode;
-			}
-		}
+        {
+            unchecked
+            {
+                var hashCode = Attributes.GetHashCode();
+                hashCode = (hashCode * 397) ^ DoubleDelimited.GetHashCode();
+                hashCode = (hashCode * 397) ^ Elements.GetHashCode();
+                return hashCode;
+            }
+        }
 
         /// <summary>
         /// Implements the operator ==.
@@ -119,7 +114,7 @@ namespace AsciiDocNet
         /// <returns>
         /// The result of the operator.
         /// </returns>
-        public static bool operator ==(Strong left, Strong right) => Equals(left, right);
+        public static bool operator ==(QuotationMark left, QuotationMark right) => Equals(left, right);
 
         /// <summary>
         /// Implements the operator !=.
@@ -129,16 +124,16 @@ namespace AsciiDocNet
         /// <returns>
         /// The result of the operator.
         /// </returns>
-        public static bool operator !=(Strong left, Strong right) => !Equals(left, right);
+        public static bool operator !=(QuotationMark left, QuotationMark right) => !Equals(left, right);
 
         /// <summary>
-        /// Determines whether the specified <see cref="Strong" />, is equal to this instance.
+        /// Determines whether the specified <see cref="QuotationMark" />, is equal to this instance.
         /// </summary>
         /// <param name="other">The other.</param>
         /// <returns>true if equal; otherwise, false</returns>
-        protected bool Equals(Strong other) => 
-            DoubleDelimited == other.DoubleDelimited &&
+        protected bool Equals(QuotationMark other) =>
             Attributes.Equals(other.Attributes) &&
+            DoubleDelimited == other.DoubleDelimited &&
             Elements.SequenceEqual(other.Elements);
-	}
+    }
 }

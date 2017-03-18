@@ -6,16 +6,24 @@ using System.Text;
 
 namespace AsciiDocNet
 {
-	/// <summary>
-	///     Visits a <see cref="Document" /> and writes out an AsciiDoc to
-	///     a file / text writer.
-	/// </summary>
-	public class AsciiDocVisitor : IDocumentVisitor, IDisposable
+    /// <summary>
+    /// Visits a <see cref="Document" /> and writes out an AsciiDoc to
+    /// a file / text writer.
+    /// </summary>
+    /// <seealso cref="AsciiDocNet.IDocumentVisitor" />
+    /// <seealso cref="System.IDisposable" />
+    public class AsciiDocVisitor : IDocumentVisitor, IDisposable
 	{
 		private readonly TextWriter _writer;
 		private bool _disposed;
 
-		public AsciiDocVisitor(string path)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AsciiDocVisitor"/> class.
+        /// </summary>
+        /// <param name="path">The path to the file where the AsciiDoc will be written.</param>
+        /// <exception cref="System.ArgumentNullException">path must not be null</exception>
+        /// <exception cref="System.ArgumentException">must specify a path</exception>
+        public AsciiDocVisitor(string path)
 		{
 			if (path == null)
 			{
@@ -29,7 +37,12 @@ namespace AsciiDocNet
 			_writer = new StreamWriter(new FileStream(path, FileMode.Create));
 		}
 
-		public AsciiDocVisitor(TextWriter writer)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AsciiDocVisitor"/> class.
+        /// </summary>
+        /// <param name="writer">The writer to which the AsciiDoc will be written</param>
+        /// <exception cref="System.ArgumentNullException">writer must not be null</exception>
+        public AsciiDocVisitor(TextWriter writer)
 		{
 			if (writer == null)
 			{
@@ -38,51 +51,51 @@ namespace AsciiDocNet
 			_writer = writer;
 		}
 
-		public virtual void Visit(Document document)
+        /// <summary>
+        /// Visits the document.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        public virtual void VisitDocument(Document document)
 		{
-			if (document == null)
-			{
-				return;
-			}
+            if (document == null) return;
 
-			foreach (var attribute in document.Attributes)
+            foreach (var attribute in document.Attributes)
 			{
 				attribute.Accept(this);
 			}
 
-			Visit(document.Title);
-			Visit(document.Authors);
-
-			Visit((Container)document);
+			VisitDocumentTitle(document.Title);
+			VisitAuthorInfos(document.Authors);
+			VisitContainer(document);
 		}
 
-		public virtual void Visit(AuthorInfo author)
+        /// <summary>
+        /// Visits the author
+        /// </summary>
+        /// <param name="author">The author.</param>
+        public virtual void VisitAuthorInfo(AuthorInfo author)
 		{
-			if (!string.IsNullOrEmpty(author.Email))
+            if (author == null) return;
+            _writer.Write("{0}{1}{2}",
+                !string.IsNullOrEmpty(author.FirstName) ? author.MiddleName.Replace(" ", "_") + " " : string.Empty,
+                !string.IsNullOrEmpty(author.MiddleName) ? author.MiddleName.Replace(" ", "_") + " " : string.Empty,
+                !string.IsNullOrEmpty(author.LastName) ? author.LastName.Replace(" ", "_") + " " : string.Empty);
+
+            if (!string.IsNullOrEmpty(author.Email))
 			{
-				_writer.Write("{0}{1}{2} <{3}>",
-					!string.IsNullOrEmpty(author.FirstName) ? author.MiddleName.Replace(" ", "_") + " " : string.Empty,
-					!string.IsNullOrEmpty(author.MiddleName) ? author.MiddleName.Replace(" ", "_") + " " : string.Empty,
-					!string.IsNullOrEmpty(author.LastName) ? author.LastName.Replace(" ", "_") + " " : string.Empty,
-					author.Email);
-			}
-			else
-			{
-				_writer.Write("{0}{1}{2}",
-					!string.IsNullOrEmpty(author.FirstName) ? author.MiddleName.Replace(" ", "_") + " " : string.Empty,
-					!string.IsNullOrEmpty(author.MiddleName) ? author.MiddleName.Replace(" ", "_") + " " : string.Empty,
-					!string.IsNullOrEmpty(author.LastName) ? author.LastName.Replace(" ", "_") + " " : string.Empty);
+				_writer.Write(" <{0}>", author.Email);
 			}
 		}
 
-		public virtual void Visit(IList<AuthorInfo> authors)
+        /// <summary>
+        /// Visits the authors.
+        /// </summary>
+        /// <param name="authors">The authors.</param>
+        public virtual void VisitAuthorInfos(IList<AuthorInfo> authors)
 		{
-			if (authors == null || !authors.Any())
-			{
-				return;
-			}
+		    if (authors == null || !authors.Any()) return;
 
-			for (int i = 0; i < authors.Count; i++)
+		    for (int i = 0; i < authors.Count; i++)
 			{
 				var lastAuthor = i == authors.Count - 1;
 				var author = authors[i];
@@ -101,7 +114,11 @@ namespace AsciiDocNet
 			}
 		}
 
-		public virtual void Visit(OrderedList list)
+        /// <summary>
+        /// Visits the ordered list.
+        /// </summary>
+        /// <param name="list">The list.</param>
+        public virtual void VisitOrderedList(OrderedList list)
 		{
 			foreach (var listItem in list.Items)
 			{
@@ -109,15 +126,16 @@ namespace AsciiDocNet
 			}
 		}
 
-		public virtual void Visit(Paragraph paragraph)
+        /// <summary>
+        /// Visits the paragraph.
+        /// </summary>
+        /// <param name="paragraph">The paragraph.</param>
+        public virtual void VisitParagraph(Paragraph paragraph)
 		{
-			if (paragraph == null)
-			{
-				return;
-			}
+		    if (paragraph == null) return;
 
-			Visit(paragraph.Attributes);
-			Visit((InlineContainer)paragraph);
+		    VisitAttributeList(paragraph.Attributes);
+			VisitInlineContainer(paragraph);
 			_writer.WriteLine();
 
 			if (paragraph.Count > 0)
@@ -130,51 +148,60 @@ namespace AsciiDocNet
 			}
 		}
 
-		public virtual void Visit(Source source)
+        /// <summary>
+        /// Visits the source.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        public virtual void VisitSource(Source source)
 		{
-			Visit(source.Attributes);
+            if (source == null) return;
+			VisitAttributeList(source.Attributes);
 			_writer.WriteLine(Patterns.Block.Source);
 			_writer.WriteLine(source.Text);
 			_writer.WriteLine(Patterns.Block.Source);
 			foreach (var callout in source.Callouts)
 			{
-				Visit(callout);
+				VisitCallout(callout);
 			}
 			_writer.WriteLine();
 		}
 
-		public virtual void Visit(Attribute attribute)
+        /// <summary>
+        /// Visits the attribute.
+        /// </summary>
+        /// <param name="attribute">The attribute.</param>
+        public virtual void VisitAttribute(Attribute attribute)
 		{
-			_writer.Write(attribute.Name);
+            if (attribute == null) return;
+		    _writer.Write(attribute.Name);
 		}
 
-		public virtual void Visit(NamedAttribute attribute)
+        /// <summary>
+        /// Visits the named attribute.
+        /// </summary>
+        /// <param name="attribute">The attribute.</param>
+        public virtual void VisitNamedAttribute(NamedAttribute attribute)
+        {
+            if (attribute == null) return;
+            _writer.Write("{0}={2}{1}{2}", attribute.Name, attribute.Value, attribute.SingleQuoted ? "'" : "\"");
+        }
+
+        /// <summary>
+        /// Visits the attribute list.
+        /// </summary>
+        /// <param name="attributes">The attributes.</param>
+        public virtual void VisitAttributeList(AttributeList attributes)
 		{
-			_writer.Write("{0}={2}{1}{2}", attribute.Name, attribute.Value, attribute.SingleQuoted ? "'" : "\"");
-		}
+            if (attributes == null) return;
+            if (attributes.HasAnchor)
+                attributes.Anchor.Accept(this);
 
-		public virtual void Visit(AttributeList attributes)
-		{
-			if (attributes == null)
-			{
-				return;
-			}
+            if (attributes.IsDiscrete)
+                _writer.WriteLine("[discrete]");
+            else if (attributes.IsFloating)
+                _writer.WriteLine("[float]");
 
-			if (attributes.HasAnchor)
-			{
-				attributes.Anchor.Accept(this);
-			}
-
-			if (attributes.IsDiscrete)
-			{
-				_writer.WriteLine("[discrete]");
-			}
-			else if (attributes.IsFloating)
-			{
-				_writer.WriteLine("[float]");
-			}
-
-			if (attributes.Any())
+            if (attributes.Any())
 			{
 				_writer.Write("[");
 				for (int index = 0; index < attributes.Count; index++)
@@ -197,71 +224,89 @@ namespace AsciiDocNet
 			}
 		}
 
-		public virtual void Visit(AttributeEntry attributeEntry)
+        /// <summary>
+        /// Visits the attribute entry.
+        /// </summary>
+        /// <param name="attributeEntry">The attribute entry.</param>
+        public virtual void VisitAttributeEntry(AttributeEntry attributeEntry)
 		{
-			if (!string.IsNullOrEmpty(attributeEntry.Value))
-			{
-				_writer.WriteLine(":{0}: {1}", attributeEntry.Name, attributeEntry.Value);
-			}
-			else
-			{
-				_writer.WriteLine(":{0}:", attributeEntry.Name);
-			}
-			_writer.WriteLine();
+		    if (attributeEntry == null) return;
+		    if (!string.IsNullOrEmpty(attributeEntry.Value))
+		        _writer.WriteLine(":{0}: {1}", attributeEntry.Name, attributeEntry.Value);
+		    else
+		        _writer.WriteLine(":{0}:", attributeEntry.Name);
+		    _writer.WriteLine();
 		}
 
-		public virtual void Visit(UnorderedList list)
+        /// <summary>
+        /// Visits the unordered list.
+        /// </summary>
+        /// <param name="list">The list.</param>
+        public virtual void VisitUnorderedList(UnorderedList list)
 		{
+            if (list == null) return;
 			foreach (var listItem in list.Items)
 			{
 				listItem.Accept(this);
 			}
 		}
 
-		public virtual void Visit(TextLiteral text)
+        /// <summary>
+        /// Visits the text literal.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        public virtual void VisitTextLiteral(TextLiteral text)
 		{
-			_writer.Write(text.Text);
+            if (text == null) return;
+		    _writer.Write(text.Text);
 		}
 
-		public virtual void Visit(Strong strong)
+        /// <summary>
+        /// Visits the strong.
+        /// </summary>
+        /// <param name="strong">The strong.</param>
+        public virtual void VisitStrong(Strong strong)
 		{
-			if (strong == null)
-			{
-				return;
-			}
+            if (strong == null) return;
+            _writer.Write(strong.DoubleDelimited ? "**" : "*");
+			VisitInlineContainer(strong);
 			_writer.Write(strong.DoubleDelimited ? "**" : "*");
-			Visit((InlineContainer)strong);
-			_writer.Write(strong.DoubleDelimited ? "**" : "*");
 		}
 
-		public virtual void Visit(Emphasis emphasis)
+        /// <summary>
+        /// Visits the emphasis.
+        /// </summary>
+        /// <param name="emphasis">The emphasis.</param>
+        public virtual void VisitEmphasis(Emphasis emphasis)
 		{
-			if (emphasis == null)
-			{
-				return;
-			}
-			_writer.Write(emphasis.DoubleDelimited ? "__{0}__" : "_{0}_", emphasis.Text);
+		    if (emphasis == null) return;
+		    _writer.Write(emphasis.DoubleDelimited ? "__{0}__" : "_{0}_", emphasis.Text);
 		}
 
-		public virtual void Visit(Quotation quotation)
+        /// <summary>
+        /// Visits the quotation mark.
+        /// </summary>
+        /// <param name="quotation">The QuotationMark.</param>
+        public virtual void VisitQuotationMark(QuotationMark quotation)
 		{
 			if (quotation == null) return;
-
 			_writer.Write(quotation.DoubleDelimited ? "\"`" : "'`");
-			Visit((InlineContainer)quotation);
+			VisitInlineContainer(quotation);
 			_writer.Write(quotation.DoubleDelimited ? "`\"" : "`'");
 		}
 
-		public virtual void Visit(Quote quote)
+        /// <summary>
+        /// Visits the quote.
+        /// </summary>
+        /// <param name="quote">The quote.</param>
+        public virtual void VisitQuote(Quote quote)
 		{
-			Visit(quote.Attributes);
+            if (quote == null) return;
+			VisitAttributeList(quote.Attributes);
 			var isBlock = quote.Count > 1;
-
-			if (isBlock)
-			{
-				_writer.WriteLine(Patterns.Block.Quote);
-			}
-			Visit((Container)quote);
+		    if (isBlock)
+		        _writer.WriteLine(Patterns.Block.Quote);
+		    VisitContainer(quote);
 			if (isBlock)
 			{
 				_writer.WriteLine(Patterns.Block.Quote);
@@ -269,17 +314,27 @@ namespace AsciiDocNet
 			}
 		}
 
-		public virtual void Visit(SectionTitle sectionTitle)
+        /// <summary>
+        /// Visits the section title.
+        /// </summary>
+        /// <param name="sectionTitle">The section title.</param>
+        public virtual void VisitSectionTitle(SectionTitle sectionTitle)
 		{
-			Visit(sectionTitle.Attributes);
+            if (sectionTitle == null) return;
+			VisitAttributeList(sectionTitle.Attributes);
 			_writer.Write("{0} ", new string('=', sectionTitle.Level));
-			Visit((InlineContainer)sectionTitle);
+			VisitInlineContainer(sectionTitle);
 			_writer.WriteLine();
 			_writer.WriteLine();
 		}
 
-		public virtual void Visit(UnorderedListItem listItem)
+        /// <summary>
+        /// Visits the unordered list item.
+        /// </summary>
+        /// <param name="listItem">The list item.</param>
+        public virtual void VisitUnorderedListItem(UnorderedListItem listItem)
 		{
+            if (listItem == null) return;
 			_writer.Write("{0} ", new string('*', listItem.Level));
 			for (int index = 0; index < listItem.Count; index++)
 			{
@@ -293,55 +348,93 @@ namespace AsciiDocNet
 			}
 		}
 
-		public virtual void Visit(Monospace monospace)
+        /// <summary>
+        /// Visits the monospace.
+        /// </summary>
+        /// <param name="monospace">The monospace.</param>
+        public virtual void VisitMonospace(Monospace monospace)
 		{
+            if (monospace == null) return;
 			_writer.Write(monospace.DoubleDelimited ? "``" : "`");
-			Visit((InlineContainer)monospace);
+			VisitInlineContainer(monospace);
 			_writer.Write(monospace.DoubleDelimited ? "``" : "`");
 		}
 
-		public virtual void Visit(UnsetAttributeEntry attributeEntry)
+        /// <summary>
+        /// Visits the unset attribute entry.
+        /// </summary>
+        /// <param name="attributeEntry">The attribute entry.</param>
+        public virtual void VisitUnsetAttributeEntry(UnsetAttributeEntry attributeEntry)
 		{
+            if (attributeEntry == null) return;
 			_writer.WriteLine(":{0}!:", attributeEntry.Name);
 			_writer.WriteLine();
 		}
 
-		public void Dispose()
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
 		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
 
-		public virtual void Visit(Open open)
+        /// <summary>
+        /// Visits the open.
+        /// </summary>
+        /// <param name="open">The open.</param>
+        public virtual void VisitOpen(Open open)
 		{
-			Visit(open.Attributes);
+            if (open == null) return;
+			VisitAttributeList(open.Attributes);
 			_writer.WriteLine(Patterns.Block.Open);
-			Visit((Container)open);
+			VisitContainer(open);
 			_writer.WriteLine(Patterns.Block.Open);
 			_writer.WriteLine();
 		}
 
-		public virtual void Visit(Callout callout)
+        /// <summary>
+        /// Visits the callout.
+        /// </summary>
+        /// <param name="callout">The callout.</param>
+        public virtual void VisitCallout(Callout callout)
 		{
+            if (callout == null) return;
 			_writer.WriteLine("<{0}> {1}", callout.Number, callout.Text);
 		}
 
-		public virtual void Visit(Literal literal)
+        /// <summary>
+        /// Visits the literal.
+        /// </summary>
+        /// <param name="literal">The literal.</param>
+        public virtual void VisitLiteral(Literal literal)
 		{
-			Visit(literal.Attributes);
+            if (literal == null) return;
+			VisitAttributeList(literal.Attributes);
 			_writer.WriteLine(Patterns.Block.Literal);
 			_writer.WriteLine(literal.Text);
 			_writer.WriteLine(Patterns.Block.Literal);
 			_writer.WriteLine();
 		}
 
-		public virtual void Visit(Title title)
+        /// <summary>
+        /// Visits the title.
+        /// </summary>
+        /// <param name="title">The title.</param>
+        public virtual void VisitTitle(Title title)
 		{
+            if (title == null) return;
 			_writer.WriteLine(".{0}", title.Text);
 		}
 
-		public virtual void Visit(CheckListItem listItem)
+        /// <summary>
+        /// Visits the check list item.
+        /// </summary>
+        /// <param name="listItem">The list item.</param>
+        public virtual void VisitCheckListItem(CheckListItem listItem)
 		{
+            if (listItem == null) return;
 			_writer.Write("{0} [{1}] ", new string('-', listItem.Level), listItem.Checked? "x" : " ");
 			for (int index = 0; index < listItem.Count; index++)
 			{
@@ -355,8 +448,13 @@ namespace AsciiDocNet
 			}
 		}
 
-		public virtual void Visit(OrderedListItem listItem)
+        /// <summary>
+        /// Visits the ordered list item.
+        /// </summary>
+        /// <param name="listItem">The list item.</param>
+        public virtual void VisitOrderedListItem(OrderedListItem listItem)
 		{
+            if (listItem == null) return;
 			if (listItem.Number.HasValue)
 			{
 				switch (listItem.Numbering)
@@ -398,9 +496,14 @@ namespace AsciiDocNet
 			}
 		}
 
-		public virtual void Visit(LabeledListItem listItem)
+        /// <summary>
+        /// Visits the labeled list item.
+        /// </summary>
+        /// <param name="listItem">The list item.</param>
+        public virtual void VisitLabeledListItem(LabeledListItem listItem)
 		{
-			Visit(listItem.Attributes);
+            if (listItem == null) return;
+			VisitAttributeList(listItem.Attributes);
 			_writer.WriteLine("{0}{1}", listItem.Label, new string(':', listItem.Level + 2));
 			_writer.WriteLine();
 			for (int index = 0; index < listItem.Count; index++)
@@ -415,116 +518,144 @@ namespace AsciiDocNet
 			}		
 		}
 
-		public virtual void Visit(LabeledList list)
+        /// <summary>
+        /// Visits the labeled list.
+        /// </summary>
+        /// <param name="list">The list.</param>
+        public virtual void VisitLabeledList(LabeledList list)
 		{
+            if (list == null) return;
 			foreach (var listItem in list.Items)
 			{
 				listItem.Accept(this);
 			}
 		}
 
-		public virtual void Visit(Link link)
+        /// <summary>
+        /// Visits the link.
+        /// </summary>
+        /// <param name="link">The link.</param>
+        public virtual void VisitLink(Link link)
 		{
-			if (link == null)
-			{
-				return;
-			}
-
-			_writer.Write("{0}[{1}]", link.Href, link.Text);
+		    if (link == null) return;
+		    _writer.Write("{0}[{1}]", link.Href, link.Text);
 		}
 
-		public virtual void Visit(Media media)
+        /// <summary>
+        /// Visits the media.
+        /// </summary>
+        /// <param name="media">The media.</param>
+        public virtual void VisitMedia(Media media)
 		{
-			media.Accept(this);
+            media?.Accept(this);
 		}
 
-		public virtual void Visit(Container elements)
+        /// <summary>
+        /// Visits the container.
+        /// </summary>
+        /// <param name="container">The container.</param>
+        public virtual void VisitContainer(Container container)
 		{
-			for (int i = 0; i < elements.Count; i++)
+            if (container == null) return;
+			for (int i = 0; i < container.Count; i++)
 			{
-				var element = elements[i];
+				var element = container[i];
 				element.Accept(this);
 			}
 		}
 
-		public virtual void Visit(InlineContainer elements)
+        /// <summary>
+        /// Visits the inline container.
+        /// </summary>
+        /// <param name="inlineContainer">The inline container.</param>
+        public virtual void VisitInlineContainer(InlineContainer inlineContainer)
 		{
-			for (int index = 0; index < elements.Count; index++)
+            if (inlineContainer == null) return;
+			for (int index = 0; index < inlineContainer.Count; index++)
 			{
-				var element = elements[index];
+				var element = inlineContainer[index];
 				element.Accept(this);
 			}
 		}
 
-		public virtual void Visit(Image image)
-		{
-			VisitMedia(image, "image");
-		}
+        /// <summary>
+        /// Visits the image.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        public virtual void VisitImage(Image image) => VisitMedia(image, "image");
 
-		public virtual void Visit(Video video)
-		{
-			VisitMedia(video, "video");
-		}
+        /// <summary>
+        /// Visits the video.
+        /// </summary>
+        /// <param name="video">The video.</param>
+        public virtual void VisitVideo(Video video) => VisitMedia(video, "video");
 
-		public virtual void Visit(Audio audio)
-		{
-			VisitMedia(audio, "audio");
-		}
+        /// <summary>
+        /// Visits the audio.
+        /// </summary>
+        /// <param name="audio">The audio.</param>
+        public virtual void VisitAudio(Audio audio) => VisitMedia(audio, "audio");
 
-		public virtual void Visit(Include include)
+        /// <summary>
+        /// Visits the include.
+        /// </summary>
+        /// <param name="include">The include.</param>
+        public virtual void VisitInclude(Include include)
 		{
-			if (include == null)
-			{
-				return;
-			}
-
-			var attributes = new StringBuilder();
+		    if (include == null) return;
+		    var attributes = new StringBuilder();
 			if (include.LevelOffset.HasValue)
 			{
-				attributes.Append($"leveloffset={include.LevelOffset}");
+				attributes.Append($"leveloffset={include.LevelOffset},");
 			}
 			if (!string.IsNullOrEmpty(include.Lines))
 			{
-				attributes.Append($"lines=\"{include.Lines}\"");
+				attributes.Append($"lines=\"{include.Lines}\",");
 			}
 			if (!string.IsNullOrEmpty(include.Tags))
 			{
-				attributes.Append($"tags=\"{include.Tags}\"");
+				attributes.Append($"tags=\"{include.Tags}\",");
 			}
 			if (include.Indent.HasValue)
 			{
-				attributes.Append($"indent={include.Indent}");
+				attributes.Append($"indent={include.Indent},");
 			}
 
-			_writer.WriteLine("include::{0}[{1}]", include.Path, attributes);
+			_writer.WriteLine("include::{0}[{1}]", include.Path, attributes.ToString(0, Math.Max(0, attributes.Length - 1)));
 			_writer.WriteLine();
 		}
 
-		public virtual void Visit(Listing listing)
+        /// <summary>
+        /// Visits the listing.
+        /// </summary>
+        /// <param name="listing">The listing.</param>
+        public virtual void VisitListing(Listing listing)
 		{
-			Visit(listing.Attributes);
-
+            if (listing == null) return;
+			VisitAttributeList(listing.Attributes);
 			_writer.WriteLine(Patterns.Block.Listing);
 			_writer.WriteLine(listing.Text);
 			_writer.WriteLine(Patterns.Block.Listing);
 			foreach (var callout in listing.Callouts)
 			{
-				Visit(callout);
+				VisitCallout(callout);
 			}
 
 			_writer.WriteLine();
 		}
 
-		public virtual void Visit(Example example)
+        /// <summary>
+        /// Visits the example.
+        /// </summary>
+        /// <param name="example">The example.</param>
+        public virtual void VisitExample(Example example)
 		{
-			Visit(example.Attributes);
+            if (example == null) return;
+			VisitAttributeList(example.Attributes);
 			var isBlock = example.Count > 1;
-
-			if (isBlock)
-			{
-				_writer.WriteLine(Patterns.Block.Example);
-			}
-			Visit((Container)example);
+		    if (isBlock)
+		        _writer.WriteLine(Patterns.Block.Example);
+		    VisitContainer(example);
 			if (isBlock)
 			{
 				_writer.WriteLine(Patterns.Block.Example);
@@ -532,150 +663,178 @@ namespace AsciiDocNet
 			}
 		}
 
-		public virtual void Visit(Comment comment)
+        /// <summary>
+        /// Visits the comment.
+        /// </summary>
+        /// <param name="comment">The comment.</param>
+        public virtual void VisitComment(Comment comment)
 		{
-			if (comment.Style == CommentStyle.MultiLine)
-			{
-				_writer.WriteLine(Patterns.Block.Comment);
-				_writer.WriteLine(comment.Text);
-				_writer.WriteLine(Patterns.Block.Comment);
-				_writer.WriteLine();
-			}
-			else
-			{
-				_writer.WriteLine("//{0}", comment.Text);
-			}
+            if (comment == null) return;
+		    if (comment.Style == CommentStyle.MultiLine)
+		    {
+		        _writer.WriteLine(Patterns.Block.Comment);
+		        _writer.WriteLine(comment.Text);
+		        _writer.WriteLine(Patterns.Block.Comment);
+		        _writer.WriteLine();
+		    }
+		    else _writer.WriteLine("//{0}", comment.Text);
 		}
 
-		public virtual void Visit(AttributeReference reference)
+        /// <summary>
+        /// Visits the attribute reference.
+        /// </summary>
+        /// <param name="reference">The reference.</param>
+        public virtual void VisitAttributeReference(AttributeReference reference)
 		{
+            if (reference == null) return;
 			_writer.Write("{{{0}}}", reference.Text);
 		}
 
-		public virtual void Visit(Fenced fenced)
+        /// <summary>
+        /// Visits the fenced.
+        /// </summary>
+        /// <param name="fenced">The fenced.</param>
+        public virtual void VisitFenced(Fenced fenced)
 		{
-			Visit(fenced.Attributes);
+            if (fenced == null) return;
+			VisitAttributeList(fenced.Attributes);
 			_writer.WriteLine(Patterns.Block.Fenced);
 			_writer.WriteLine(fenced.Text);
 			_writer.WriteLine(Patterns.Block.Fenced);
 			_writer.WriteLine();
 		}
 
-		public virtual void Visit(Pass pass)
+        /// <summary>
+        /// Visits the passthrough.
+        /// </summary>
+        /// <param name="passthrough">The Passthrough.</param>
+        public virtual void VisitPassthrough(Passthrough passthrough)
 		{
-			Visit(pass.Attributes);
+            if (passthrough == null) return;
+			VisitAttributeList(passthrough.Attributes);
 			_writer.WriteLine(Patterns.Block.Pass);
-			_writer.WriteLine(pass.Text);
+			_writer.WriteLine(passthrough.Text);
 			_writer.WriteLine(Patterns.Block.Pass);
 			_writer.WriteLine();
 		}
 
-		public virtual void Visit(Sidebar sidebar)
+        /// <summary>
+        /// Visits the sidebar.
+        /// </summary>
+        /// <param name="sidebar">The sidebar.</param>
+        public virtual void VisitSidebar(Sidebar sidebar)
 		{
-			Visit(sidebar.Attributes);
+            if (sidebar == null) return;
+			VisitAttributeList(sidebar.Attributes);
 			_writer.WriteLine(Patterns.Block.Sidebar);
-			Visit((Container)sidebar);
+			VisitContainer(sidebar);
 			_writer.WriteLine(Patterns.Block.Sidebar);
 			_writer.WriteLine();
 		}
 
-		public virtual void Visit(Table table)
+        /// <summary>
+        /// Visits the table.
+        /// </summary>
+        /// <param name="table">The table.</param>
+        /// <exception cref="System.NotImplementedException">TODO VisitTable</exception>
+        public virtual void VisitTable(Table table)
 		{
-			throw new NotImplementedException("TODO Visit Table");
+			throw new NotImplementedException("TODO VisitTable");
 		}
 
-		public virtual void Visit(DocumentTitle title)
+        /// <summary>
+        /// Visits the document title.
+        /// </summary>
+        /// <param name="title">The title.</param>
+        public virtual void VisitDocumentTitle(DocumentTitle title)
 		{
-			if (title == null)
-			{
-				return;
-			}
+		    if (title == null) return;
+		    VisitAttributeList(title.Attributes);
+		    if (!string.IsNullOrEmpty(title.Subtitle))
+		        _writer.WriteLine("= {0}: {1}", title.Title, title.Subtitle);
+		    else
+		        _writer.WriteLine("= {0}", title.Title);
 
-			Visit(title.Attributes);
-			if (!string.IsNullOrEmpty(title.Subtitle))
-			{
-				_writer.WriteLine("= {0}: {1}", title.Title, title.Subtitle);
-			}
-			else
-			{
-				_writer.WriteLine("= {0}", title.Title);
-			}
-
-			_writer.WriteLine();
+		    _writer.WriteLine();
 		}
 
-		public virtual void Visit(InternalAnchor anchor)
+        /// <summary>
+        /// Visits the internal anchor.
+        /// </summary>
+        /// <param name="anchor">The anchor.</param>
+        public virtual void VisitInternalAnchor(InternalAnchor anchor)
 		{
-			if (!string.IsNullOrEmpty(anchor.XRefLabel))
-			{
-				_writer.Write("<<{0},{1}>>", anchor.Id, anchor.XRefLabel);
-			}
-			else
-			{
-				_writer.Write("<<{0}>>", anchor.Id);
-			}
+            if (anchor == null) return;
+		    if (!string.IsNullOrEmpty(anchor.XRefLabel))
+		        _writer.Write("<<{0},{1}>>", anchor.Id, anchor.XRefLabel);
+		    else
+		        _writer.Write("<<{0}>>", anchor.Id);
 		}
 
-		public virtual void Visit(InlineAnchor anchor)
+        /// <summary>
+        /// Visits the inline anchor.
+        /// </summary>
+        /// <param name="anchor">The anchor.</param>
+        public virtual void VisitInlineAnchor(InlineAnchor anchor)
 		{
-			if (!string.IsNullOrEmpty(anchor.XRefLabel))
-			{
-				_writer.Write("[[{0},{1}]]", anchor.Id, anchor.XRefLabel);
-			}
-			else
-			{
-				_writer.Write("[[{0}]]", anchor.Id);
-			}
+            if (anchor == null) return;
+		    if (!string.IsNullOrEmpty(anchor.XRefLabel))
+		        _writer.Write("[[{0},{1}]]", anchor.Id, anchor.XRefLabel);
+		    else
+		        _writer.Write("[[{0}]]", anchor.Id);
 		}
 
-		public virtual void Visit(Admonition admonition)
+        /// <summary>
+        /// Visits the admonition.
+        /// </summary>
+        /// <param name="admonition">The admonition.</param>
+        public virtual void VisitAdmonition(Admonition admonition)
 		{
 			// TODO: Handle admonition block
+            if (admonition == null) return;
 			_writer.Write("{0}: ", admonition.Style.ToString().ToUpperInvariant());
-			Visit((Container)admonition);
+			VisitContainer(admonition);
 		}
 
-		public virtual void Visit(Anchor anchor)
+        /// <summary>
+        /// Visits the anchor.
+        /// </summary>
+        /// <param name="anchor">The anchor.</param>
+        public virtual void VisitAnchor(Anchor anchor)
 		{
-			if (!string.IsNullOrEmpty(anchor.XRefLabel))
-			{
-				_writer.WriteLine("[[{0},{1}]]", anchor.Id, anchor.XRefLabel);
-			}
-			else
-			{
-				_writer.WriteLine("[[{0}]]", anchor.Id);
-			}
+            if (anchor == null) return;
+		    if (!string.IsNullOrEmpty(anchor.XRefLabel))
+		        _writer.WriteLine("[[{0},{1}]]", anchor.Id, anchor.XRefLabel);
+		    else
+		        _writer.WriteLine("[[{0}]]", anchor.Id);
 		}
 
-		public virtual void Visit(Stem stem)
+        /// <summary>
+        /// Visits the stem.
+        /// </summary>
+        /// <param name="stem">The stem.</param>
+        public virtual void VisitStem(Stem stem)
 		{
-			if (stem == null)
-			{
-				return;
-			}
-
-			Visit(stem.Attributes);
+		    if (stem == null) return;
+		    VisitAttributeList(stem.Attributes);
 			_writer.WriteLine(Patterns.Block.Stem);
 			_writer.WriteLine(stem.Text);
 			_writer.WriteLine(Patterns.Block.Stem);
 			_writer.WriteLine();
 		}
 
-		public virtual void Visit(Verse verse)
+        /// <summary>
+        /// Visits the verse.
+        /// </summary>
+        /// <param name="verse">The verse.</param>
+        public virtual void VisitVerse(Verse verse)
 		{
-			if (verse == null)
-			{
-				return;
-			}
-
-			Visit(verse.Attributes);
+		    if (verse == null) return;
+		    VisitAttributeList(verse.Attributes);
 			var isBlock = verse.Count > 1;
-
-			if (isBlock)
-			{
-				_writer.WriteLine(Patterns.Block.Verse);
-			}
-			Visit((Container)verse);
+		    if (isBlock)
+		        _writer.WriteLine(Patterns.Block.Verse);
+		    VisitContainer(verse);
 			if (isBlock)
 			{
 				_writer.WriteLine(Patterns.Block.Verse);
@@ -683,55 +842,68 @@ namespace AsciiDocNet
 			}
 		}
 
-		public virtual void Visit(Mark mark)
+        /// <summary>
+        /// Visits the mark.
+        /// </summary>
+        /// <param name="mark">The mark.</param>
+        public virtual void VisitMark(Mark mark)
 		{
-			if (mark == null)
-			{
-				return;
-			}
-
-			var roleAttribute = mark.Attributes["role"] as RoleAttribute;
+		    if (mark == null) return;
+		    var roleAttribute = mark.Attributes["role"] as RoleAttribute;
 			if (roleAttribute != null)
 			{
 				_writer.Write("[{0}]", roleAttribute.Value);
 			}
 
 			_writer.Write(mark.DoubleDelimited ? "##" : "#");
-			Visit((InlineContainer)mark);
+			VisitInlineContainer(mark);
 			_writer.Write(mark.DoubleDelimited ? "##" : "#");
 		}
 
-		public virtual void Visit(Subscript subscript)
+        /// <summary>
+        /// Visits the subscript.
+        /// </summary>
+        /// <param name="subscript">The subscript.</param>
+        public virtual void VisitSubscript(Subscript subscript)
 		{
+            if (subscript == null) return;
 			_writer.Write("~{0}~", subscript.Text);
 		}
 
-		public virtual void Visit(Superscript superscript)
+        /// <summary>
+        /// Visits the superscript.
+        /// </summary>
+        /// <param name="superscript">The superscript.</param>
+        public virtual void VisitSuperscript(Superscript superscript)
 		{
+            if (superscript == null) return;
 			_writer.Write("^{0}^", superscript.Text);
 		}
 
-		protected virtual void Dispose(bool disposing)
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
 		{
 			if (!_disposed)
 			{
-				if (disposing)
-				{
-					_writer?.Dispose();
-				}
+			    if (disposing)
+			        _writer?.Dispose();
 
-				_disposed = true;
+			    _disposed = true;
 			}
 		}
 
-		private void VisitMedia(Media media, string name)
+        /// <summary>
+        /// Visits the media.
+        /// </summary>
+        /// <param name="media">The media.</param>
+        /// <param name="name">The name.</param>
+        private void VisitMedia(Media media, string name)
 		{
-			if (media == null)
-			{
-				return;
-			}
-
-			Visit(media.Attributes);
+		    if (media == null) return;
+		    VisitAttributeList(media.Attributes);
 			var attributes = new StringBuilder();
 			if (!string.IsNullOrEmpty(media.AlternateText))
 			{
@@ -748,26 +920,26 @@ namespace AsciiDocNet
 			}
 			if (!string.IsNullOrEmpty(media.Title))
 			{
-				attributes.Append($"title=\"{media.Title}\"");
+				attributes.Append($"title=\"{media.Title}\",");
 			}
 			if (!string.IsNullOrEmpty(media.Align))
 			{
-				attributes.Append($"align=\"{media.Align}\"");
+				attributes.Append($"align=\"{media.Align}\",");
 			}
 			if (!string.IsNullOrEmpty(media.Link))
 			{
-				attributes.Append($"link=\"{media.Link}\"");
+				attributes.Append($"link=\"{media.Link}\",");
 			}
 			if (!string.IsNullOrEmpty(media.Float))
 			{
-				attributes.Append($"float=\"{media.Float}\"");
+				attributes.Append($"float=\"{media.Float}\",");
 			}
 			if (!string.IsNullOrEmpty(media.Role))
 			{
-				attributes.Append($"role=\"{media.Role}\"");
+				attributes.Append($"role=\"{media.Role}\",");
 			}
 
-			_writer.WriteLine("{0}::{1}[{2}]", name, media.Path, attributes);
+			_writer.WriteLine("{0}::{1}[{2}]", name, media.Path, attributes.ToString(0, Math.Max(0, attributes.Length - 1)));
 			_writer.WriteLine();
 		}
 	}

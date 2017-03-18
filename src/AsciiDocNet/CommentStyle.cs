@@ -1,8 +1,17 @@
 namespace AsciiDocNet
 {
-	public enum CommentStyle
+    /// <summary>
+    /// The style of comment
+    /// </summary>
+    public enum CommentStyle
 	{
-		SingleLine,
-		MultiLine
-	}
+        /// <summary>
+        /// single line
+        /// </summary>
+        SingleLine,
+        /// <summary>
+        /// multi line
+        /// </summary>
+        MultiLine
+    }
 }
