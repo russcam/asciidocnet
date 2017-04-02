@@ -2,135 +2,124 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Web;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Octokit;
+using System.Net;
+using CsQuery;
 using Xunit;
 
 namespace AsciiDocNet.Tests.Unit
 {
 	public class DocumentTests : VisitorTestsBase
 	{
-		private const string RepositoryName = "elasticsearch-net";
-		private const string RepositoryOwner = "elastic";
-		private const string ShaCommit = "98d4fb99ed9e20258b6180358fbc5988b0c3c43b";
-		private const string TestDocumentsDir = "test-documents";
+	    private class HtmlDocument
+	    {
+            public string FolderOnDisk { get; set; }
+            public string GithubListingUrl { get; set; }
+            public string Branch { get; set; }
+            public string GithubDownloadUrl(string file) => 
+                this.GithubListingUrl.Replace("github.com", "raw.githubusercontent.com")
+                                     .Replace("tree/", "") + "/" + file;
+        }
 
+	    private const string TopLevelDir = "docs";
+	    private const string GithubRepository = "https://github.com/elastic/elasticsearch-net/tree/{commit}/" + TopLevelDir;
+		private const string ShaCommit = "5.x";
 		private static readonly bool FetchFiles = false;
 
-		public static IEnumerable<object[]> Files
+        [Theory]
+        [MemberData(nameof(Files))]
+        public void ShouldParseDocument(FileInfo file)
+        {
+            var document = Document.Load(file.FullName);
+            document.Accept(Visitor);
+
+            var content = Builder.ToString();
+            var visitedDocument = Document.Parse(content);
+            Assert.Equal(document, visitedDocument);
+        }
+
+        public static IEnumerable<object[]> Files
 		{
 			get
 			{
-				if (!Directory.Exists(TestDocumentsDir))
+			    if (!Directory.Exists(TopLevelDir))
+			        Directory.CreateDirectory(TopLevelDir);
+
+			    var testFiles = Directory.EnumerateFiles(TopLevelDir, "*.asciidoc", SearchOption.AllDirectories);
+
+				if (!testFiles.Any() || FetchFiles)
 				{
-					Directory.CreateDirectory(TestDocumentsDir);
-				}
+				    var document = new HtmlDocument
+				    {
+				        Branch = ShaCommit,
+				        FolderOnDisk = TopLevelDir,
+				        GithubListingUrl = GithubRepository.Replace("{commit}", ShaCommit)
+				    };
 
-				var testFiles = Directory.EnumerateFiles(TestDocumentsDir, "*.asciidoc", SearchOption.AllDirectories);
+				    DownloadAsciiDocFiles(document);
 
-				if (FetchFiles)
-				{
-					var baseAddress = new Uri("https://api.github.com");
-					var credentialsInBin = File.Exists("credentials.json");
-					var credentialsInRoot = File.Exists(@"..\..\credentials.json");
-
-					if (credentialsInBin || credentialsInRoot)
-					{
-						var credentials = JsonConvert.DeserializeObject<JObject>(
-							File.ReadAllText(credentialsInBin ? "credentials.json": @"..\..\credentials.json"));
-
-						var clientId = credentials["Github:ClientId"].Value<string>();
-						var clientSecret = credentials["Github:ClientSecret"].Value<string>();
-
-						if (!string.IsNullOrWhiteSpace(clientId) && !string.IsNullOrWhiteSpace(clientSecret))
-						{
-							var builder = new UriBuilder("https://api.github.com") { Port = -1 };
-							var query = HttpUtility.ParseQueryString(builder.Query);
-							query["client_id"] = clientId;
-							query["client_secret"] = clientSecret;
-							builder.Query = query.ToString();
-							baseAddress = builder.Uri;
-						}
-					}
-
-					var github = new GitHubClient(new Connection(new ProductHeaderValue("asciidocnet"), baseAddress));
-					TreeResponse tree;
-
-					try
-					{
-						tree = github.Git.Tree
-							.GetRecursive(RepositoryOwner, RepositoryName, ShaCommit)
-							.Result;
-					}
-					catch (AggregateException ae)
-					{
-						if (ae.InnerException is RateLimitExceededException)
-						{
-							return testFiles.Select(testFile => new object[] { new FileInfo(testFile) });
-						}
-
-						throw;
-					}
-		
-					var asciidocs = tree.Tree.Where(i =>
-						i.Path.StartsWith("docs/asciidoc/") && 
-						i.Path.EndsWith(".asciidoc"));
-
-					foreach (var asciidoc in asciidocs)
-					{
-						var directory = Path.Combine(TestDocumentsDir, Path.GetDirectoryName(asciidoc.Path));
-
-						if (!Directory.Exists(directory))
-						{
-							Directory.CreateDirectory(directory);
-						}
-
-						var path = Path.Combine(directory, Path.GetFileName(asciidoc.Path));
-
-						if (!File.Exists(path))
-						{
-							try
-							{
-								var blob = github.Git.Blob.Get(RepositoryOwner, RepositoryName, asciidoc.Sha).Result;
-								var content = GetContent(blob.Content);
-								File.WriteAllText(path, content);
-							}
-							catch (AggregateException ae)
-							{
-								if (ae.InnerException is RateLimitExceededException)
-								{
-									break;
-								}
-
-								throw;
-							}
-						}
-					}
-				}
+                    testFiles = Directory.EnumerateFiles(TopLevelDir, "*.asciidoc", SearchOption.AllDirectories);
+                }
 
 				return testFiles.Select(testFile => new object[] { new FileInfo(testFile) });
 			}
 		}
 
-		[Theory]
-		[MemberData(nameof(Files))]
-		public void ShouldParseDocument(FileInfo file)
-		{
-			var document = Document.Load(file.FullName);
-			document.Accept(Visitor);
+		private static void DownloadAsciiDocFiles(HtmlDocument htmlDocument)
+        {
+            using (var client = new WebClient())
+            {
+                try
+                {
+                    var html = client.DownloadString(htmlDocument.GithubListingUrl);
+                    FindAsciiDocFiles(htmlDocument, html);
+                }
+                catch
+                {
+                }
+            }
+        }
 
-			var content = Builder.ToString();
-			var visitedDocument = Document.Parse(content);
-			Assert.Equal(document, visitedDocument);
-		}
+        private static void FindAsciiDocFiles(HtmlDocument htmlDocument, string html)
+        {
+            if (!Directory.Exists(htmlDocument.FolderOnDisk))
+                Directory.CreateDirectory(htmlDocument.FolderOnDisk);
 
-		private static string GetContent(string base64Encoded)
-		{
-			var bytes = Convert.FromBase64String(base64Encoded);
-			return Encoding.UTF8.GetString(bytes);
-		}
+            var dom = CQ.Create(html);
+
+            var documents = dom[".js-navigation-open"]
+                .Select(s => s.InnerText)
+                .Where(s => !string.IsNullOrEmpty(s) && s.EndsWith(".asciidoc"))
+                .ToList();
+
+            documents.ForEach(s => WriteAsciiDoc(htmlDocument, s));
+
+            var directories = dom[".js-navigation-open"]
+                .Select(s => s.InnerText)
+                .Where(s => !string.IsNullOrWhiteSpace(s) && s.IndexOf(".") == -1 && Path.GetExtension(s) == string.Empty)
+                .ToList();
+
+            directories.ForEach(directory =>
+            {
+                var subDirectory = new HtmlDocument
+                {
+                    Branch = htmlDocument.Branch,
+                    FolderOnDisk = Path.Combine(htmlDocument.FolderOnDisk, directory),
+                    GithubListingUrl = htmlDocument.GithubListingUrl + "/" + directory
+                };
+
+                DownloadAsciiDocFiles(subDirectory);
+            });
+        }
+
+        private static void WriteAsciiDoc(HtmlDocument html, string s)
+        {
+            var rawFile = html.GithubDownloadUrl(s);
+            using (var client = new WebClient())
+            {
+                var fileName = rawFile.Split('/').Last();
+                var contents = client.DownloadString(rawFile);
+                File.WriteAllText(Path.Combine(html.FolderOnDisk, fileName), contents);
+            }
+        }
 	}
 }

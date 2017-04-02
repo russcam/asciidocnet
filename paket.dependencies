@@ -7,9 +7,9 @@ source https://www.nuget.org/api/v2/
 // tests
 nuget DiffPlex
 nuget Newtonsoft.Json 9.0.1
-nuget Octokit 0.19.0
+nuget CsQuery
 nuget SpecFlow.xUnit 2.1.0
-nuget xunit 2.2.0-beta3-build3330
+nuget xunit 2.2.0-beta5-build3474
 nuget xunit.abstractions 2.0.1-rc2
 
 group build
@@ -21,4 +21,4 @@ group build
 	nuget GitLink prerelease
 	
     source https://www.myget.org/F/xunit/
-    nuget xunit.runner.console 2.2.0-beta3-build3330
+    nuget xunit.runner.console 2.2.0-beta5-build3474

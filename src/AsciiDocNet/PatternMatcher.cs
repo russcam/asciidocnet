@@ -140,7 +140,7 @@ namespace AsciiDocNet
 		public static readonly Regex ListItem =
 			new Regex($@"^(?<level>(?:\-|\*){{1,5}}){Patterns.CharacterGroupWhitespace}+(?<text>[^(\[\*|\s|x|X\]\s)].*?)$");
 
-		public static readonly Regex ListItemContinuation = new Regex($@"^{Patterns.CharacterGroupWhitespace}*\+{Patterns.CharacterGroupWhitespace}*&");
+		public static readonly Regex ListItemContinuation = new Regex($@"^{Patterns.CharacterGroupWhitespace}*\+{Patterns.CharacterGroupWhitespace}*$");
 
 		public static readonly Regex Literal = new Regex($"^{Regex.Escape(Patterns.Block.Literal)}{Patterns.CharacterGroupWhitespace}*$");
 
