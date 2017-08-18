@@ -71,3 +71,4 @@ build/tools/*
 .fake
 packages/*
 paket.exe
+src/.idea/
