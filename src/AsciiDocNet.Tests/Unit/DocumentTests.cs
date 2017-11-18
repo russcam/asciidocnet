@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using CsQuery;
 using Xunit;
 
@@ -66,7 +67,7 @@ namespace AsciiDocNet.Tests.Unit
 
 		private static void DownloadAsciiDocFiles(HtmlDocument htmlDocument)
         {
-            using (var client = new WebClient())
+            using (var client = new HttpClient())
             {
                 try
                 {
@@ -114,7 +115,7 @@ namespace AsciiDocNet.Tests.Unit
         private static void WriteAsciiDoc(HtmlDocument html, string s)
         {
             var rawFile = html.GithubDownloadUrl(s);
-            using (var client = new WebClient())
+            using (var client = new HttpClient())
             {
                 var fileName = rawFile.Split('/').Last();
                 var contents = client.DownloadString(rawFile);

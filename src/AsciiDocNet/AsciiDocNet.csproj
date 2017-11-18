@@ -1,7 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="..\..\.paket\Paket.Restore.targets" />
 	<PropertyGroup>
     	<VersionPrefix>1.0.0-alpha5</VersionPrefix>
     	<TargetFramework>netstandard1.3</TargetFramework>
   	</PropertyGroup>
+	<ItemGroup>
+	  <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.0" />
+	</ItemGroup>
 </Project>
