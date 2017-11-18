@@ -18,7 +18,7 @@ namespace AsciiDocNet.Tests.Unit
             public string Branch { get; set; }
             public string GithubDownloadUrl(string file) => 
                 this.GithubListingUrl.Replace("github.com", "raw.githubusercontent.com")
-                                     .Replace("tree/", "") + "/" + file;
+                                     .Replace("tree/", "/") + file;
         }
 
 	    private const string TopLevelDir = "docs";
