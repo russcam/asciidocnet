@@ -1,5 +1,14 @@
-﻿[<AutoOpen>]
+﻿#I @"../../packages/build/FSharp.Data/lib/net45"
+#r @"FSharp.Data.dll"
+
+open FSharp.Data
+
+[<AutoOpen>]
 module Projects = 
+
+    type GlobalJsonProvider = JsonProvider<""" { "sdk": { "version":"x" }, "version": "x" } """ >
+    
+    let GlobalJson = GlobalJsonProvider.Load("../../src/global.json");
 
     type DotNetFrameworkIdentifier = { 
         MSBuild: string; 

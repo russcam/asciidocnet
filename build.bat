@@ -5,6 +5,10 @@ REM build build [skiptests]
 REM build release [version] [skiptests]
 REM build version [version] [skiptests]
 
+.paket\paket.bootstrapper.exe 
+IF EXIST paket.lock (.paket\paket.exe restore)
+IF NOT EXIST paket.lock (.paket\paket.exe install)
+
 SET TARGET="build"
 SET VERSION=
 SET SKIPTESTS=0

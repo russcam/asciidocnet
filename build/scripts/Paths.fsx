@@ -31,7 +31,6 @@ module Paths =
     let NugetOutput = sprintf "%s/_packages" BuildOutput
     let SourceFolder = "src"
     
-
     let CheckedInTool(tool) = sprintf "%s/%s" CheckedInToolsFolder tool
     let Keys(keyFile) = sprintf "%s/%s" KeysFolder keyFile
     let Output(folder) = sprintf "%s/%s" BuildOutput folder
@@ -42,5 +41,5 @@ module Paths =
         let f = replace @"\" "/" folder
         sprintf "%s/%s/bin/Release" SourceFolder f
 
-    let ProjectJson(projectName) =
-        Source(sprintf "%s/project.json" projectName)
+    let ProjectFile(projectName) =
+        Source(sprintf "%s/%s.csproj" projectName projectName)

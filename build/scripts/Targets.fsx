@@ -17,21 +17,21 @@ open Releasing
 
 Target "Build" <| fun _ -> traceHeader "STARTING BUILD"
 
-Target "Clean" <| fun _ -> Build.Clean()
+Target "Clean" Build.Clean
 
-Target "BuildApp" <| fun _ -> Build.Compile()
+Target "Restore" Build.Restore
 
-Target "Test"  <| fun _ -> Tests.RunUnitTests()
+Target "BuildApp" Build.Compile
 
-Target "Version" <| fun _ -> 
-    Versioning.PatchAssemblyInfos()
-    Versioning.PatchProjectJsons()
+Target "Test" Tests.RunUnitTests
 
-Target "Release" <| fun _ -> 
-    Release.NugetPack()   
+Target "Version" <| fun _ -> tracefn "Current Version: %A" Versioning.CurrentVersion
+
+Target "Release" Release.NugetPack
 
 "Clean" 
   =?> ("Version", hasBuildParam "version")
+  ==> "Restore"
   ==> "BuildApp"
   =?> ("Test", (not ((getBuildParam "skiptests") = "1")))
   ==> "Build"

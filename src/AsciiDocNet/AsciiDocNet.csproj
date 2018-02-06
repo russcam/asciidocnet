@@ -1,13 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-    	<VersionPrefix>1.0.0-alpha5</VersionPrefix>
-    	<TargetFramework>netstandard1.3</TargetFramework>
-	    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-	    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-	    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-  	</PropertyGroup>
-	<ItemGroup>
-	  <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.0" />
+  <PropertyGroup>
+    <CurrentVersion>1.0.0-alpha5</CurrentVersion>
+    <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
+    <CurrentAssemblyVersion>0.0.0</CurrentAssemblyVersion>
+    <CurrentAssemblyFileVersion>0.0.0.0</CurrentAssemblyFileVersion>
+    <Version>$(CurrentVersion)</Version>
+    <InformationalVersion>$(CurrentVersion)</InformationalVersion>
+    <AssemblyVersion>$(CurrentAssemblyVersion)</AssemblyVersion>
+    <FileVersion>$(CurrentAssemblyFileVersion)</FileVersion>
+    <DoSourceLink>false</DoSourceLink>
+    <DebugType Condition="'$(Configuration)'=='Debug'">full</DebugType>
+    <SourceLink Condition="'$(DoSourceLink)'=='true'">$(BaseIntermediateOutputPath)\sl-$(MsBuildProjectName)-$(TargetFramework).json</SourceLink>
+    <RepoUri>https://raw.githubusercontent.com/russcam/asciidocnet</RepoUri>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DocumentationFile>bin\Debug\AsciiDocNet.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DocumentationFile>bin\Release\AsciiDocNet.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.0" />
+  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'!='netstandard1.3'">
+		<Reference Include="Microsoft.CSharp" />
 	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
+		<PackageReference Include="Microsoft.CSharp" Version="4.3.0" />
+	</ItemGroup>
+  <Target Name="GenerateSourceLink" BeforeTargets="CoreCompile" Condition="'$(DoSourceLink)'=='true'">
+    <Delete Files="$(SourceLink)" Condition="Exists('$(SourceLink)')" />
+    <Exec Command="git rev-parse HEAD" ConsoleToMSBuild="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="LatestCommit" />
+    </Exec>
+    <Exec Command="git rev-parse --show-toplevel" ConsoleToMSBuild="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="GitRootFolder" />
+    </Exec>
+    <WriteLinesToFile File="$(SourceLink)" Lines="{&quot;documents&quot;: { &quot;$([System.IO.Path]::GetFullPath('$(GitRootFolder)/').Replace('\','\\'))*&quot; : &quot;$(RepoUri)/$(LatestCommit)/*&quot; }}" />
+  </Target>
   <Import Project="..\outputpath.props" />
 </Project>
