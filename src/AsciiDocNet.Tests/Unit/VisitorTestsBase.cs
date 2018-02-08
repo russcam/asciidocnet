@@ -5,14 +5,14 @@ namespace AsciiDocNet.Tests.Unit
 {
 	public abstract class VisitorTestsBase
 	{
-		public VisitorTestsBase()
+		protected VisitorTestsBase()
 		{
 			Builder = new StringBuilder();
 			Visitor = new AsciiDocVisitor(new StringWriter(Builder));
 		}
 
-		public AsciiDocVisitor Visitor { get; private set; }
+		protected AsciiDocVisitor Visitor { get; }
 
-		public StringBuilder Builder { get; private set; }
+		protected StringBuilder Builder { get; }
 	}
 }

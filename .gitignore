@@ -75,3 +75,4 @@ src/.idea/
 .paket/
 paket-files/
 docs/
+visited-docs/

@@ -23,6 +23,8 @@ namespace AsciiDocNet.Tests.Unit
 
 		private static readonly string RelativePathDocs = Path.GetFullPath("../../../../../" + TopLevelDir);
 		
+		private static readonly string RelativePathVisitedDocs = Path.GetFullPath("../../../../../visited-docs");
+		
 	    private const string TopLevelDir = "docs";
 	    private const string GithubRepository = "https://github.com/elastic/elasticsearch-net/tree/{commit}/" + TopLevelDir;
 		private const string ShaCommit = "6.x";
@@ -37,7 +39,17 @@ namespace AsciiDocNet.Tests.Unit
 
             var content = Builder.ToString();
             var visitedDocument = Document.Parse(content);
-            Assert.Equal(document, visitedDocument);
+
+	        // write out visited doc for diff
+	        var visitedFile = file.FullName.Replace(@"\docs\", @"\visited-docs\");
+	        var visitedDirectory = Path.GetDirectoryName(visitedFile);
+	        if (!Directory.Exists(visitedDirectory))
+	        {
+		        Directory.CreateDirectory(visitedDirectory);
+	        }        
+	        File.WriteAllText(visitedFile, content);   
+	        
+	        Assert.Equal(document, visitedDocument);
         }
 
         public static IEnumerable<object[]> Files

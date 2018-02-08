@@ -907,15 +907,15 @@ namespace AsciiDocNet
 			var attributes = new StringBuilder();
 			if (!string.IsNullOrEmpty(media.AlternateText))
 			{
-				attributes.Append(media.AlternateText);
+				attributes.Append(media.AlternateText + ",");
 
 				if (media.Width.HasValue)
 				{
-					attributes.Append("," + media.Width);
+					attributes.Append(media.Width + ",");
 				}
 				if (media.Height.HasValue)
 				{
-					attributes.Append("," + media.Height);
+					attributes.Append(media.Height + ",");
 				}
 			}
 			if (!string.IsNullOrEmpty(media.Title))
