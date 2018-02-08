@@ -25,6 +25,9 @@ as part of the `format` value.";
 			get 
 			{ 
 				yield return new object[] { "`" };
+				yield return new object[] { "``" };
+				yield return new object[] { "+" };
+				yield return new object[] { "++" };
 			}
 		}
 	}

@@ -118,7 +118,7 @@ namespace AsciiDocNet
                         element.Add(inlineElement);
                     }
 
-                    return new InlineElementRuleMatch<TInlineElement>(element, match.Index, match.Index + match.Length);
+                    return new InlineElementRuleMatch<TInlineElement>(element, match.Index, match.Index + match.Length, new string(' ', match.Length));
                 }
             }
 
@@ -137,7 +137,7 @@ namespace AsciiDocNet
 
                     var startIndex = match.Value[0] == ' ' || match.Value[0] == '\t' ? match.Index + 1 : match.Index;
                     var endIndex = match.Index + match.Length;
-                    return new InlineElementRuleMatch<TInlineElement>(element, startIndex, endIndex);
+                    return new InlineElementRuleMatch<TInlineElement>(element, startIndex, endIndex, new string(' ', match.Length));
                 }
                 else
                 {
@@ -154,11 +154,20 @@ namespace AsciiDocNet
                         element.Attributes.Add(attributes);
                     }
 
-                    var startIndex = match.Value[0] == ' ' || match.Value[0] == '\t' ? match.Index + 1 : match.Index;
+	                var group1 = match.Groups[1].Value;
+
+                    var startIndex = !string.IsNullOrEmpty(group1) 
+	                    ? match.Index + group1.Length 
+	                    : match.Index;
+	                
                     var endIndex = match.Index + match.Length;
 
                     //TODO: do something with match.Groups[1].Value
-                    return new InlineElementRuleMatch<TInlineElement>(element, startIndex, endIndex);
+	                var replacement = !string.IsNullOrEmpty(group1)
+		                ? group1 + new string(' ', match.Length - group1.Length)
+		                : new string(' ', match.Length);
+	                
+                    return new InlineElementRuleMatch<TInlineElement>(element, startIndex, endIndex, replacement);
                 }
             }
             else
@@ -176,7 +185,7 @@ namespace AsciiDocNet
                     element.Attributes.Add(attributes);
                 }
 
-                return new InlineElementRuleMatch<TInlineElement>(element, match.Index, match.Index + match.Length);
+                return new InlineElementRuleMatch<TInlineElement>(element, match.Index, match.Index + match.Length, new string(' ', match.Length));
             }
         }
 
@@ -199,7 +208,7 @@ namespace AsciiDocNet
                         Text = firstMatch.Substring(1, firstMatch.Length - 1)
                     };
 
-                    return new InlineElementRuleMatch<TInlineElement>(element, match.Index, match.Index + match.Length);
+                    return new InlineElementRuleMatch<TInlineElement>(element, match.Index, match.Index + match.Length, new string(' ', match.Length));
                 }
             }
 
@@ -214,9 +223,12 @@ namespace AsciiDocNet
                         Text = match.Groups[3].Value
                     };
 
-                    var startIndex = match.Value[0] == ' ' ? match.Index + 1 : match.Index;
+                    var startIndex = match.Value[0] == ' ' || match.Value[0] == '\t' 
+	                    ? match.Index + 1 
+	                    : match.Index;
+	                
                     var endIndex = match.Index + match.Length;
-                    return new InlineElementRuleMatch<TInlineElement>(element, startIndex, endIndex);
+                    return new InlineElementRuleMatch<TInlineElement>(element, startIndex, endIndex, new string(' ', match.Length));
                 }
                 else
                 {
@@ -232,11 +244,20 @@ namespace AsciiDocNet
                         element.Attributes.Add(attributes);
                     }
 
-                    var startIndex = match.Value[0] == ' ' ? match.Index + 1 : match.Index;
-                    var endIndex = match.Index + match.Length;
+	                var group1 = match.Groups[1].Value;
 
-                    //TODO: do something with match.Groups[1].Value
-                    return new InlineElementRuleMatch<TInlineElement>(element, startIndex, endIndex);
+	                var startIndex = !string.IsNullOrEmpty(group1) 
+		                ? match.Index + group1.Length 
+		                : match.Index;
+	                
+	                var endIndex = match.Index + match.Length;
+
+	                //TODO: do something with match.Groups[1].Value
+	                var replacement = !string.IsNullOrEmpty(group1)
+		                ? group1 + new string(' ', match.Length - group1.Length)
+		                : new string(' ', match.Length);
+	                
+                    return new InlineElementRuleMatch<TInlineElement>(element, startIndex, endIndex, replacement);
                 }
             }
             else
@@ -252,7 +273,7 @@ namespace AsciiDocNet
                     element.Attributes.Add(attributes);
                 }
 
-                return new InlineElementRuleMatch<TInlineElement>(element, match.Index, match.Index + match.Length);
+                return new InlineElementRuleMatch<TInlineElement>(element, match.Index, match.Index + match.Length, new string(' ', match.Length));
             }
         }
 
@@ -354,7 +375,7 @@ namespace AsciiDocNet
                                     anchor = new InternalAnchor(internalAnchorParts);
                                 }
 
-                                outerMatches.Add(new InlineElementRuleMatch(anchor, match.Index, match.Index + match.Length));
+                                outerMatches.Add(new InlineElementRuleMatch(anchor, match.Index, match.Index + match.Length, new string(' ', match.Length)));
                                 break;
                             case InlineElementType.InlineAnchor:
                                 var inlineAnchorId = match.Groups[1].Value;
@@ -365,25 +386,24 @@ namespace AsciiDocNet
                                     ? new InlineAnchor(inlineAnchorId, xRefLabel)
                                     : new InlineAnchor(inlineAnchorId);
 
-                                outerMatches.Add(new InlineElementRuleMatch(inlineAnchor, match.Index, match.Index + match.Length));
+                                outerMatches.Add(new InlineElementRuleMatch(inlineAnchor, match.Index, match.Index + match.Length, new string(' ', match.Length)));
                                 break;
                             case InlineElementType.AttributeReference:
                                 var text = match.Groups[2].Value;
                                 var attributeReference = new AttributeReference(text);
-                                outerMatches.Add(new InlineElementRuleMatch(attributeReference, match.Index, match.Index + match.Length));
+                                outerMatches.Add(new InlineElementRuleMatch(attributeReference, match.Index, match.Index + match.Length, new string(' ', match.Length)));
                                 break;
                             case InlineElementType.ImplicitLink:
                                 // TODO: split attributes out
                                 var attributes = match.Groups["attributes"].Value;
                                 var href = match.Groups["href"].Value;
                                 var link = new Link(href, attributes);
-                                outerMatches.Add(new InlineElementRuleMatch(link, match.Index + match.Groups[1].Length, match.Index + match.Length));
+                                outerMatches.Add(new InlineElementRuleMatch(link, match.Index + match.Groups[1].Length, match.Index + match.Length, new string(' ', match.Length)));
                                 break;
                         }
 
-                        // we want to keep the index of matches for ordering purposes so
-                        // replace any matches with whitespace. TODO: This could be optimized
-                        return new string(' ', match.Length);
+	                    // replace any matches with the match replacement value TODO: This could be optimized
+	                    return outerMatches[outerMatches.Count - 1].Replacement;
                     });
                 }
             }

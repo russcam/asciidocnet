@@ -21,8 +21,9 @@ namespace AsciiDocNet
         /// <param name="element">The element.</param>
         /// <param name="startIndex">The start index.</param>
         /// <param name="endIndex">The end index.</param>
-        public InlineElementRuleMatch(TInlineElement element, int startIndex, int endIndex) 
-			: base(element, startIndex, endIndex)
+        /// <param name="replacement">The replacement string.</param>
+        public InlineElementRuleMatch(TInlineElement element, int startIndex, int endIndex, string replacement) 
+			: base(element, startIndex, endIndex, replacement)
 		{
 		}
 	}
@@ -56,6 +57,11 @@ namespace AsciiDocNet
         /// The end index.
         /// </value>
         public int EndIndex { get; }
+		
+		/// <summary>
+		/// Gets the replacement string.
+		/// </summary>
+		public string Replacement { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InlineElementRuleMatch"/> class.
@@ -63,11 +69,12 @@ namespace AsciiDocNet
         /// <param name="element">The element.</param>
         /// <param name="startIndex">The start index.</param>
         /// <param name="endIndex">The end index.</param>
-        public InlineElementRuleMatch(IInlineElement element, int startIndex, int endIndex)
+        public InlineElementRuleMatch(IInlineElement element, int startIndex, int endIndex, string replacement)
 		{
 			Element = element;
 			StartIndex = startIndex;
 			EndIndex = endIndex;
+			Replacement = replacement;
 		}
 	}
 }
