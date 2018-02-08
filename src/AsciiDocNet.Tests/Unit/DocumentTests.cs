@@ -18,12 +18,14 @@ namespace AsciiDocNet.Tests.Unit
             public string Branch { get; set; }
             public string GithubDownloadUrl(string file) => 
                 this.GithubListingUrl.Replace("github.com", "raw.githubusercontent.com")
-                                     .Replace("tree/", "/") + file;
+                                     .Replace("tree/", string.Empty) + "/" + file;
         }
 
+		private static readonly string RelativePathDocs = Path.GetFullPath("../../../../../" + TopLevelDir);
+		
 	    private const string TopLevelDir = "docs";
 	    private const string GithubRepository = "https://github.com/elastic/elasticsearch-net/tree/{commit}/" + TopLevelDir;
-		private const string ShaCommit = "5.x";
+		private const string ShaCommit = "6.x";
 		private static readonly bool FetchFiles = false;
 
         [Theory]
@@ -42,23 +44,23 @@ namespace AsciiDocNet.Tests.Unit
 		{
 			get
 			{
-			    if (!Directory.Exists(TopLevelDir))
-			        Directory.CreateDirectory(TopLevelDir);
+			    if (!Directory.Exists(RelativePathDocs))
+			        Directory.CreateDirectory(RelativePathDocs);
 
-			    var testFiles = Directory.EnumerateFiles(TopLevelDir, "*.asciidoc", SearchOption.AllDirectories);
+			    var testFiles = Directory.EnumerateFiles(RelativePathDocs, "*.asciidoc", SearchOption.AllDirectories);
 
 				if (!testFiles.Any() || FetchFiles)
 				{
 				    var document = new HtmlDocument
 				    {
 				        Branch = ShaCommit,
-				        FolderOnDisk = TopLevelDir,
+				        FolderOnDisk = RelativePathDocs,
 				        GithubListingUrl = GithubRepository.Replace("{commit}", ShaCommit)
 				    };
 
 				    DownloadAsciiDocFiles(document);
 
-                    testFiles = Directory.EnumerateFiles(TopLevelDir, "*.asciidoc", SearchOption.AllDirectories);
+                    testFiles = Directory.EnumerateFiles(RelativePathDocs, "*.asciidoc", SearchOption.AllDirectories);
                 }
 
 				return testFiles.Select(testFile => new object[] { new FileInfo(testFile) });
@@ -74,8 +76,9 @@ namespace AsciiDocNet.Tests.Unit
                     var html = client.DownloadString(htmlDocument.GithubListingUrl);
                     FindAsciiDocFiles(htmlDocument, html);
                 }
-                catch
+                catch (Exception e)
                 {
+	                var ex = e;
                 }
             }
         }
@@ -87,16 +90,16 @@ namespace AsciiDocNet.Tests.Unit
 
             var dom = CQ.Create(html);
 
-            var documents = dom[".js-navigation-open"]
+            var documents = dom["td.content .js-navigation-open"]
                 .Select(s => s.InnerText)
                 .Where(s => !string.IsNullOrEmpty(s) && s.EndsWith(".asciidoc"))
                 .ToList();
 
             documents.ForEach(s => WriteAsciiDoc(htmlDocument, s));
 
-            var directories = dom[".js-navigation-open"]
+            var directories = dom["td.content .js-navigation-open"]
                 .Select(s => s.InnerText)
-                .Where(s => !string.IsNullOrWhiteSpace(s) && s.IndexOf(".") == -1 && Path.GetExtension(s) == string.Empty)
+                .Where(s => !string.IsNullOrWhiteSpace(s) && !Path.HasExtension(s))
                 .ToList();
 
             directories.ForEach(directory =>
