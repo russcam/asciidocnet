@@ -51,16 +51,26 @@ module Tooling =
             exit exitCode
         ()
 
-
-    let execProcessWithTimeout proc arguments timeout = 
+    let private execProcessWithTimeoutIn workingDir proc arguments timeout = 
         let args = arguments |> String.concat " "
         ExecProcess (fun info ->
             info.FileName <- proc
-            info.WorkingDirectory <- "."
+            info.WorkingDirectory <- workingDir
             info.Arguments <- args
         ) timeout
 
-    let execProcessWithTimeoutAndReturnMessages proc arguments timeout = 
+    let private execProcessWithTimeout proc arguments timeout = 
+        execProcessWithTimeoutIn "." proc arguments timeout
+
+    let private defaultTimeout = TimeSpan.FromMinutes 15.
+
+    let private execProcess proc arguments =
+        let exitCode = execProcessWithTimeout proc arguments defaultTimeout
+        match exitCode with
+        | 0 -> exitCode
+        | _ -> failwithf "Calling %s resulted in unexpected exitCode %i" proc exitCode 
+
+    let private execProcessWithTimeoutAndReturnMessages proc arguments timeout = 
         let args = arguments |> String.concat " "
         let code = 
             ExecProcessAndReturnMessages (fun info ->
@@ -69,15 +79,6 @@ module Tooling =
             info.Arguments <- args
             ) timeout
         code
-
-    let private defaultTimeout = TimeSpan.FromMinutes 15.0
-
-    let execProcess proc arguments =
-        let exitCode = execProcessWithTimeout proc arguments defaultTimeout
-        match exitCode with
-        | 0 -> exitCode
-        | _ -> failwithf "Calling %s resulted in unexpected exitCode %i" proc exitCode 
-
 
     let execProcessAndReturnMessages proc arguments =
         execProcessWithTimeoutAndReturnMessages proc arguments defaultTimeout
@@ -99,26 +100,29 @@ module Tooling =
         member this.Exec arguments = execProcess this.Path arguments
 
     let Nuget = new BuildTooling(nugetFile)
-    let GitLink = new BuildTooling(Paths.Tool("gitlink/lib/net45/gitlink.exe"))
-    let Node = new BuildTooling(Paths.Tool("Node.js/node.exe"))
-    let Npm = new BuildTooling(Paths.Tool("Npm/node_modules/npm/cli.js"))
     let XUnit = new BuildTooling(Paths.Tool("xunit.runner.console/tools/xunit.console.exe"))
     let Fake = new BuildTooling("FAKE/tools/FAKE.exe")
 
     type DotNetRuntime = | Desktop | Core | Both
 
-    type DotNetTooling(exe) =
-       member this.Exec arguments =
-            this.ExecWithTimeout arguments (TimeSpan.FromMinutes 30.)
+    type DotNetTooling(exe) =  
+        member this.Exec arguments =
+            this.ExecWithTimeout arguments defaultTimeout
 
+        member this.ExecIn workingDir arguments =
+            this.ExecWithTimeoutIn workingDir arguments defaultTimeout
+            
         member this.ExecWithTimeout arguments timeout =
             let result = execProcessWithTimeout exe arguments timeout
+            if result <> 0 then failwith (sprintf "Failed to run dotnet tooling for %s args: %A" exe arguments)
+       
+        member this.ExecWithTimeoutIn workingDir arguments timeout =
+            let result = execProcessWithTimeoutIn workingDir exe arguments timeout
             if result <> 0 then failwith (sprintf "Failed to run dotnet tooling for %s args: %A" exe arguments)
 
     let DotNet = new DotNetTooling("dotnet.exe")
 
     type MsBuildTooling() =
-
         member this.Build(target, framework:Projects.DotNetFrameworkIdentifier) =
             let solution = Paths.Source "AsciiDocNet.sln";
             let outputPath = Paths.BuildOutput |> Path.GetFullPath
@@ -134,8 +138,7 @@ module Tooling =
                             "TargetFrameworkVersion", framework.MSBuild
                             "DefineConstants", framework.DefineConstants
                         ]
-                 }
-        
+                 }       
             build setParams solution 
 
     let MsBuild = new MsBuildTooling()

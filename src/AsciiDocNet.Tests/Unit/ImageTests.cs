@@ -27,7 +27,7 @@ namespace AsciiDocNet.Tests.Unit
 		}
 
 		[Fact]
-		public void ShouldParseImageWithAnchorAndTitle()
+		public void ShouldParseIndentedImageWithAnchorAndTitle()
 		{
 			var input = $@"[[indent]]
 .hadouken indenting example
@@ -43,6 +43,24 @@ namespace AsciiDocNet.Tests.Unit
 
 			Assert.Equal("{imagesdir}/hadouken-indentation.jpg", image.Path);
 			Assert.Equal("hadouken indenting example", image.Attributes.Title.Text);
+		}		
+		
+		[Fact]
+		public void ShouldParseImageWithAnchorAndTitle()
+		{
+			var input = "image::hadouken-indentation.jpg[hadouken indenting]";
+
+			var document = Document.Parse(input);
+
+			Assert.NotNull(document);
+			Assert.True(document.Count == 1);
+			Assert.IsType<Image>(document[0]);
+
+			var image = (Image)document[0];
+
+			Assert.Equal("hadouken-indentation.jpg", image.Path);
+			Assert.Equal("hadouken indenting", image.AlternateText);
+			AsciiDocAssert.Equal(input, document);
 		}
 	}
 }

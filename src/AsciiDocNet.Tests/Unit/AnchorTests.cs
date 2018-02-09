@@ -15,12 +15,12 @@ namespace AsciiDocNet.Tests.Unit
 		{
 			var document = Document.Parse(DelimiterPair.Item1 + Id + DelimiterPair.Item2 + "reference");
 
-			Assert.Equal(1, document.Count);
+			Assert.True(1 == document.Count);
 			Assert.IsType<Paragraph>(document[0]);
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.Equal(2, paragraph.Count);
+			Assert.True(2 == paragraph.Count);
 			Assert.IsType<TElement>(paragraph[0]);
 
 			var element = (TElement)paragraph[0];
@@ -33,12 +33,12 @@ namespace AsciiDocNet.Tests.Unit
 		{
 			var document = Document.Parse(DelimiterPair.Item1 + Id + "," +XRefLabel + DelimiterPair.Item2 + "reference");
 
-			Assert.Equal(1, document.Count);
+			Assert.True(1 == document.Count);
 			Assert.IsType<Paragraph>(document[0]);
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.Equal(2, paragraph.Count);
+			Assert.True(2 == paragraph.Count);
 			Assert.IsType<TElement>(paragraph[0]);
 
 			var element = (TElement)paragraph[0];
@@ -52,12 +52,12 @@ namespace AsciiDocNet.Tests.Unit
 		{
 			var document = Document.Parse("This is a " + DelimiterPair.Item1 + Id + "," + XRefLabel + DelimiterPair.Item2 + "reference");
 
-			Assert.Equal(1, document.Count);
+			Assert.True(1 == document.Count);
 			Assert.IsType<Paragraph>(document[0]);
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.Equal(3, paragraph.Count);
+			Assert.True(3 == paragraph.Count);
 			Assert.IsType<TElement>(paragraph[1]);
 
 			var element = (TElement)paragraph[1];

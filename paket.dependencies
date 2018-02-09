@@ -1,24 +1,10 @@
-source https://www.myget.org/F/aspnetvnext/api/v3/index.json
-source https://www.myget.org/F/diffplex-temp/api/v3/index.json
-source https://www.myget.org/F/xunit/api/v3/index.json
-source https://api.nuget.org/v3/index.json
 source https://www.nuget.org/api/v2/
 
-// tests
-nuget DiffPlex
-nuget Newtonsoft.Json 9.0.1
-nuget CsQuery
-nuget SpecFlow.xUnit 2.1.0
-nuget xunit 2.2.0-beta5-build3474
-nuget xunit.abstractions 2.0.1-rc2
-
 group build
+
     source https://www.nuget.org/api/v2
     
-	nuget FAKE
-	nuget FSharp.Data
-	nuget FSharp.Text.RegexProvider
-	nuget GitLink prerelease
-	
-    source https://www.myget.org/F/xunit/
-    nuget xunit.runner.console 2.2.0-beta5-build3474
+    nuget FAKE
+    nuget FSharp.Data
+    nuget FSharp.Text.RegexProvider
+    nuget xunit.runner.console 2.3.1

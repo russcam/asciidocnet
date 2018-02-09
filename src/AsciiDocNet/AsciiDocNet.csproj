@@ -1,188 +1,41 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0C808E3D-5ECF-46A9-936D-BCD019B858F9}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AsciiDocNet</RootNamespace>
-    <AssemblyName>AsciiDocNet</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <CurrentVersion>0.0.0-setfrombuild</CurrentVersion>
+    <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
+    <CurrentAssemblyVersion>0.0.0</CurrentAssemblyVersion>
+    <CurrentAssemblyFileVersion>0.0.0.0</CurrentAssemblyFileVersion>
+    <Version>$(CurrentVersion)</Version>
+    <InformationalVersion>$(CurrentVersion)</InformationalVersion>
+    <AssemblyVersion>$(CurrentAssemblyVersion)</AssemblyVersion>
+    <FileVersion>$(CurrentAssemblyFileVersion)</FileVersion>
+	<!-- 1591: don't warn about missing XML comments -->
+	<NoWarn>1591</NoWarn>
+	<NetStandardImplicitPackageVersion>1.6.0</NetStandardImplicitPackageVersion>
+    <DoSourceLink>false</DoSourceLink>
+    <DebugType Condition="'$(Configuration)'=='Debug'">full</DebugType>
+    <SourceLink Condition="'$(DoSourceLink)'=='true'">$(BaseIntermediateOutputPath)\sl-$(MsBuildProjectName)-$(TargetFramework).json</SourceLink>
+    <RepoUri>https://raw.githubusercontent.com/russcam/asciidocnet</RepoUri>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\AsciiDocNet.XML</DocumentationFile>
+  <PropertyGroup>
+    <DocumentationFile>bin\$(Configuration)\AsciiDocNet.xml</DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\AsciiDocNet.XML</DocumentationFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
+    <PackageReference Include="System.Collections.Specialized" Version="4.0.1" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.1.0" />
+    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.1.0" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='net45'">
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Admonition.cs" />
-    <Compile Include="AdmonitionStyle.cs" />
-    <Compile Include="Anchor.cs" />
-    <Compile Include="Parsers\AdmonitionParser.cs" />
-    <Compile Include="Parsers\AnchorParser.cs" />
-    <Compile Include="Callout.cs" />
-    <Compile Include="DelimitedBlockSubstitutions.cs" />
-    <Compile Include="Container.cs" />
-    <Compile Include="Parsers\AttributeEntryParser.cs" />
-    <Compile Include="Parsers\BlockParserBase.cs" />
-    <Compile Include="Parsers\CheckListParser.cs" />
-    <Compile Include="Parsers\CommentParser.cs" />
-    <Compile Include="Parsers\DescendingParserBase.cs" />
-    <Compile Include="Parsers\DocumentTitleParser.cs" />
-    <Compile Include="IContainerParser.cs" />
-    <Compile Include="InlineElementConstraint.cs" />
-    <Compile Include="EnumExtensions.cs" />
-    <Compile Include="HtmlVisitor.cs" />
-    <Compile Include="InlineContainer.cs" />
-    <Compile Include="InlineAnchor.cs" />
-    <Compile Include="Attribute.cs" />
-    <Compile Include="AttributeEntry.cs" />
-    <Compile Include="AttributeList.cs" />
-    <Compile Include="AttributeListExtensions.cs" />
-    <Compile Include="AttributeReference.cs" />
-    <Compile Include="Audio.cs" />
-    <Compile Include="AuthorInfo.cs" />
-    <Compile Include="AuthorInfoAttributeEntry.cs" />
-    <Compile Include="InlineElementRuleMatch.cs" />
-    <Compile Include="LabeledList.cs" />
-    <Compile Include="Link.cs" />
-    <Compile Include="OrderedList.cs" />
-    <Compile Include="ParserContext.cs" />
-    <Compile Include="Parsers\ElementAttributeParser.cs" />
-    <Compile Include="Parsers\ExampleParser.cs" />
-    <Compile Include="Parsers\FencedParser.cs" />
-    <Compile Include="Parsers\IncludeParser.cs" />
-    <Compile Include="Parsers\InlineElementParserBase.cs" />
-    <Compile Include="Parsers\LabeledListParser.cs" />
-    <Compile Include="Parsers\ListingParser.cs" />
-    <Compile Include="Parsers\ListingParserBase.cs" />
-    <Compile Include="Parsers\LiteralParser.cs" />
-    <Compile Include="Parsers\MediaParser.cs" />
-    <Compile Include="Parsers\OpenParser.cs" />
-    <Compile Include="Parsers\OrderedListParser.cs" />
-    <Compile Include="Parsers\PassthroughParser.cs" />
-    <Compile Include="Parsers\ProcessBufferParserBase.cs" />
-    <Compile Include="Parsers\QuoteParser.cs" />
-    <Compile Include="Parsers\SectionTitleParser.cs" />
-    <Compile Include="Parsers\SidebarParser.cs" />
-    <Compile Include="Parsers\SingleLineCommentParser.cs" />
-    <Compile Include="Parsers\SourceParser.cs" />
-    <Compile Include="Parsers\StemParser.cs" />
-    <Compile Include="Parsers\TableParser.cs" />
-    <Compile Include="Parsers\TextBlockerParserBase.cs" />
-    <Compile Include="Parsers\TitleParser.cs" />
-    <Compile Include="Parsers\UnorderedListParser.cs" />
-    <Compile Include="Parsers\VerseParser.cs" />
-    <Compile Include="RomanNumerals.cs" />
-    <Compile Include="Strong.cs" />
-    <Compile Include="CheckListItem.cs" />
-    <Compile Include="AsciiDocVisitor.cs" />
-    <Compile Include="Mark.cs" />
-    <Compile Include="IDocumentReader.cs" />
-    <Compile Include="Literal.cs" />
-    <Compile Include="Monospace.cs" />
-    <Compile Include="Comment.cs" />
-    <Compile Include="Document.cs" />
-    <Compile Include="EmailAttributeEntry.cs" />
-    <Compile Include="Example.cs" />
-    <Compile Include="Fenced.cs" />
-    <Compile Include="IdAttribute.cs" />
-    <Compile Include="Image.cs" />
-    <Compile Include="Include.cs" />
-    <Compile Include="IParser.cs" />
-    <Compile Include="Emphasis.cs" />
-    <Compile Include="LabeledListItem.cs" />
-    <Compile Include="Listing.cs" />
-    <Compile Include="ListItem.cs" />
-    <Compile Include="Media.cs" />
-    <Compile Include="NumberStyle.cs" />
-    <Compile Include="Open.cs" />
-    <Compile Include="OptionsAttribute.cs" />
-    <Compile Include="OrderedListItem.cs" />
-    <Compile Include="Paragraph.cs" />
-    <Compile Include="Passthrough.cs" />
-    <Compile Include="PatternMatcher.cs" />
-    <Compile Include="Patterns.cs" />
-    <Compile Include="QuotationMark.cs" />
-    <Compile Include="Quote.cs" />
-    <Compile Include="DocumentReader.cs" />
-    <Compile Include="RoleAttribute.cs" />
-    <Compile Include="SectionTitle.cs" />
-    <Compile Include="SubstitutionsAttribute.cs" />
-    <Compile Include="TextLiteral.cs" />
-    <Compile Include="NamedAttribute.cs" />
-    <Compile Include="Parser.cs" />
-    <Compile Include="Sidebar.cs" />
-    <Compile Include="Source.cs" />
-    <Compile Include="Stem.cs" />
-    <Compile Include="Subscript.cs" />
-    <Compile Include="Substitutor.cs" />
-    <Compile Include="Superscript.cs" />
-    <Compile Include="Table.cs" />
-    <Compile Include="DocumentTitle.cs" />
-    <Compile Include="TableDelimiters.cs" />
-    <Compile Include="TableHorizontalAlignment.cs" />
-    <Compile Include="TableStyle.cs" />
-    <Compile Include="TableVerticalAlignment.cs" />
-    <Compile Include="InlineElementType.cs" />
-    <Compile Include="InlineElementRule.cs" />
-    <Compile Include="Title.cs" />
-    <Compile Include="UnorderedList.cs" />
-    <Compile Include="UnorderedListItem.cs" />
-    <Compile Include="UnsetAttributeEntry.cs" />
-    <Compile Include="Verse.cs" />
-    <Compile Include="Video.cs" />
-    <Compile Include="CommentStyle.cs" />
-    <Compile Include="DocType.cs" />
-    <Compile Include="IDocumentVisitor.cs" />
-    <Compile Include="IElement.cs" />
-    <Compile Include="IInlineElement.cs" />
-    <Compile Include="IAttributable.cs" />
-    <Compile Include="InternalAnchor.cs" />
-    <Compile Include="IText.cs" />
-    <Compile Include="MissingAttribute.cs" />
-    <Compile Include="NoopVisitor.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AttributeStyle.cs" />
-    <Compile Include="UndefinedAttribute.cs" />
-  </ItemGroup>
+  <Target Name="GenerateSourceLink" BeforeTargets="CoreCompile" Condition="'$(DoSourceLink)'=='true'">
+    <Delete Files="$(SourceLink)" Condition="Exists('$(SourceLink)')" />
+    <Exec Command="git rev-parse HEAD" ConsoleToMSBuild="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="LatestCommit" />
+    </Exec>
+    <Exec Command="git rev-parse --show-toplevel" ConsoleToMSBuild="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="GitRootFolder" />
+    </Exec>
+    <WriteLinesToFile File="$(SourceLink)" Lines="{&quot;documents&quot;: { &quot;$([System.IO.Path]::GetFullPath('$(GitRootFolder)/').Replace('\','\\'))*&quot; : &quot;$(RepoUri)/$(LatestCommit)/*&quot; }}" />
+  </Target>
   <Import Project="..\outputpath.props" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <Import Project="..\..\.paket\paket.targets" />
 </Project>

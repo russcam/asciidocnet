@@ -17,9 +17,8 @@ namespace AsciiDocNet
         {
             var enumType = typeof(T);
             var key = $"{enumType.Name}.{input}";
-            object cachedValue;
 
-            if (EnumCache.TryGetValue(key, out cachedValue))
+	        if (EnumCache.TryGetValue(key, out var cachedValue))
             {
                 return (T)cachedValue;
             }
@@ -33,7 +32,7 @@ namespace AsciiDocNet
                     return value;
                 }
 
-                var enumFieldInfo = enumType.GetField(name);
+                var enumFieldInfo = enumType.GetRuntimeField(name);
                 var enumMemberAttribute = enumFieldInfo.GetCustomAttribute<DisplayAttribute>();
 
                 if (enumMemberAttribute != null && enumMemberAttribute.Name == input)
