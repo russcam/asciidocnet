@@ -50,7 +50,7 @@ namespace AsciiDocNet
             }
 
             while (reader.Line != null &&
-                   !PatternMatcher.ListItemContinuation.IsMatch(reader.Line) &&
+                   //!PatternMatcher.ListItemContinuation.IsMatch(reader.Line) &&
                    !PatternMatcher.BlankCharacters.IsMatch(reader.Line) &&
                    !PatternMatcher.LabeledListItem.IsMatch(reader.Line) &&
                    (delimiterRegex == null || !delimiterRegex.IsMatch(reader.Line)))
