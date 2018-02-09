@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>AsciiDoc processor for .NET</description>
     <releaseNotes>See https://github.com/russcam/asciidocnet/releases/tag/$version$</releaseNotes>
-    <copyright>Copyright(c) 2016 forloop - Russ Cam http://forloop.co.uk</copyright>
+    <copyright>Copyright(c) 2016-$year$ forloop - Russ Cam https://forloop.co.uk</copyright>
     <tags>AsciiDoc Markdown</tags>
 	<dependencies>
 		<group targetFramework=".NETFramework4.5" />
@@ -24,13 +24,10 @@
 	</dependencies>
   </metadata>
 	<files>
-		<file src="output\v4.5\AsciiDocNet\AsciiDocNet.dll" target="lib\net45"/>
-		<file src="output\v4.5\AsciiDocNet\AsciiDocNet.pdb" target="lib\net45"/>
-		<file src="output\v4.5\AsciiDocNet\AsciiDocNet.pdb.srcsrv" target="lib\net45"/>
-		<file src="output\v4.5\AsciiDocNet\AsciiDocNet.XML" target="lib\net45"/>
+		<file src="output\AsciiDocNet\net45\AsciiDocNet.dll" target="lib\net45"/>
+		<file src="output\AsciiDocNet\net45\AsciiDocNet.XML" target="lib\net45"/>
 
-		<file src="output\netstandard1.3\AsciiDocNet\AsciiDocNet.dll" target="lib\netstandard1.3"/>
-		<file src="output\netstandard1.3\AsciiDocNet\AsciiDocNet.pdb" target="lib\netstandard1.3"/>
-		<file src="output\netstandard1.3\AsciiDocNet\AsciiDocNet.pdb.srcsrv" target="lib\netstandard1.3"/>
+		<file src="output\AsciiDocNet\netstandard1.3\AsciiDocNet.dll" target="lib\netstandard1.3"/>
+		<file src="output\AsciiDocNet\netstandard1.3\AsciiDocNet.XML" target="lib\netstandard1.3"/>
 	</files>
 </package>

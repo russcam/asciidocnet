@@ -25,7 +25,7 @@ Target "BuildApp" Build.Compile
 
 Target "Test" Tests.RunUnitTests
 
-Target "Version" <| fun _ -> tracefn "Current Version: %A" Versioning.CurrentVersion
+Target "Version" <| fun _ -> tracefn "Current Version: %s" (Versioning.CurrentVersion.ToString())
 
 Target "Release" Release.NugetPack
 

@@ -22,7 +22,7 @@ type Versioning() =
     static let writeVersionIntoGlobalJson version = 
         let versionString = version.ToString()
         let newGlobalJson = GlobalJsonProvider.Root (GlobalJsonProvider.Sdk(GlobalJson.Sdk.Version), versionString)
-        use tw = new StreamWriter("global.json")
+        use tw = new StreamWriter("src/global.json")
         newGlobalJson.JsonValue.WriteTo(tw, JsonSaveOptions.None)
         tracefn "Written (%s) to global.json as the current version will use this version from now on as current in the build" versionString 
         version
