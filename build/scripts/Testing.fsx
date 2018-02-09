@@ -16,19 +16,10 @@ module Tests =
     let testProjectName = (PrivateProject (AsciiDocNetTests)).Name
 
     let private testNetCore parallelization =
-        Projects.DotNetProject.All
-        |> Seq.iter(fun p -> 
-            let path = Paths.ProjectFile p.Name
-            Tooling.DotNet.Exec ["restore"; path]
-        )
-
         let testPath = Paths.ProjectFile testProjectName
-        let testDir  = testProjectName |> Path.GetDirectoryName
-        
+        let testDir  = testProjectName |> Path.GetDirectoryName  
         Tooling.DotNet.Exec ["restore"; testPath]
         Tooling.DotNet.Exec ["build"; testPath; "--configuration Release"; "-f"; "netcoreapp1.0"]
-        
-        tracefn "TEST DIR: %s" testDir     
         Tooling.DotNet.ExecIn "src/AsciiDocNet.Tests" ["xunit"; "-parallel"; parallelization; "-xml"; "../.." @@ Paths.Output("TestResults-Core-Clr.xml")]
 
     let private testDesktopClr parallelization = 

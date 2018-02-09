@@ -22,9 +22,6 @@ namespace AsciiDocNet.Tests.Unit
         }
 
 		private static readonly string RelativePathDocs = Path.GetFullPath("../../../../../" + TopLevelDir);
-		
-		private static readonly string RelativePathVisitedDocs = Path.GetFullPath("../../../../../visited-docs");
-		
 	    private const string TopLevelDir = "docs";
 	    private const string GithubRepository = "https://github.com/elastic/elasticsearch-net/tree/{commit}/" + TopLevelDir;
 		private const string ShaCommit = "6.x";
@@ -63,11 +60,13 @@ namespace AsciiDocNet.Tests.Unit
 
 				if (!testFiles.Any() || FetchFiles)
 				{
-				    var document = new HtmlDocument
+					var githubListingUrl = GithubRepository.Replace("{commit}", ShaCommit);				
+					Console.WriteLine($"Fetching documents from {githubListingUrl} to parse");
+					var document = new HtmlDocument
 				    {
 				        Branch = ShaCommit,
 				        FolderOnDisk = RelativePathDocs,
-				        GithubListingUrl = GithubRepository.Replace("{commit}", ShaCommit)
+				        GithubListingUrl = githubListingUrl
 				    };
 
 				    DownloadAsciiDocFiles(document);
@@ -88,9 +87,8 @@ namespace AsciiDocNet.Tests.Unit
                     var html = client.DownloadString(htmlDocument.GithubListingUrl);
                     FindAsciiDocFiles(htmlDocument, html);
                 }
-                catch (Exception e)
+                catch
                 {
-	                var ex = e;
                 }
             }
         }

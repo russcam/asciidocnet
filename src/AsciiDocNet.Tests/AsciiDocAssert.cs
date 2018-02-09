@@ -14,8 +14,25 @@ namespace AsciiDocNet.Tests
 	{
 		public static void Equal(string asciidoc, Document document)
 		{
-			var directoryAttribute = document.Attributes.FirstOrDefault(a => a.Name == "docdir");
-			if (directoryAttribute != null)
+			var expected = asciidoc.ConsistentLineEndings().RemoveTrailingNewLine();
+			var actual = RenderAsciiDoc(document);
+
+			Diff(expected, actual);
+			Assert.True(true);
+		}
+		
+		public static void Equal(Document first, Document second)
+		{
+			var firstAsciidoc = RenderAsciiDoc(first);
+			var secondAsciidoc = RenderAsciiDoc(second);
+			Diff(firstAsciidoc, secondAsciidoc);
+			Assert.True(true);
+		}
+
+		private static string RenderAsciiDoc(Document document)
+		{
+			var directoryAttributes = document.Attributes.Where(a => a.Name == "docdir").ToList();
+			foreach (var directoryAttribute in directoryAttributes)
 			{
 				document.Attributes.Remove(directoryAttribute);
 			}
@@ -26,11 +43,7 @@ namespace AsciiDocNet.Tests
 				document.Accept(visitor);
 			}
 
-			var expected = asciidoc.ConsistentLineEndings().RemoveTrailingNewLine();
-			var actual = builder.ToString().RemoveTrailingNewLine();
-
-			Diff(expected, actual);
-			Assert.True(true);
+			return builder.ToString().RemoveTrailingNewLine();
 		}
 
 		private static void Diff(string expected, string actual, string message = null)
