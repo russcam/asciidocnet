@@ -11,12 +11,12 @@ namespace AsciiDocNet.Tests.Unit
 
 			var document = Document.Parse(paragraph);
 
-			Assert.Equal(1, document.Count);
+			Assert.True(1 == document.Count);
 			Assert.IsType<Paragraph>(document[0]);
 
 			var element = (Paragraph)document[0];
 
-			Assert.Equal(1, element.Count);
+			Assert.True(1 == element.Count);
 			Assert.IsType<TextLiteral>(element[0]);
 		}
 
@@ -27,12 +27,12 @@ namespace AsciiDocNet.Tests.Unit
 		{
 			var document = Document.Parse(input);
 
-			Assert.Equal(1, document.Count);
+			Assert.True(1 == document.Count);
 			Assert.IsType<Paragraph>(document[0]);
 
 			var element = (Paragraph)document[0];
 
-			Assert.Equal(3, element.Count);
+			Assert.True(3 == element.Count);
 			Assert.IsType<TextLiteral>(element[0]);
 			Assert.IsType<Strong>(element[1]);
 			Assert.IsType<TextLiteral>(element[2]);
@@ -45,12 +45,12 @@ namespace AsciiDocNet.Tests.Unit
 		{
 			var document = Document.Parse(input);
 
-			Assert.Equal(1, document.Count);
+			Assert.True(1 == document.Count);
 			Assert.IsType<Paragraph>(document[0]);
 
 			var element = (Paragraph)document[0];
 
-			Assert.Equal(3, element.Count);
+			Assert.True(3 == element.Count);
 			Assert.IsType<TextLiteral>(element[0]);
 			Assert.IsType<Emphasis>(element[1]);
 			Assert.IsType<TextLiteral>(element[2]);
@@ -63,12 +63,12 @@ namespace AsciiDocNet.Tests.Unit
 		{
 			var document = Document.Parse(input);
 
-			Assert.Equal(1, document.Count);
+			Assert.True(1 == document.Count);
 			Assert.IsType<Paragraph>(document[0]);
 
 			var element = (Paragraph)document[0];
 
-			Assert.Equal(5, element.Count);
+			Assert.True(5 == element.Count);
 			Assert.IsType<TextLiteral>(element[0]);
 			Assert.IsType<Strong>(element[1]);
 			Assert.IsType<TextLiteral>(element[2]);

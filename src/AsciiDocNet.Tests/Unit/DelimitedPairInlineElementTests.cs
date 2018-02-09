@@ -18,12 +18,12 @@ namespace AsciiDocNet.Tests.Unit
 			var text = $"{delimiterPair.Item1}{Text}{delimiterPair.Item2}";
 			var document = Document.Parse(text);
 
-			Assert.Equal(1, document.Count);
+			Assert.True(1 == document.Count);
 			Assert.IsType<Paragraph>(document[0]);
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.Equal(1, paragraph.Count);
+			Assert.True(1 == paragraph.Count);
 			Assert.IsType<TElement>(paragraph[0]);
 
 			var element = (TElement)paragraph[0];
@@ -45,12 +45,12 @@ namespace AsciiDocNet.Tests.Unit
 			var text = $"{delimiterPair.Item1}{Text}{delimiterPair.Item2}";
 			var document = Document.Parse(text);
 
-			Assert.Equal(1, document.Count);
+			Assert.True(1 == document.Count);
 			Assert.IsType<Paragraph>(document[0]);
 
 			var paragraph = (Paragraph)document[0];
 
-			Assert.Equal(1, paragraph.Count);
+			Assert.True(1 == paragraph.Count);
 			Assert.IsType<TElement>(paragraph[0]);
 
 			var element = (TElement)paragraph[0];

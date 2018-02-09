@@ -4,8 +4,6 @@ namespace AsciiDocNet.Tests.Unit
 {
 	public class ElementAttributeTests
 	{
-		private Parser Parser { get; } = new Parser();
-
 		[Theory]
 		[InlineData("[#idname.rolename]\nparagraph")]
 		[InlineData("[id=\"idname\",.rolename]\nparagraph")]
@@ -35,7 +33,7 @@ namespace AsciiDocNet.Tests.Unit
 			Assert.IsType<RoleAttribute>(secondAttribute);
 			var roleAttribute = (RoleAttribute)secondAttribute;
 
-			Assert.Equal(1, roleAttribute.Values.Length);
+			Assert.True(1 == roleAttribute.Values.Length);
 			Assert.Equal("rolename", roleAttribute.Values[0]);
 		}
 
@@ -58,7 +56,7 @@ namespace AsciiDocNet.Tests.Unit
 			Assert.IsType<OptionsAttribute>(firstAttribute);
 			var optionsAttribute = (OptionsAttribute)firstAttribute;
 
-			Assert.Equal(3, optionsAttribute.Values.Length);
+			Assert.True(3 == optionsAttribute.Values.Length);
 			Assert.Equal("header,footer,autowidth", optionsAttribute.Value);
 		}
 
@@ -151,7 +149,7 @@ namespace AsciiDocNet.Tests.Unit
 			Assert.IsType<RoleAttribute>(firstAttribute);
 			var roleAttribute = (RoleAttribute)firstAttribute;
 
-			Assert.Equal(1, roleAttribute.Values.Length);
+			Assert.True(1 == roleAttribute.Values.Length);
 			Assert.Equal("value", roleAttribute.Values[0]);
 		}
 

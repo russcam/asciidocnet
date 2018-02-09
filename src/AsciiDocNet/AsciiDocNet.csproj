@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <CurrentVersion>1.0.0-alpha5</CurrentVersion>
+    <CurrentVersion>0.0.0-setfrombuild</CurrentVersion>
     <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
     <CurrentAssemblyVersion>0.0.0</CurrentAssemblyVersion>
     <CurrentAssemblyFileVersion>0.0.0.0</CurrentAssemblyFileVersion>
@@ -8,26 +8,25 @@
     <InformationalVersion>$(CurrentVersion)</InformationalVersion>
     <AssemblyVersion>$(CurrentAssemblyVersion)</AssemblyVersion>
     <FileVersion>$(CurrentAssemblyFileVersion)</FileVersion>
+	<!-- 1591: don't warn about missing XML comments -->
+	<NoWarn>1591</NoWarn>
+	<NetStandardImplicitPackageVersion>1.6.0</NetStandardImplicitPackageVersion>
     <DoSourceLink>false</DoSourceLink>
     <DebugType Condition="'$(Configuration)'=='Debug'">full</DebugType>
     <SourceLink Condition="'$(DoSourceLink)'=='true'">$(BaseIntermediateOutputPath)\sl-$(MsBuildProjectName)-$(TargetFramework).json</SourceLink>
     <RepoUri>https://raw.githubusercontent.com/russcam/asciidocnet</RepoUri>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DocumentationFile>bin\Debug\AsciiDocNet.xml</DocumentationFile>
+  <PropertyGroup>
+    <DocumentationFile>bin\$(Configuration)\AsciiDocNet.xml</DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DocumentationFile>bin\Release\AsciiDocNet.xml</DocumentationFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.0" />
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
+    <PackageReference Include="System.Collections.Specialized" Version="4.0.1" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.1.0" />
+    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.1.0" />
   </ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)'!='netstandard1.3'">
-		<Reference Include="Microsoft.CSharp" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
-		<PackageReference Include="Microsoft.CSharp" Version="4.3.0" />
-	</ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='net45'">
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+  </ItemGroup>
   <Target Name="GenerateSourceLink" BeforeTargets="CoreCompile" Condition="'$(DoSourceLink)'=='true'">
     <Delete Files="$(SourceLink)" Condition="Exists('$(SourceLink)')" />
     <Exec Command="git rev-parse HEAD" ConsoleToMSBuild="true">

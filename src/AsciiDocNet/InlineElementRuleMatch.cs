@@ -69,6 +69,7 @@ namespace AsciiDocNet
         /// <param name="element">The element.</param>
         /// <param name="startIndex">The start index.</param>
         /// <param name="endIndex">The end index.</param>
+        /// <param name="replacement">The replacement string.</param>
         public InlineElementRuleMatch(IInlineElement element, int startIndex, int endIndex, string replacement)
 		{
 			Element = element;
