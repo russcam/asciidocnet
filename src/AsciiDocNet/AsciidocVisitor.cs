@@ -538,7 +538,14 @@ namespace AsciiDocNet
         public virtual void VisitLink(Link link)
 		{
 		    if (link == null) return;
-		    _writer.Write("{0}[{1}]", link.Href, link.Text);
+			if (link.Text == null)
+			{
+				_writer.Write("{0}", link.Href);
+			}
+			else
+			{
+				_writer.Write("{0}[{1}]", link.Href, link.Text);
+			}	    
 		}
 
         /// <summary>

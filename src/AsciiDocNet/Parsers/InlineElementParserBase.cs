@@ -395,10 +395,12 @@ namespace AsciiDocNet
                                 break;
                             case InlineElementType.ImplicitLink:
                                 // TODO: split attributes out
-                                var attributes = match.Groups["attributes"].Value;
+	                            var attributes = match.Groups["attributes"].Success
+		                            ? match.Groups["attributes"].Value
+		                            : null;
                                 var href = match.Groups["href"].Value;
                                 var link = new Link(href, attributes);
-                                outerMatches.Add(new InlineElementRuleMatch(link, match.Index + match.Groups[1].Length, match.Index + match.Length, new string(' ', match.Length)));
+                                outerMatches.Add(new InlineElementRuleMatch(link, match.Index + match.Groups[1].Length, match.Index + match.Length, match.Groups[1].Value + new string(' ', match.Length - match.Groups[1].Length)));
                                 break;
                         }
 

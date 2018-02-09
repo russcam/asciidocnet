@@ -20,6 +20,7 @@ namespace AsciiDocNet.Tests.Unit
 			{
 				foreach (var protocol in Protocols)
 				{
+					yield return new object[]{ protocol, $"{protocol}://example.com", null, 1, 0 };
 					yield return new object[]{ protocol, $"{protocol}://example.com[`link`]", "`link`", 1, 0 };
 					yield return new object[]{ protocol, $"{protocol}://example.com[link]", "link", 1, 0 };
 					yield return new object[]{ protocol, $"{protocol}://example.com[]", string.Empty, 1, 0 };
