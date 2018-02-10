@@ -85,14 +85,12 @@ namespace AsciiDocNet
 
             if (path.Length == 0)
             {
-                throw new AggregateException($"{nameof(path)} must not be empty.");
+                throw new ArgumentException($"{nameof(path)} must not be empty.");
             }
 
-			using (var reader = new DocumentReader(path))
-			{
-				var parser = new Parser();
-				return parser.Parse(reader);
-			}
+			var reader = new DocumentReader(path);
+			var parser = new Parser();
+			return parser.Parse(reader);
 		}
 
         /// <summary>
@@ -116,13 +114,11 @@ namespace AsciiDocNet
                 throw new ArgumentException($"{nameof(stream)} must not be empty.");
             }
 
-			using (var reader = new StreamReader(stream))
+			using (var streamReader = new StreamReader(stream))
 			{
-				using (var asciiReader = new DocumentReader(reader))
-				{
-					var parser = new Parser();
-					return parser.Parse(asciiReader);
-				}
+				var reader = new DocumentReader(streamReader);
+				var parser = new Parser();
+				return parser.Parse(reader);
 			}
 		}
 
@@ -169,13 +165,11 @@ namespace AsciiDocNet
                 throw new ArgumentException($"{nameof(text)} must not be empty.");
             }
 
-            using (var reader = new StringReader(text))
-			{
-				using (var asciiReader = new DocumentReader(reader))
-				{
-					var parser = new Parser();
-					return parser.Parse(asciiReader);
-				}
+            using (var stringReader = new StringReader(text))
+            {
+	            var reader = new DocumentReader(stringReader);
+				var parser = new Parser();
+				return parser.Parse(reader);
 			}
 		}
 

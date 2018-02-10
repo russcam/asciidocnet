@@ -7,12 +7,12 @@ namespace AsciiDocNet
     public class LabeledListParser : ProcessBufferParserBase
     {
         public override bool IsMatch(IDocumentReader reader, Container container, AttributeList attributes) =>
-            PatternMatcher.LabeledListItem.IsMatch(reader.Line);
+            PatternMatcher.LabeledListItem.IsMatch(reader.Line.AsString());
 
         public override void InternalParse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer,
             ref AttributeList attributes)
         {
-            var match = PatternMatcher.LabeledListItem.Match(reader.Line);
+            var match = PatternMatcher.LabeledListItem.Match(reader.Line.AsString());
             if (!match.Success)
             {
                 throw new ArgumentException("not a labeled list item");
@@ -42,20 +42,20 @@ namespace AsciiDocNet
             else
             {
                 reader.ReadLine();
-                while (reader.Line != null &&
-                       PatternMatcher.BlankCharacters.IsMatch(reader.Line))
+                while (reader.Line.AsString() != null &&
+                       PatternMatcher.BlankCharacters.IsMatch(reader.Line.AsString()))
                 {
                     reader.ReadLine();
                 }
             }
 
-            while (reader.Line != null &&
-                   //!PatternMatcher.ListItemContinuation.IsMatch(reader.Line) &&
-                   !PatternMatcher.BlankCharacters.IsMatch(reader.Line) &&
-                   !PatternMatcher.LabeledListItem.IsMatch(reader.Line) &&
-                   (delimiterRegex == null || !delimiterRegex.IsMatch(reader.Line)))
+            while (reader.Line.AsString() != null &&
+                   //!PatternMatcher.ListItemContinuation.IsMatch(reader.Line.AsString()) &&
+                   !PatternMatcher.BlankCharacters.IsMatch(reader.Line.AsString()) &&
+                   !PatternMatcher.LabeledListItem.IsMatch(reader.Line.AsString()) &&
+                   (delimiterRegex == null || !delimiterRegex.IsMatch(reader.Line.AsString())))
             {
-                buffer.Add(reader.Line);
+                buffer.Add(reader.Line.AsString());
                 reader.ReadLine();
             }
 

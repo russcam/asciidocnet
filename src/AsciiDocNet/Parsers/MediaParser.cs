@@ -7,12 +7,12 @@ namespace AsciiDocNet
     public class MediaParser : ProcessBufferParserBase
     {
         public override bool IsMatch(IDocumentReader reader, Container container, AttributeList attributes) =>
-            PatternMatcher.Media.IsMatch(reader.Line);
+            PatternMatcher.Media.IsMatch(reader.Line.AsString());
 
         public override void InternalParse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer,
             ref AttributeList attributes)
         {
-            var match = PatternMatcher.Media.Match(reader.Line);
+            var match = PatternMatcher.Media.Match(reader.Line.AsString());
             if (!match.Success)
             {
                 throw new ArgumentException("not a media");

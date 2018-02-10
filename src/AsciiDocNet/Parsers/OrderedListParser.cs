@@ -7,12 +7,12 @@ namespace AsciiDocNet
     public class OrderedListParser : ProcessBufferParserBase
     {
         public override bool IsMatch(IDocumentReader reader, Container container, AttributeList attributes) =>
-            PatternMatcher.OrderedListItem.IsMatch(reader.Line);
+            PatternMatcher.OrderedListItem.IsMatch(reader.Line.AsString());
 
         public override void InternalParse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer,
             ref AttributeList attributes)
         {
-            var match = PatternMatcher.OrderedListItem.Match(reader.Line);
+            var match = PatternMatcher.OrderedListItem.Match(reader.Line.AsString());
             if (!match.Success)
             {
                 throw new ArgumentException("not an ordered list item");
@@ -57,13 +57,13 @@ namespace AsciiDocNet
             buffer.Add(text);
             reader.ReadLine();
 
-            while (reader.Line != null &&
-                   !PatternMatcher.ListItemContinuation.IsMatch(reader.Line) &&
-                   !PatternMatcher.BlankCharacters.IsMatch(reader.Line) &&
-                   !PatternMatcher.OrderedListItem.IsMatch(reader.Line) &&
-                   (delimiterRegex == null || !delimiterRegex.IsMatch(reader.Line)))
+            while (reader.Line.AsString() != null &&
+                   !PatternMatcher.ListItemContinuation.IsMatch(reader.Line.AsString()) &&
+                   !PatternMatcher.BlankCharacters.IsMatch(reader.Line.AsString()) &&
+                   !PatternMatcher.OrderedListItem.IsMatch(reader.Line.AsString()) &&
+                   (delimiterRegex == null || !delimiterRegex.IsMatch(reader.Line.AsString())))
             {
-                buffer.Add(reader.Line);
+                buffer.Add(reader.Line.AsString());
                 reader.ReadLine();
             }
 

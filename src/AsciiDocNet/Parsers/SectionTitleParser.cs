@@ -7,13 +7,13 @@ namespace AsciiDocNet
     public class SectionTitleParser : ProcessBufferParserBase
     {
         public override bool IsMatch(IDocumentReader reader, Container container, AttributeList attrtibutes) =>
-            PatternMatcher.SectionTitle.IsMatch(reader.Line);
+            PatternMatcher.SectionTitle.IsMatch(reader.Line.AsString());
 
         // TODO: based on html output, a section title should define a section block element into which all proceeding elements should be added, until the next section Title is hit
         public override void InternalParse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer,
             ref AttributeList attributes)
         {
-            var match = PatternMatcher.SectionTitle.Match(reader.Line);
+            var match = PatternMatcher.SectionTitle.Match(reader.Line.AsString());
             if (!match.Success)
             {
                 throw new ArgumentException("not a section title");

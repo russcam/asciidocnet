@@ -11,25 +11,25 @@ namespace AsciiDocNet
             ref AttributeList attributes)
         {
             var listingRegex = PatternMatcher.GetDelimiterRegexFor<TElement>();
-            var isDelimiter = listingRegex.IsMatch(reader.Line);
+            var isDelimiter = listingRegex.IsMatch(reader.Line.AsString());
 
             if (isDelimiter)
             {
                 ProcessParagraph(container, ref buffer);
                 reader.ReadLine();
-                while (reader.Line != null && !listingRegex.IsMatch(reader.Line))
+                while (reader.Line.AsString() != null && !listingRegex.IsMatch(reader.Line.AsString()))
                 {
-                    buffer.Add(reader.Line);
+                    buffer.Add(reader.Line.AsString());
                     reader.ReadLine();
                 }
             }
             else
             {
-                buffer.Add(reader.Line);
+                buffer.Add(reader.Line.AsString());
                 reader.ReadLine();
-                while (reader.Line != null && !PatternMatcher.BlankCharacters.IsMatch(reader.Line))
+                while (reader.Line.AsString() != null && !PatternMatcher.BlankCharacters.IsMatch(reader.Line.AsString()))
                 {
-                    buffer.Add(reader.Line);
+                    buffer.Add(reader.Line.AsString());
                     reader.ReadLine();
                 }
             }
@@ -40,9 +40,9 @@ namespace AsciiDocNet
             reader.ReadLine();
             if (isDelimiter)
             {
-                while (reader.Line != null && PatternMatcher.Callout.IsMatch(reader.Line))
+                while (reader.Line.AsString() != null && PatternMatcher.Callout.IsMatch(reader.Line.AsString()))
                 {
-                    ParseCallout(element, reader.Line);
+                    ParseCallout(element, reader.Line.AsString());
                     reader.ReadLine();
                 }
             }

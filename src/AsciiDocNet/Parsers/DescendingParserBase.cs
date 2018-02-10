@@ -40,9 +40,9 @@ namespace AsciiDocNet
         protected void DescendingParse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer,
             ref AttributeList attributes)
         {
-            while (reader.Line != null)
+            while (reader.Line.AsString() != null)
             {
-                if (delimiterRegex != null && delimiterRegex.IsMatch(reader.Line))
+                if (delimiterRegex != null && delimiterRegex.IsMatch(reader.Line.AsString()))
                 {
                     ProcessParagraph(container, ref buffer, ref attributes);
                     return;
@@ -62,10 +62,10 @@ namespace AsciiDocNet
 
                 if (!parsed)
                 {
-                    if (PatternMatcher.BlankCharacters.IsMatch(reader.Line))
+                    if (PatternMatcher.BlankCharacters.IsMatch(reader.Line.AsString()))
                         ProcessBuffer(container, ref buffer, ref attributes);
                     else
-                        buffer.Add(reader.Line);
+                        buffer.Add(reader.Line.AsString());
 
                     reader.ReadLine();
                 }

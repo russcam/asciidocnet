@@ -1,3 +1,5 @@
+using System;
+
 namespace AsciiDocNet
 {
     /// <summary>
@@ -13,7 +15,12 @@ namespace AsciiDocNet
 		/// <summary>
 		/// The current line
 		/// </summary>
-		string Line { get; }
+		ReadOnlySpan<char>? Line { get; }
+		
+		/// <summary>
+		/// The current position
+		/// </summary>
+		int Position { get; }
 
 		/// <summary>
 		/// The current line number
@@ -25,6 +32,6 @@ namespace AsciiDocNet
 		/// incrementing <see cref="LineNumber"/>
 		/// </summary>
 		/// <returns>the next line</returns>
-		string ReadLine();
+		ReadOnlySpan<char>? ReadLine();
 	}
 }

@@ -14,7 +14,7 @@ namespace AsciiDocNet
             var delimiterRegex = PatternMatcher.GetDelimiterRegexFor<TElement>();
             var element = new TElement();
             element.Attributes.Add(attributes);
-            if (delimiterRegex.IsMatch(reader.Line))
+            if (delimiterRegex.IsMatch(reader.Line.AsString()))
             {
                 ProcessParagraph(container, ref buffer);
                 reader.ReadLine();

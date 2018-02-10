@@ -7,7 +7,7 @@ namespace AsciiDocNet
     public class AnchorParser : IMatchingElementParser
     {
         public bool IsMatch(IDocumentReader reader, Container container, AttributeList attributes) => 
-            PatternMatcher.Anchor.IsMatch(reader.Line);
+            PatternMatcher.Anchor.IsMatch(reader.Line.AsString());
 
         public void Parse(
             Container container,
@@ -16,7 +16,7 @@ namespace AsciiDocNet
             ref List<string> buffer,
             ref AttributeList attributes)
         {
-            var match = PatternMatcher.Anchor.Match(reader.Line);
+            var match = PatternMatcher.Anchor.Match(reader.Line.AsString());
             if (!match.Success)
             {
                 throw new ArgumentException("not an anchor");

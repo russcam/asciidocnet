@@ -7,12 +7,12 @@ namespace AsciiDocNet
     public class AdmonitionParser : ProcessBufferParserBase
     {
         public override bool IsMatch(IDocumentReader reader, Container container, AttributeList attributes) =>
-            PatternMatcher.Admonition.IsMatch(reader.Line);
+            PatternMatcher.Admonition.IsMatch(reader.Line.AsString());
 
         public override void InternalParse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer,
             ref AttributeList attributes)
         {
-            var match = PatternMatcher.Admonition.Match(reader.Line);
+            var match = PatternMatcher.Admonition.Match(reader.Line.AsString());
 
             if (!match.Success)
             {
@@ -21,9 +21,9 @@ namespace AsciiDocNet
 
             buffer.Add(match.Groups["text"].Value);
             reader.ReadLine();
-            while (reader.Line != null && !PatternMatcher.BlankCharacters.IsMatch(reader.Line))
+            while (reader.Line.AsString() != null && !PatternMatcher.BlankCharacters.IsMatch(reader.Line.AsString()))
             {
-                buffer.Add(reader.Line);
+                buffer.Add(reader.Line.AsString());
                 reader.ReadLine();
             }
 

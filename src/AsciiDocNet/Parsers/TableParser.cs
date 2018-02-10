@@ -7,7 +7,7 @@ namespace AsciiDocNet
     public class TableParser : ProcessBufferParserBase
     {
         public override bool IsMatch(IDocumentReader reader, Container container, AttributeList attributes) =>
-            PatternMatcher.Table.IsMatch(reader.Line);
+            PatternMatcher.Table.IsMatch(reader.Line.AsString());
 
         public override void InternalParse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer,
             ref AttributeList attributes)

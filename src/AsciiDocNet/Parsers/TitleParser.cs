@@ -7,12 +7,12 @@ namespace AsciiDocNet
     public class TitleParser : ProcessBufferParserBase
     {
         public override bool IsMatch(IDocumentReader reader, Container container, AttributeList attributes) =>
-            PatternMatcher.Title.IsMatch(reader.Line);
+            PatternMatcher.Title.IsMatch(reader.Line.AsString());
 
         public override void InternalParse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer,
             ref AttributeList attributes)
         {
-            var match = PatternMatcher.Title.Match(reader.Line);
+            var match = PatternMatcher.Title.Match(reader.Line.AsString());
             if (!match.Success)
                 throw new ArgumentException("not a block title");
 

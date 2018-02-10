@@ -8,7 +8,7 @@ namespace AsciiDocNet
     public class DocumentTitleParser : IMatchingElementParser
     {
         public bool IsMatch(IDocumentReader reader, Container container, AttributeList attributes) =>
-            PatternMatcher.DocumentTitle.IsMatch(reader.Line) && 
+            PatternMatcher.DocumentTitle.IsMatch(reader.Line.AsString()) && 
             (reader.LineNumber == 1 || container.GetType() == typeof(Document) && container.All(e => e is Comment));
 
         public void Parse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer,
@@ -19,17 +19,17 @@ namespace AsciiDocNet
 
             reader.ReadLine();
 
-            if (reader.Line == null)
+            if (reader.Line.AsString() == null)
                 return;
 
-            ParseAuthors(document, reader.Line);
+            ParseAuthors(document, reader.Line.AsString());
 
             reader.ReadLine();
         }
 
         private static void ParseDocumentTitle(Document document, IDocumentReader reader, ref AttributeList attributes)
         {
-            var match = PatternMatcher.DocumentTitle.Match(reader.Line);
+            var match = PatternMatcher.DocumentTitle.Match(reader.Line.AsString());
             if (!match.Success)
             {
                 throw new ArgumentException("not a document title");
