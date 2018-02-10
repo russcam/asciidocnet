@@ -30,6 +30,7 @@ module Projects =
 
     type PrivateProject =
         | AsciiDocNetTests
+        | AsciiDocNetBenchmarks
 
     type DotNetProject = 
         | Project of Project
@@ -39,6 +40,7 @@ module Projects =
             seq [
                 Project Project.AsciiDocNet; 
                 PrivateProject PrivateProject.AsciiDocNetTests
+                PrivateProject PrivateProject.AsciiDocNetBenchmarks
             ]
 
         static member AllPublishable = seq [Project Project.AsciiDocNet;] 
@@ -52,6 +54,7 @@ module Projects =
             | PrivateProject p ->
                 match p with
                 | AsciiDocNetTests -> "AsciiDocNet.Tests"
+                | AsciiDocNetBenchmarks -> "AsciiDocNet.Benchmarks"
       
         static member TryFindName (name: string) =
             DotNetProject.All

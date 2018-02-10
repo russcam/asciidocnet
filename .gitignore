@@ -76,3 +76,4 @@ src/.idea/
 paket-files/
 docs/
 visited-docs/
+BenchmarkDotNet.Artifacts/

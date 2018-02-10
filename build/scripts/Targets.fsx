@@ -7,6 +7,7 @@
 #load @"Releasing.fsx"
 #load @"Building.fsx"
 #load @"Testing.fsx"
+#load @"Benchmark.fsx"
 
 open Fake
 
@@ -14,6 +15,7 @@ open Building
 open Testing
 open Versioning
 open Releasing
+open Benchmark
 
 Target "Build" <| fun _ -> traceHeader "STARTING BUILD"
 
@@ -24,6 +26,8 @@ Target "Restore" Build.Restore
 Target "BuildApp" Build.Compile
 
 Target "Test" Tests.RunUnitTests
+
+Target "Benchmark" Benchmark.Run
 
 Target "Version" <| fun _ -> tracefn "Current Version: %s" (Versioning.CurrentVersion.ToString())
 
@@ -41,6 +45,9 @@ Target "Release" Release.NugetPack
 
 "Build"
   ==> "Release"
+  
+"Build"
+  ==> "Benchmark"
 
 RunTargetOrDefault "Build"
 

@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.10.12" />
+    <ProjectReference Include="..\AsciiDocNet\AsciiDocNet.csproj" />
+  </ItemGroup>
+  <Import Project="..\outputpath.props" />
+</Project>

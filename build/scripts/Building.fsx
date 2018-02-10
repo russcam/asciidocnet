@@ -71,8 +71,6 @@ type Build() =
         compileCore()
 
     static member Clean() =
-        trace (Directory.GetCurrentDirectory())
-    
         CleanDir Paths.BuildOutput
         DotNetCli.RunCommand 
             (fun p -> 
