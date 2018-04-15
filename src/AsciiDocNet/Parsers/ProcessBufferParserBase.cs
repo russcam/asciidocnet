@@ -9,7 +9,7 @@ namespace AsciiDocNet
     {
         public abstract bool IsMatch(IDocumentReader reader, Container container, AttributeList attributes);
 
-        public abstract void InternalParse(
+	    protected abstract void InternalParse(
             Container container, 
             IDocumentReader reader, 
             Regex delimiterRegex,

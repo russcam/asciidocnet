@@ -11,7 +11,7 @@ namespace AsciiDocNet
     /// </summary>
     internal static class EnumExtensions
     {
-        internal static ConcurrentDictionary<string, object> EnumCache = new ConcurrentDictionary<string, object>();
+	    private static readonly ConcurrentDictionary<string, object> EnumCache = new ConcurrentDictionary<string, object>();
 
         internal static T ToEnum<T>(this string input) where T : struct
         {

@@ -9,7 +9,7 @@ namespace AsciiDocNet
     public static class AttributeListExtensions
 	{
         /// <summary>
-        /// Determines whether the attributes has and attribute with the given name
+        /// Determines whether the attributes has an attribute with the given name
         /// </summary>
         /// <param name="attributes">The attributes.</param>
         /// <param name="blockNames">Names of the blocks,</param>
@@ -17,9 +17,8 @@ namespace AsciiDocNet
         public static bool ContainBlockName(this AttributeList attributes, params string[] blockNames)
 		{
 			if (attributes == null || attributes.Count == 0)
-			{
 				return false;
-			}
+			
 			return attributes.Any(a => blockNames.Contains(a.Name, StringComparer.OrdinalIgnoreCase));
 		}
 	}

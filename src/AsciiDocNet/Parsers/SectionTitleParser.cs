@@ -10,7 +10,7 @@ namespace AsciiDocNet
             PatternMatcher.SectionTitle.IsMatch(reader.Line.AsString());
 
         // TODO: based on html output, a section title should define a section block element into which all proceeding elements should be added, until the next section Title is hit
-        public override void InternalParse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer,
+	    protected override void InternalParse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer,
             ref AttributeList attributes)
         {
             var match = PatternMatcher.SectionTitle.Match(reader.Line.AsString());

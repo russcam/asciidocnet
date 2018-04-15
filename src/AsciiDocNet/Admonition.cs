@@ -12,12 +12,9 @@ namespace AsciiDocNet
         /// Initializes a new instance of the <see cref="Admonition"/> class.
         /// </summary>
         /// <param name="style">The style.</param>
-        public Admonition(AdmonitionStyle style)
-        {
-            Style = style;
-        }
+        public Admonition(AdmonitionStyle style) => Style = style;
 
-        /// <summary>
+	    /// <summary>
         /// Gets the attributes.
         /// </summary>
         /// <value>

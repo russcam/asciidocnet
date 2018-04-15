@@ -6,12 +6,12 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
   <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-xunit" Version="2.4.0-beta1-build3908" />
+    <DotNetCliToolReference Include="dotnet-xunit" Version="2.4.0-beta.1.build3958" />
     <PackageReference Include="CsQuery.NETStandard" Version="1.3.6.1" />
     <PackageReference Include="DiffPlex" Version="1.4.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
-    <PackageReference Include="xunit" Version="2.4.0-beta1-build3908" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0-beta1-build3908" />
+    <PackageReference Include="xunit" Version="2.4.0-beta.1.build3958" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0-beta.1.build3958" />
     <ProjectReference Include="..\AsciiDocNet\AsciiDocNet.csproj" />
   </ItemGroup>
   <Import Project="..\outputpath.props" />

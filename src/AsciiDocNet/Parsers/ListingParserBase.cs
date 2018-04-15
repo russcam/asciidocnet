@@ -7,7 +7,7 @@ namespace AsciiDocNet
     public abstract class ListingParserBase<TElement> : ProcessBufferParserBase
         where TElement : Listing, IElement, new()
     {
-        public override void InternalParse(Container container, IDocumentReader reader, Regex d, ref List<string> buffer,
+	    protected override void InternalParse(Container container, IDocumentReader reader, Regex d, ref List<string> buffer,
             ref AttributeList attributes)
         {
             var listingRegex = PatternMatcher.GetDelimiterRegexFor<TElement>();
