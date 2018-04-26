@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -8,7 +9,7 @@ namespace AsciiDocNet
         void Parse(
             Container container,
             IDocumentReader reader,
-            Regex delimiterRegex,
+            Func<string, bool> predicate,
             ref List<string> buffer,
             ref AttributeList attributes);
     }

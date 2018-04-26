@@ -11,7 +11,7 @@ namespace AsciiDocNet
             PatternMatcher.DocumentTitle.IsMatch(reader.Line) && 
             (reader.LineNumber == 1 || container.GetType() == typeof(Document) && container.All(e => e is Comment));
 
-        public void Parse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer,
+        public void Parse(Container container, IDocumentReader reader, Func<string, bool> predicate, ref List<string> buffer,
             ref AttributeList attributes)
         {
             var document = (Document)container;

@@ -9,7 +9,7 @@ namespace AsciiDocNet
         public override bool IsMatch(IDocumentReader reader, Container container, AttributeList attributes) =>
             PatternMatcher.LabeledListItem.IsMatch(reader.Line);
 
-        public override void InternalParse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer,
+        public override void InternalParse(Container container, IDocumentReader reader, Func<string, bool> predicate, ref List<string> buffer,
             ref AttributeList attributes)
         {
             var match = PatternMatcher.LabeledListItem.Match(reader.Line);
@@ -53,7 +53,7 @@ namespace AsciiDocNet
                    //!PatternMatcher.ListItemContinuation.IsMatch(reader.Line) &&
                    !PatternMatcher.BlankCharacters.IsMatch(reader.Line) &&
                    !PatternMatcher.LabeledListItem.IsMatch(reader.Line) &&
-                   (delimiterRegex == null || !delimiterRegex.IsMatch(reader.Line)))
+                   (predicate == null || !predicate(reader.Line)))
             {
                 buffer.Add(reader.Line);
                 reader.ReadLine();

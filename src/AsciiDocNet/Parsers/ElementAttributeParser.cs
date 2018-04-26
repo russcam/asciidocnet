@@ -10,7 +10,7 @@ namespace AsciiDocNet
         public override bool IsMatch(IDocumentReader reader, Container container, AttributeList attributes) =>
             PatternMatcher.ElementAttribute.IsMatch(reader.Line);
 
-        public override void InternalParse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer,
+        public override void InternalParse(Container container, IDocumentReader reader, Func<string, bool> predicate, ref List<string> buffer,
             ref AttributeList attributes)
         {
             var match = PatternMatcher.ElementAttribute.Match(reader.Line);

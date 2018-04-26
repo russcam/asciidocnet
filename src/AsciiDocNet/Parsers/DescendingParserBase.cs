@@ -37,12 +37,12 @@ namespace AsciiDocNet
              
         };
 
-        protected void DescendingParse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer,
+        protected void DescendingParse(Container container, IDocumentReader reader, Func<string, bool> predicate, ref List<string> buffer,
             ref AttributeList attributes)
         {
             while (reader.Line != null)
             {
-                if (delimiterRegex != null && delimiterRegex.IsMatch(reader.Line))
+                if (predicate != null && predicate(reader.Line))
                 {
                     ProcessParagraph(container, ref buffer, ref attributes);
                     return;
@@ -54,7 +54,7 @@ namespace AsciiDocNet
                     var parser = Parsers[index];
                     if (parser.IsMatch(reader, container, attributes))
                     {
-                        parser.Parse(container, reader, delimiterRegex, ref buffer, ref attributes);
+                        parser.Parse(container, reader, predicate, ref buffer, ref attributes);
                         parsed = true;
                         break;
                     }
@@ -74,7 +74,7 @@ namespace AsciiDocNet
             ProcessBuffer(container, ref buffer, ref attributes);
         }
 
-        private void ProcessBuffer(Container container, ref List<string> buffer, ref AttributeList attributes)
+        protected void ProcessBuffer(Container container, ref List<string> buffer, ref AttributeList attributes)
         {
             if (buffer.Count > 0)
             {

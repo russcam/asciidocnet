@@ -35,5 +35,31 @@ namespace AsciiDocNet.Tests.Unit
 				}
 			}
 		}
+
+		[Fact]
+		public void ShouldParseChecklistWithInteractiveCheckboxes()
+		{
+			var document = Document.Parse(@"[%interactive]
+* [*] checked
+* [x] also checked
+* [ ] not checked
+*     normal list item
+");
+
+			Assert.NotNull(document);
+			Assert.True(document.Count == 1);
+
+			Assert.IsType<UnorderedList>(document[0]);
+
+			// TODO: [%interactive] should be parsed onto Unorderedlist
+			var unorderList = (UnorderedList)document[0];
+			
+			Assert.True(unorderList.Items.Count == 4);
+
+			Assert.IsType<CheckListItem>(unorderList.Items[0]);
+			Assert.IsType<CheckListItem>(unorderList.Items[1]);
+			Assert.IsType<CheckListItem>(unorderList.Items[2]);
+			Assert.IsType<UnorderedListItem>(unorderList.Items[3]);		
+		}
 	}
 }

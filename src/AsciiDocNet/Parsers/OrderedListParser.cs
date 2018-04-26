@@ -9,7 +9,7 @@ namespace AsciiDocNet
         public override bool IsMatch(IDocumentReader reader, Container container, AttributeList attributes) =>
             PatternMatcher.OrderedListItem.IsMatch(reader.Line);
 
-        public override void InternalParse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer,
+        public override void InternalParse(Container container, IDocumentReader reader, Func<string, bool> predicate, ref List<string> buffer,
             ref AttributeList attributes)
         {
             var match = PatternMatcher.OrderedListItem.Match(reader.Line);
@@ -57,19 +57,32 @@ namespace AsciiDocNet
             buffer.Add(text);
             reader.ReadLine();
 
+	        attributes = null;
+
             while (reader.Line != null &&
-                   !PatternMatcher.ListItemContinuation.IsMatch(reader.Line) &&
                    !PatternMatcher.BlankCharacters.IsMatch(reader.Line) &&
                    !PatternMatcher.OrderedListItem.IsMatch(reader.Line) &&
-                   (delimiterRegex == null || !delimiterRegex.IsMatch(reader.Line)))
+                   (predicate == null || !predicate(reader.Line)))
             {
-                buffer.Add(reader.Line);
-                reader.ReadLine();
+	            if (PatternMatcher.ListItemContinuation.IsMatch(reader.Line))
+	            {
+		            ProcessBuffer(orderedListItem, ref buffer, ref attributes);	            
+		            reader.ReadLine();
+		            DescendingParse(
+			            orderedListItem, 
+			            reader, 
+			            line => PatternMatcher.BlankCharacters.IsMatch(line) || PatternMatcher.OrderedListItem.IsMatch(line), 
+			            ref buffer, 
+			            ref attributes);
+	            }
+	            else
+	            {
+		            buffer.Add(reader.Line);
+		            reader.ReadLine();
+	            }
             }
 
-            // TODO: handle multi element list items (i.e. continued with +)
-            AttributeList a = null;
-            ProcessParagraph(orderedListItem, ref buffer, ref a);
+	        ProcessBuffer(orderedListItem, ref buffer, ref attributes);
 
             OrderedList orderedList;
             if (container.Count > 0)
