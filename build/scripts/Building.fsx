@@ -23,14 +23,17 @@ open Versioning
 type Build() = 
 
     static let runningRelease = hasBuildParam "version" || getBuildParam "target" = "release"
-    static let pinnedSdkVersion = GlobalJson.Sdk.Version
+    static let pinnedSdkVersion = GlobalJson.Sdk.Version |> SemVerHelper.parse
     static let sln = Source("AsciiDocNet.sln")
     static let timeout = TimeSpan.FromMinutes 3.
 
     static let compileCore() =
       if not (DotNetCli.isInstalled()) then failwith  "You need to install the dotnet command line SDK to build for .NET Core"
-      let runningSdkVersion = DotNetCli.getVersion()
-      if (runningSdkVersion <> pinnedSdkVersion) then failwithf "Attempting to run with dotnet.exe with %s but global.json mandates %s" runningSdkVersion pinnedSdkVersion
+      let runningSdkVersion = DotNetCli.getVersion() |> SemVerHelper.parse
+      if runningSdkVersion < pinnedSdkVersion then 
+        failwithf "Attempting to run with dotnet.exe with %s which is lower than global.json version %s" 
+            (runningSdkVersion.ToString()) 
+            (pinnedSdkVersion.ToString())
       let sourceLink = if runningRelease then "true" else "false"
       let props = 
           [ 

@@ -6,10 +6,24 @@ namespace AsciiDocNet
 {
     public class AnchorParser : IMatchingElementParser
     {
-        public bool IsMatch(IDocumentReader reader, Container container, AttributeList attributes) => 
-            PatternMatcher.Anchor.IsMatch(reader.Line.AsString());
+	    private static readonly ReadOnlySpan<char> OpeningCharacters = "[[".AsSpan();
+	    private static readonly ReadOnlySpan<char> ClosingCharacters = "]]".AsSpan();
+	    
+        public bool IsMatch(IDocumentReader reader, Container container, AttributeList attributes)
+        {
+	        if (reader.Line == null)
+		        return false;
 
-        public void Parse(
+	        var span = reader.Line.Value;
+
+	        if (!span.StartsWith(OpeningCharacters) || !span.EndsWith(ClosingCharacters))
+		        return false;
+
+	        var contents = span.Slice(OpeningCharacters.Length, span.Length - ClosingCharacters.Length);
+	        return contents.Length > 0 && char.IsLetter(contents[0]);
+	    }
+
+	    public void Parse(
             Container container,
             IDocumentReader reader,
             Regex delimiterRegex,
