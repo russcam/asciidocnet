@@ -31,6 +31,7 @@ namespace AsciiDocNet
             while (reader.Line != null &&
                    !PatternMatcher.BlankCharacters.IsMatch(reader.Line) &&
                    !PatternMatcher.ListItem.IsMatch(reader.Line) &&
+                   !PatternMatcher.CheckListItem.IsMatch(reader.Line) &&
                    (predicate == null || !predicate(reader.Line)))
             {
 	            if (PatternMatcher.ListItemContinuation.IsMatch(reader.Line))
@@ -40,7 +41,9 @@ namespace AsciiDocNet
 		            DescendingParse(
 			            listItem, 
 			            reader, 
-			            line => PatternMatcher.BlankCharacters.IsMatch(line) || PatternMatcher.ListItem.IsMatch(line), 
+			            line => PatternMatcher.BlankCharacters.IsMatch(line) || 
+			                    PatternMatcher.ListItem.IsMatch(line) ||
+			                    PatternMatcher.CheckListItem.IsMatch(reader.Line), 
 			            ref buffer, 
 			            ref attributes);
 	            }
