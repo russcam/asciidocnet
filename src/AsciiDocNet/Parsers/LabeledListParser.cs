@@ -9,7 +9,7 @@ namespace AsciiDocNet
         public override bool IsMatch(IDocumentReader reader, Container container, AttributeList attributes) =>
             PatternMatcher.LabeledListItem.IsMatch(reader.Line);
 
-        public override void InternalParse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer,
+        public override void InternalParse(Container container, IDocumentReader reader, Func<string, bool> predicate, ref List<string> buffer,
             ref AttributeList attributes)
         {
             var match = PatternMatcher.LabeledListItem.Match(reader.Line);
@@ -29,6 +29,7 @@ namespace AsciiDocNet
 
             var labeledListItem = new LabeledListItem(label, level);
             labeledListItem.Attributes.Add(attributes);
+	        attributes = null;
 
             var text = match.Groups["text"].Value;
 
@@ -50,19 +51,30 @@ namespace AsciiDocNet
             }
 
             while (reader.Line != null &&
-                   //!PatternMatcher.ListItemContinuation.IsMatch(reader.Line) &&
                    !PatternMatcher.BlankCharacters.IsMatch(reader.Line) &&
                    !PatternMatcher.LabeledListItem.IsMatch(reader.Line) &&
-                   (delimiterRegex == null || !delimiterRegex.IsMatch(reader.Line)))
+                   (predicate == null || !predicate(reader.Line)))
             {
-                buffer.Add(reader.Line);
-                reader.ReadLine();
+	            if (PatternMatcher.ListItemContinuation.IsMatch(reader.Line))
+	            {
+		            ProcessBuffer(labeledListItem, ref buffer, ref attributes);	            
+		            reader.ReadLine();
+		            DescendingParse(
+			            labeledListItem, 
+			            reader, 
+			            line => PatternMatcher.BlankCharacters.IsMatch(line) || 
+			                    PatternMatcher.LabeledListItem.IsMatch(line), 
+			            ref buffer, 
+			            ref attributes);
+	            }
+	            else
+	            {
+		            buffer.Add(reader.Line);
+		            reader.ReadLine();
+	            }
             }
 
-            // TODO: handle multi element list items (i.e. continued with +)
-            // TODO: This may not be a paragraph.
-            AttributeList a = null;
-            ProcessParagraph(labeledListItem, ref buffer, ref a);
+	        ProcessBuffer(labeledListItem, ref buffer, ref attributes);
 
             LabeledList labeledList;
             if (container.Count > 0)

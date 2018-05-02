@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -8,7 +9,7 @@ namespace AsciiDocNet
     {
         public abstract bool IsMatch(IDocumentReader reader, Container container, AttributeList attributes);
 
-        public override void Parse(Container container, IDocumentReader reader, Regex d, ref List<string> buffer,
+        public override void Parse(Container container, IDocumentReader reader, Func<string, bool> predicate, ref List<string> buffer,
             ref AttributeList attributes)
         {
             var delimiterRegex = PatternMatcher.GetDelimiterRegexFor<TElement>();
@@ -36,7 +37,7 @@ namespace AsciiDocNet
         {
             var buffer = new List<string>(8);
             AttributeList attributes = null;
-            DescendingParse(parent, reader, delimiterRegex, ref buffer, ref attributes);
+            DescendingParse(parent, reader, delimiterRegex.IsMatch, ref buffer, ref attributes);
         }
     }
 }

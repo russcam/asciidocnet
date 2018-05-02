@@ -7,7 +7,7 @@ namespace AsciiDocNet
     public abstract class TextBlockerParserBase<TElement> : ProcessBufferParserBase 
         where TElement : IText, IElement, IAttributable, new()
     {
-        public override void InternalParse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer,
+        public override void InternalParse(Container container, IDocumentReader reader, Func<string, bool> predicate, ref List<string> buffer,
             ref AttributeList attributes)
         {
             var elementDelimiter = PatternMatcher.GetDelimiterRegexFor<TElement>();

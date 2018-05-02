@@ -25,10 +25,10 @@ namespace AsciiDocNet
             return document;
         }
 
-        public override void Parse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer, ref AttributeList attributes)
+        public override void Parse(Container container, IDocumentReader reader, Func<string, bool> predicate, ref List<string> buffer, ref AttributeList attributes)
         {
             reader.ReadLine();        
-            DescendingParse(container, reader, null, ref buffer, ref attributes);
+            DescendingParse(container, reader, predicate, ref buffer, ref attributes);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace AsciiDocNet
         public void Parse(
             Container container,
             IDocumentReader reader,
-            Regex delimiterRegex,
+            Func<string, bool> predicate,
             ref List<string> buffer,
             ref AttributeList attributes)
         {

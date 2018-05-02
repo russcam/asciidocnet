@@ -10,7 +10,7 @@ namespace AsciiDocNet
             PatternMatcher.Include.IsMatch(reader.Line);
 
 
-        public override void InternalParse(Container container, IDocumentReader reader, Regex delimiterRegex, ref List<string> buffer,
+        public override void InternalParse(Container container, IDocumentReader reader, Func<string, bool> predicate, ref List<string> buffer,
             ref AttributeList attributes)
         {
             var match = PatternMatcher.Include.Match(reader.Line);
@@ -33,8 +33,7 @@ namespace AsciiDocNet
                         switch (attributeMatch.Groups["name"].Value.ToLowerInvariant())
                         {
                             case "leveloffset":
-                                int offset;
-                                if (int.TryParse(attributeMatch.Groups["value"].Value, out offset))
+	                            if (int.TryParse(attributeMatch.Groups["value"].Value, out var offset))
                                 {
                                     include.LevelOffset = offset;
                                 }
@@ -47,8 +46,7 @@ namespace AsciiDocNet
                                 include.Tags = attributeMatch.Groups["value"].Value;
                                 break;
                             case "indent":
-                                int indent;
-                                if (int.TryParse(attributeMatch.Groups["value"].Value, out indent))
+	                            if (int.TryParse(attributeMatch.Groups["value"].Value, out var indent))
                                 {
                                     include.Indent = indent;
                                 }

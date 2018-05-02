@@ -16,6 +16,7 @@ namespace AsciiDocNet
 	{
 		private readonly TextWriter _writer;
 		private bool _disposed;
+		private bool _insideListItem;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AsciiDocVisitor"/> class.
@@ -136,12 +137,13 @@ namespace AsciiDocNet
 
 		    VisitAttributeList(paragraph.Attributes);
 			VisitInlineContainer(paragraph);
+		
 			_writer.WriteLine();
-
+			
 			if (paragraph.Count > 0)
 			{
 				var lastElement = paragraph[paragraph.Count - 1];
-				if (!lastElement.ToString().EndsWith("\r\n"))
+				if (!lastElement.ToString().EndsWith("\r\n") && !_insideListItem)
 				{
 					_writer.WriteLine();
 				}
@@ -336,16 +338,24 @@ namespace AsciiDocNet
 		{
             if (listItem == null) return;
 			_writer.Write("{0} ", new string('*', listItem.Level));
+			if (listItem.Count > 1)
+			{
+				_insideListItem = true;
+			}
 			for (int index = 0; index < listItem.Count; index++)
 			{
 				var element = listItem[index];
 				var lastElement = index == listItem.Count - 1;
+				if (lastElement)
+				{
+					_insideListItem = false;
+				}			
 				element.Accept(this);
 				if (!lastElement)
 				{
 					_writer.WriteLine("+");
 				}
-			}
+			}		
 		}
 
         /// <summary>
@@ -436,16 +446,25 @@ namespace AsciiDocNet
 		{
             if (listItem == null) return;
 			_writer.Write("{0} [{1}] ", new string('-', listItem.Level), listItem.Checked? "x" : " ");
+			if (listItem.Count > 1)
+			{
+				_insideListItem = true;
+			}
+			
 			for (int index = 0; index < listItem.Count; index++)
 			{
 				var element = listItem[index];
 				var lastElement = index == listItem.Count - 1;
+				if (lastElement)
+				{
+					_insideListItem = false;
+				}
 				element.Accept(this);
 				if (!lastElement)
 				{
 					_writer.WriteLine("+");
 				}
-			}
+			}		
 		}
 
         /// <summary>
@@ -484,10 +503,19 @@ namespace AsciiDocNet
 				_writer.Write("{0} ", new string('.', listItem.Level));
 			}
 
+			if (listItem.Count > 1)
+			{
+				_insideListItem = true;
+			}
+			
 			for (int index = 0; index < listItem.Count; index++)
 			{
 				var element = listItem[index];
 				var lastElement = index == listItem.Count - 1;
+				if (lastElement)
+				{
+					_insideListItem = false;
+				}
 				element.Accept(this);
 				if (!lastElement)
 				{
@@ -506,16 +534,26 @@ namespace AsciiDocNet
 			VisitAttributeList(listItem.Attributes);
 			_writer.WriteLine("{0}{1}", listItem.Label, new string(':', listItem.Level + 2));
 			_writer.WriteLine();
+			if (listItem.Count > 1)
+			{
+				_insideListItem = true;
+			}
+
 			for (int index = 0; index < listItem.Count; index++)
 			{
 				var element = listItem[index];
 				var lastElement = index == listItem.Count - 1;
+
+				if (lastElement)
+				{
+					_insideListItem = false;
+				}		
 				element.Accept(this);
 				if (!lastElement)
 				{
 					_writer.WriteLine("+");
 				}
-			}		
+			}
 		}
 
         /// <summary>

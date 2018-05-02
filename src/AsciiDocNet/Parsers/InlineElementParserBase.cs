@@ -7,7 +7,7 @@ namespace AsciiDocNet
 {
     public abstract class InlineElementParserBase : IElementParser
     {
-        public abstract void Parse(Container container, IDocumentReader reader, Regex delimiterRegex,
+        public abstract void Parse(Container container, IDocumentReader reader, Func<string, bool> predicate,
             ref List<string> buffer,
             ref AttributeList attributes);
 
