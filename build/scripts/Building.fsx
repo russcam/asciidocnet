@@ -41,8 +41,8 @@ type Build() =
               "CurrentAssemblyVersion", (Versioning.CurrentAssemblyVersion.ToString());
               "CurrentAssemblyFileVersion", (Versioning.CurrentAssemblyFileVersion.ToString());
               "DoSourceLink", sourceLink;
-              "OutputPathBaseDir", Path.GetFullPath Paths.BuildOutput;            
-          ] 
+              "OutputPathBaseDir", "\"" + (Path.GetFullPath Paths.BuildOutput) + "\"";
+          ]
           |> List.map (fun (p,v) -> sprintf "%s=%s" p v)
           |> String.concat ";"
           |> sprintf "/property:%s"
