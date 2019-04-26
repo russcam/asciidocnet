@@ -1,14 +1,6 @@
-﻿#I @"../../packages/build/FSharp.Data/lib/net45"
-#r @"FSharp.Data.dll"
+﻿namespace Scripts
 
-open FSharp.Data
-
-[<AutoOpen>]
 module Projects = 
-
-    type GlobalJsonProvider = JsonProvider<""" { "sdk": { "version":"x" }, "version": "x" } """ >
-    
-    let GlobalJson = GlobalJsonProvider.Load("../../src/global.json");
 
     type DotNetFrameworkIdentifier = { 
         MSBuild: string; 
@@ -17,13 +9,13 @@ module Projects =
     }
 
     type DotNetFramework = 
-        | Net45 
-        | NetStandard13
-        static member All = [Net45; NetStandard13] 
+        | NetStandard20
+        | NetCoreApp21
+        static member All = [NetStandard20] 
         member this.Identifier = 
             match this with
-            | Net45 -> { MSBuild = "v4.5"; Nuget = "net45"; DefineConstants = "TRACE;NET45"; }
-            | NetStandard13 -> { MSBuild = "netstandard1.3"; Nuget = "netstandard1.3"; DefineConstants = "TRACE;DOTNETCORE"; }
+            | NetStandard20 -> { MSBuild = "netstandard2.0"; Nuget = "netstandard2.0"; DefineConstants = ""; }
+            | NetCoreApp21 -> { MSBuild = "netcoreapp2.1"; Nuget = "netcoreapp2.1"; DefineConstants = ""; }
 
     type Project =
         | AsciiDocNet
@@ -55,7 +47,7 @@ module Projects =
                 match p with
                 | AsciiDocNetTests -> "AsciiDocNet.Tests"
                 | AsciiDocNetBenchmarks -> "AsciiDocNet.Benchmarks"
-      
+                
         static member TryFindName (name: string) =
             DotNetProject.All
             |> Seq.map(fun p -> p.Name)
@@ -63,10 +55,10 @@ module Projects =
 
     type DotNetFrameworkProject = { framework: DotNetFramework; project: DotNetProject }
     
-    let AllPublishableProjectsWithSupportedFrameworks = seq {
-            for framework in DotNetFramework.All do
-            for project in DotNetProject.AllPublishable do
-                yield { framework = framework; project= project }
-        }
+    let allPublishableProjectsWithSupportedFrameworks = seq {
+        for framework in DotNetFramework.All do
+        for project in DotNetProject.AllPublishable do
+            yield { framework = framework; project= project }
+    }
 
 

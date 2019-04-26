@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace AsciiDocNet
 {
@@ -232,8 +233,16 @@ namespace AsciiDocNet
         /// </summary>
         /// <param name="other">The other.</param>
         /// <returns>true if equal; otherwise, false</returns>
-        protected bool Equals(Container other) => 
-            Elements.Count == other.Elements.Count && Elements.SequenceEqual(other.Elements);
+        protected bool Equals(Container other)
+        {
+	        if (Elements == null && other.Elements == null)
+		        return true;
+
+	        if (Elements == null && other.Elements != null || Elements != null && other.Elements == null) 
+		        return false;
+
+	        return Elements.Count == other.Elements.Count && Elements.SequenceEqual(other.Elements);
+        }
 
         /// <summary>
         /// Returns an enumerator that iterates through a collection.

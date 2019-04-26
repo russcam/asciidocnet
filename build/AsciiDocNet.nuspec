@@ -14,8 +14,7 @@
     <copyright>Copyright(c) 2016-$year$ forloop - Russ Cam https://forloop.co.uk</copyright>
     <tags>AsciiDoc Markdown</tags>
 	<dependencies>
-		<group targetFramework=".NETFramework4.5" />
-		<group targetFramework=".NETStandard1.3">
+		<group targetFramework=".NETStandard2.0">
 			<dependency id="NETStandard.Library" version="[1.6.0, )" />
 			<dependency id="System.Collections.Specialized" version="[4.0.1, )" />
 			<dependency id="System.Reflection.TypeExtensions" version="[4.1.0, )" />
@@ -24,10 +23,7 @@
 	</dependencies>
   </metadata>
 	<files>
-		<file src="output\AsciiDocNet\net45\AsciiDocNet.dll" target="lib\net45"/>
-		<file src="output\AsciiDocNet\net45\AsciiDocNet.XML" target="lib\net45"/>
-
-		<file src="output\AsciiDocNet\netstandard1.3\AsciiDocNet.dll" target="lib\netstandard1.3"/>
-		<file src="output\AsciiDocNet\netstandard1.3\AsciiDocNet.XML" target="lib\netstandard1.3"/>
+		<file src="output\AsciiDocNet\netstandard2.0\AsciiDocNet.dll" target="lib\netstandard1.3"/>
+		<file src="output\AsciiDocNet\netstandard2.0\AsciiDocNet.XML" target="lib\netstandard1.3"/>
 	</files>
 </package>
