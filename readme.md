@@ -22,4 +22,4 @@ Since this modification happens within a .NET application, the intention was to 
 
 ## License
 
-AsciiDocNet is licensed under Apache 2. [See the license for more details](license.md)
+AsciiDocNet is licensed under Apache 2. [See the license for more details](license.txt)
