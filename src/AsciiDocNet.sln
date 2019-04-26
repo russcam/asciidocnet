@@ -14,10 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsciiDocNet.Tests", "AsciiD
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{5B868227-DC86-44DA-AFDE-752EB8B7CE0C}"
 	ProjectSection(SolutionItems) = preProject
-		..\build.bat = ..\build.bat
-		..\paket.dependencies = ..\paket.dependencies
 		..\build\AsciiDocNet.nuspec = ..\build\AsciiDocNet.nuspec
-		global.json = global.json
 	EndProjectSection
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "scripts", "..\build\scripts\scripts.fsproj", "{876DEC6A-20DB-4522-AB92-0C5895CC791C}"
@@ -40,6 +37,7 @@ Global
 		{8AFB2E20-2EBE-48D2-AA28-89F7F7948429}.Release|Any CPU.Build.0 = Release|Any CPU
 		{876DEC6A-20DB-4522-AB92-0C5895CC791C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{876DEC6A-20DB-4522-AB92-0C5895CC791C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{876DEC6A-20DB-4522-AB92-0C5895CC791C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B61A01EE-6A7E-4BDB-A7AE-807E4FC6B859}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B61A01EE-6A7E-4BDB-A7AE-807E4FC6B859}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B61A01EE-6A7E-4BDB-A7AE-807E4FC6B859}.Release|Any CPU.ActiveCfg = Release|Any CPU

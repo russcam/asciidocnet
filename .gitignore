@@ -70,9 +70,7 @@ build/tools/*
 .fake/*
 .fake
 packages/*
-paket.exe
 src/.idea/
-.paket/
 paket-files/
 docs/
 visited-docs/
