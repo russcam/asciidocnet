@@ -15,8 +15,7 @@ module Main =
     
     let [<EntryPoint>] main args = 
         
-        let parsed = Commandline.parse (args |> Array.toList)
-        
+        let parsed = Commandline.parse (args |> Array.toList)       
         let buildVersions = Versioning.buildVersioning parsed
         let artifactsVersion = Versioning.artifactsVersion buildVersions
         Versioning.validate parsed.Target buildVersions
@@ -42,21 +41,14 @@ module Main =
         target "nuget-pack" <| fun _ -> Release.nugetPack artifactsVersion
 
         target "validate-artifacts" <| fun _ -> Versioning.validateArtifacts artifactsVersion
-        
-        // the following are expected to be called as targets directly        
-        let buildChain = [
-            "clean"; "version"; "restore"; "full-build"; "test"; 
-        ]
-        
-        command "build" buildChain <| fun _ -> printfn "STARTING BUILD"
+             
+        command "build" [ "clean"; "version"; "restore"; "full-build"; "test"; ] <| fun _ -> printfn "STARTING BUILD"
 
         command "benchmark" [ "clean"; "full-build"; ] <| fun _ -> Benchmark.run parsed
 
-        command "canary" [ "version"; "release"; "test-nuget-package";] <| fun _ -> printfn "Finished Release Build %O" artifactsVersion
+        command "canary" [ "version"; "release"; "test-nuget-package"; ] <| fun _ -> printfn "Finished Release Build %O" artifactsVersion
 
-        command "release" [ 
-           "build"; "nuget-pack"; "validate-artifacts";
-        ] (fun _ -> printfn "Finished Release Build %O" artifactsVersion)
+        command "release" [ "build"; "nuget-pack"; "validate-artifacts"; ] <| fun _ -> printfn "Finished Release Build %O" artifactsVersion
 
         Targets.RunTargetsAndExit([parsed.Target], fun e -> e.GetType() = typeof<ProcExecException>)
 

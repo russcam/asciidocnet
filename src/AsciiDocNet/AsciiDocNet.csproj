@@ -5,7 +5,14 @@
     <DoSourceLink>false</DoSourceLink>
     <DebugType Condition="'$(Configuration)'=='Debug'">full</DebugType>
     <SourceLink Condition="'$(DoSourceLink)'=='true'">$(BaseIntermediateOutputPath)\sl-$(MsBuildProjectName)-$(TargetFramework).json</SourceLink>
-    <RepoUri>https://raw.githubusercontent.com/russcam/asciidocnet</RepoUri>
+	<CurrentVersion>1.0.0</CurrentVersion>
+	<CurrentAssemblyVersion>1.0.0</CurrentAssemblyVersion>
+	<CurrentAssemblyFileVersion>1.0.0</CurrentAssemblyFileVersion>
+	<Version>$(CurrentVersion)</Version>
+	<InformationalVersion>$(CurrentVersion)</InformationalVersion>
+	<AssemblyVersion>$(CurrentAssemblyVersion)</AssemblyVersion>
+	<FileVersion>$(CurrentAssemblyFileVersion)</FileVersion>
+	<RepoUri>https://raw.githubusercontent.com/russcam/asciidocnet</RepoUri>
   </PropertyGroup>
   <PropertyGroup>
     <DocumentationFile>bin\$(Configuration)\AsciiDocNet.xml</DocumentationFile>

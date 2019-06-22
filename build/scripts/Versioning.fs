@@ -25,7 +25,7 @@ module Versioning =
     let writeVersionIntoGlobalJson version =
         let globalJson = globalJson ()
         let newGlobalJson = { globalJson with version = version.ToString(); }
-        File.WriteAllText("global.json", JsonConvert.SerializeObject(newGlobalJson))
+        File.WriteAllText("global.json", JsonConvert.SerializeObject(newGlobalJson, Formatting.Indented))
         printfn "Written (%s) to global.json as the current version will use this version from now on as current in the build" (version.ToString()) 
     
     let GlobalJsonVersion = parse <| globalJson().version
@@ -71,7 +71,7 @@ module Versioning =
             | Update (newVersion, currentVersion) -> 
                 // fail if current is greater or equal to the new version
                 if (currentVersion >= newVersion) then
-                    failwithf "Can not release %O its lower then current %O" newVersion.Full currentVersion.Full
+                    sprintf "Current version %O is greater than or equal to new version %O" newVersion.Full currentVersion.Full |> Console.WriteLine
                 writeVersionIntoGlobalJson newVersion.Full
         | _ -> ignore()
     

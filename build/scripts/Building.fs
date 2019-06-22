@@ -21,10 +21,9 @@ module Build =
                 "CurrentAssemblyVersion", (version.Assembly.ToString());
                 "CurrentAssemblyFileVersion", (version.AssemblyFile.ToString());
                 "DoSourceLink", sourceLink;
-                "FakeBuild", "1";
                 "OutputPathBaseDir", Path.GetFullPath Paths.BuildOutput;
             ] 
-            |> List.map (fun (p,v) -> sprintf "%s=%s" p v)
+            |> List.map (fun (p,v) -> sprintf "%s=\"%s\"" p v)
             |> String.concat ";"
             |> sprintf "/property:%s"
             

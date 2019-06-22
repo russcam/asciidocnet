@@ -1,5 +1,6 @@
 namespace Scripts
 
+open System
 open System.Runtime.InteropServices
 open Fake.Core
 
@@ -11,6 +12,11 @@ USAGE:
 build <target> [params]
 """
 
+    let private (|IsUrl|_|) (candidate:string) =
+        match Uri.TryCreate(candidate, UriKind.RelativeOrAbsolute) with
+        | true, _ -> Some candidate
+        | _ -> None
+    
     type VersionArguments = { Version: string; }
     type TestArguments = { TestFilter: string option; }
     type BenchmarkArguments = { Endpoint: string; Username: string option; Password: string option; }
@@ -22,7 +28,6 @@ build <target> [params]
         | Benchmark of BenchmarkArguments
 
     type PassedArguments = {
-        NonInteractive: bool;
         SkipTests: bool;
         RemainingArguments: string list;
         Target: string;
@@ -38,11 +43,7 @@ build <target> [params]
     
     let parse (args: string list) =
         
-        let filteredArgs = 
-            args
-            |> List.filter(fun x -> 
-               x <> "skiptests" && 
-               x <> "non-interactive")
+        let filteredArgs = args |> List.filter(fun x -> x <> "skiptests")
                
         let target = 
             match (filteredArgs |> List.tryHead) with
@@ -52,7 +53,6 @@ build <target> [params]
         let skipTests = args |> List.exists (fun x -> x = "skiptests")
 
         let parsed = {
-            NonInteractive = args |> List.exists (fun x -> x = "non-interactive")
             SkipTests = skipTests
             RemainingArguments = filteredArgs
             Target = 
@@ -82,6 +82,9 @@ build <target> [params]
         
         match arguments with
         | [] | ["build"] | ["test"] | ["clean"] | ["benchmark"] -> parsed
+        | "benchmark"::tail -> parsed
+        | ["release"; version] -> { parsed with CommandArguments = SetVersion { Version = version }  }
+        | ["test"; testFilter] -> { parsed with CommandArguments = Test { TestFilter = Some testFilter }  }
         | _ ->
             eprintf "%s" usage
-            failwith "Please consult printed help text on how to call our build"
+            failwith "Please consult printed help text on how to call build"

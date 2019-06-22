@@ -69,7 +69,7 @@
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
 		<PackageReference Include="NuGet.CommandLine" Version="4.9.4" />
 		<PackageReference Include="Octokit" Version="0.32.0" />
-		<PackageReference Include="Proc" Version="0.4.3" />
+		<PackageReference Include="Proc" Version="0.6.1" />
 	</ItemGroup>
 
 	<Target Name="CopyToolPackages" AfterTargets="Build">
