@@ -10,12 +10,12 @@ module Projects =
 
     type DotNetFramework = 
         | NetStandard20
-        | NetCoreApp21
+        | NetCoreApp22
         static member All = [NetStandard20] 
         member this.Identifier = 
             match this with
             | NetStandard20 -> { MSBuild = "netstandard2.0"; Nuget = "netstandard2.0"; DefineConstants = ""; }
-            | NetCoreApp21 -> { MSBuild = "netcoreapp2.1"; Nuget = "netcoreapp2.1"; DefineConstants = ""; }
+            | NetCoreApp22 -> { MSBuild = "netcoreapp2.2"; Nuget = "netcoreapp2.2"; DefineConstants = ""; }
 
     type Project =
         | AsciiDocNet

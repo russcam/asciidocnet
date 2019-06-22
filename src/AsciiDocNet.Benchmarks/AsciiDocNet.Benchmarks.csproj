@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.10.12" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.11.5" />
     <ProjectReference Include="..\AsciiDocNet\AsciiDocNet.csproj" />
   </ItemGroup>
   <Import Project="..\outputpath.props" />

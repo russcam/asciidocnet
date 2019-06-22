@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Reflection;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
 
 namespace AsciiDocNet.Benchmarks
@@ -7,7 +9,8 @@ namespace AsciiDocNet.Benchmarks
 	{
 		static void Main(string[] args)
 		{
-			var summary = BenchmarkRunner.Run<ParseDocument>();
+			var switcher = BenchmarkSwitcher.FromAssembly(Assembly.GetCallingAssembly()); 
+			switcher.Run(args);
 		}
 	}
 }
