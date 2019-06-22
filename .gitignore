@@ -45,9 +45,6 @@ _NCrunch*/
 /packages
 *.nupkg
 
-#Github credentials
-AsciiDocNet.Tests/credentials.json
-
 #lock files
 project.lock.json
 *.project.lock.json
@@ -67,11 +64,8 @@ build/tools/*
 !build/*.png
 !build/scripts
 
-.fake/*
-.fake
 packages/*
 src/.idea/
-paket-files/
 docs/
 visited-docs/
 BenchmarkDotNet.Artifacts/
