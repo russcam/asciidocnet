@@ -77,8 +77,9 @@ namespace AsciiDocNet
         public virtual void VisitAuthorInfo(AuthorInfo author)
 		{
             if (author == null) return;
+			
             _writer.Write("{0}{1}{2}",
-                !string.IsNullOrEmpty(author.FirstName) ? author.MiddleName.Replace(" ", "_") + " " : string.Empty,
+                !string.IsNullOrEmpty(author.FirstName) ? author.FirstName.Replace(" ", "_") + " " : string.Empty,
                 !string.IsNullOrEmpty(author.MiddleName) ? author.MiddleName.Replace(" ", "_") + " " : string.Empty,
                 !string.IsNullOrEmpty(author.LastName) ? author.LastName.Replace(" ", "_") + " " : string.Empty);
 

@@ -5,7 +5,15 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "type": "coreclr"
+        "name": ".NET Core Launch (console)",
+        "type": "coreclr",
+        "request": "launch",
+        "preLaunchTask": "build",
+        "program": "${workspaceFolder}/src/AsciiDocNet.Benchmarks/bin/Debug/net7.0/AsciiDocNet.Benchmarks.dll",
+        "args": ["--list=tree"],
+        "cwd": "${workspaceFolder}",
+        "stopAtEntry": false,
+        "console": "internalConsole"
       }
     ]
 }

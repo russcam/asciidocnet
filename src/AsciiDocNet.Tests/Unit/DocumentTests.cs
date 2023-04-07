@@ -38,7 +38,8 @@ namespace AsciiDocNet.Tests.Unit
             var visitedDocument = Document.Parse(content);
 
 	        // write out visited doc for diff
-	        var visitedFile = file.FullName.Replace(@"\docs\", @"\visited-docs\");
+	        var visitedFile = file.FullName.Replace(System.IO.Path.DirectorySeparatorChar + "docs" + Path.DirectorySeparatorChar,
+			Path.DirectorySeparatorChar + "visited-docs" + Path.DirectorySeparatorChar);
 	        var visitedDirectory = Path.GetDirectoryName(visitedFile);
 	        if (!Directory.Exists(visitedDirectory))
 	        {
