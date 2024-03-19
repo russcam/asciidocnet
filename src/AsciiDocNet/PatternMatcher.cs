@@ -58,8 +58,7 @@ namespace AsciiDocNet
 
 		public static readonly Regex Fenced = new Regex($"^{Regex.Escape(Patterns.Block.Fenced)}{Patterns.CharacterGroupWhitespace}*$");
 
-		public static readonly Regex ImplicitLink =
-			new Regex(@"(^|link:|<|[\s>\(\)\[\];]|[^`])(?<href>\\?(?:https?|file|ftp|irc)://[^\s\[\]<]*[^\s.,\[\]<])(?:\[(?<attributes>(?:\\\]|[^\]])*?)\])?");
+		public static readonly Regex ImplicitLink = new Regex(@"(^|link:|<|[\s>\(\)\[\];]|[^`])((?<href>\\?(?:https?|file|ftp|irc)://|link:(//)?)[^\s\[\]<]*[^\s.,\[\]<])(?:\[(?<attributes>(?:\\\]|[^\]])*?)\])?");
 
 		public static readonly Regex Include = new Regex(@"^\\?include::(?<path>[^\[]+)\[(?<attributes>.*?)\]$");
 

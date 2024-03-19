@@ -398,7 +398,7 @@ namespace AsciiDocNet
 	                            var attributes = match.Groups["attributes"].Success
 		                            ? match.Groups["attributes"].Value
 		                            : null;
-                                var href = match.Groups["href"].Value;
+                                var href = match.Groups[2].Value;
                                 var link = new Link(href, attributes);
                                 outerMatches.Add(new InlineElementRuleMatch(link, match.Index + match.Groups[1].Length, match.Index + match.Length, match.Groups[1].Value + new string(' ', match.Length - match.Groups[1].Length)));
                                 break;

@@ -72,6 +72,18 @@ namespace AsciiDocNet.Tests.Unit
 
 			AsciiDocAssert.Equal(text, document);
 		}
+		[Fact]
+		public void ShouldParseRelativeLink()
+		{
+			var text = "Blah blah link://relative.html[relative link] blah";
+			var document = Document.Parse(text);
+			Assert.NotNull(document);
+			Assert.True(document.Count == 1);
+			var paragraph = (Paragraph)document[0];
+			Assert.True(paragraph.Count == 3);
+			Assert.IsType<Link>(paragraph[1]);
+			AsciiDocAssert.Equal(text, document);
+		}
 
 		[Fact]
 		public void ShouldParseLink()
